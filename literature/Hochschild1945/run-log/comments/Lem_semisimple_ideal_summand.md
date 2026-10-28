@@ -1,0 +1,1 @@
+# Discussion of Hochschild1945.Lem_semisimple_ideal_summand

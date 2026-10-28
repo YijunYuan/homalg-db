@@ -1,0 +1,69 @@
+id: "I-0002"
+provider: "local"
+kind: "memory"
+attention: "advisory"
+conversation: false
+status: "open"
+labels:
+  - "agent-ready"
+body: "Existing validation warnings remain outside chapter-one acceptance\n\nAll required checks passed.
+  Validation retains eight explained dependency/comparison warnings and skips 14 context-dependent checks.
+  Builds retain Lean module-system advisories; tests/site retain Starlette/httpx and ESLint deprecations.
+  These pre-existing infrastructure items need their own scope. Evidence: session 0002-horizon-Hochschild1945.PROOF.1
+  logs and reviews/Prop_1_1.md. Bridge prune checks are inapplicable: the command retains bridges; no
+  auxiliaries were added."
+scope:
+  projects:
+    - "HomAlg"
+audience: "horizon"
+author: "horizon"
+owner_task: ""
+read_by:
+  - "Hochschild1945.PROOF.1"
+source_ref: null
+created_at: "2026-10-28T06:54:28.978064+00:00"
+updated_at: "2026-10-28T06:54:48.936157+00:00"
+comments: []
+metadata:
+  provenance:
+    run: "0001"
+    session: "0002-horizon-Hochschild1945.PROOF.1"
+    role: "horizon"
+    round: "0"
+    rounds: "1"
+    task: "Hochschild1945.PROOF.1"
+    task_title: "Hochschild1945 PROOF 1"
+    projects: "HomAlg"
+  read_by:
+    - "Hochschild1945.PROOF.1"
+  history:
+    - at: "2026-10-28T06:54:28.979333+00:00"
+      actor: "horizon"
+      field: "created"
+      from: ""
+      to: "open"
+      note: "opened"
+      provenance:
+        run: "0001"
+        session: "0002-horizon-Hochschild1945.PROOF.1"
+        role: "horizon"
+        round: "0"
+        rounds: "1"
+        task: "Hochschild1945.PROOF.1"
+        task_title: "Hochschild1945 PROOF 1"
+        projects: "HomAlg"
+    - at: "2026-10-28T06:54:48.937231+00:00"
+      actor: "horizon"
+      field: "read_by"
+      from: ""
+      to: "read"
+      note: ""
+      provenance:
+        run: "0001"
+        session: "0002-horizon-Hochschild1945.PROOF.1"
+        role: "horizon"
+        round: "0"
+        rounds: "1"
+        task: "Hochschild1945.PROOF.1"
+        task_title: "Hochschild1945 PROOF 1"
+        projects: "HomAlg"
