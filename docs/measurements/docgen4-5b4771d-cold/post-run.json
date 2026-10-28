@@ -1,0 +1,17 @@
+{
+  "observed_at": "2026-10-28T10:38:58.858842+00:00",
+  "modules_analyzed": 4446,
+  "declarations_analyzed": 189147,
+  "html_directory_exists": true,
+  "html_output_bytes": 0,
+  "temporary_build_bytes": 301307606,
+  "build_error_lines": 0,
+  "last_job": "6354/6705",
+  "build_process_group": 4022998,
+  "build_process_group_remaining": false,
+  "source_commit": "5b4771d924974ea59a9c4c1ec5bd5713af4e6482",
+  "html_size_gate_verified": false,
+  "declaration_inventory_generated": false,
+  "representative_link_verified": false,
+  "decision": "Keep optional doc-gen4 disabled; the bounded local attempt did not complete, and CI time and complete artifact size remain unverified."
+}

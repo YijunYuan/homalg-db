@@ -1,23 +1,25 @@
 # Implementation and acceptance
 
-This checkout implements the approved HomAlgDB requirements version 1.0
-(2026-10-27). The table separates delivered local functionality from acceptance
-that still needs mathematical work or a remote deployment. The owner's
+The core implementation and pilot publication are complete. This checkout follows
+the approved HomAlgDB requirements version 1.0 (2026-10-27); the table separates
+delivered capabilities from the original acceptance boundaries still retained.
+The owner's
 [2026-10-28 amendment](REVIEW_POLICY.md) replaces routine human review gates with
 independent agent reviews; only unresolved mathematical/source disagreements are
 escalated.
-It must not be read as a claim that M0–M7 are all accepted.
+The real two-account governance exercises and original per-page timing records
+are still missing, so not every original acceptance item is claimed as passed.
 
-| Milestone | Delivered implementation and evidence | Remaining acceptance |
+| Milestone | Delivered implementation and evidence | Remaining acceptance or explicit boundary |
 | --- | --- | --- |
-| M0 | Public repository, pinned Lean/Mathlib, schemas, fixtures, CI and applied governance; initial vocabulary independently reviewed in TAXONOMY_REVIEW.md | Final consolidated regression run |
-| M1 | Parsing, compiled exporter, index/artifacts, semantic checks and authoring commands; real registration and claim PRs passed remote CI | Cold-start export-context regression under repair; final pilot validation |
-| M2 | Blueprint, fidelity, search, claims, accessible views, static/API adapters and WebGL fallback; Pages deployment succeeded | Final pilot deployment and live progress verification |
-| M3 | Real registration PR #10 and claim PR #11 merged; main/status rulesets and Pages settings applied; infrastructure PRs #12–14 passed applicable CI | Final formalization PR and downloadable weekly data release |
-| M4 | Published fork v0.1.5-homalg.1, actual release-wheel installation and two null-session engine checks; policy-aware task templates | Real Claude Code/Codex cold-start tasks and their green submit PR are in progress |
-| M5 | Exact supplied PDF, ten reviewed body pages, 29 source items, 13 independently confirmed foundations, complete §1–§3 proofs and three bridges; later proofs and source-error evidence | Final independent statement locks, stage/early-review workflow and deployed pilot; remaining §4 proof obligations stay explicit |
-| M6 | Concepts/relations, global graph/timeline, provider adapter, import/review, cost guards and real two-source rehearsal; summary independently accepted with source/report hashes | Final consolidated regression run; separately paid API execution is not claimed |
-| M7 | SQLite/FTS5 API, static/API parity, 100k benchmark, partitioned search, graph overview, ledger concurrency and security documentation | Optional doc-gen4 remains disabled pending post-pilot measurement |
+| M0 | Public repository, pinned Lean/Mathlib, schemas, fixtures, CI and applied governance; independently reviewed initial vocabulary; consolidated regression passed | No outstanding local implementation check |
+| M1 | Parsing, compiled exporter, index/artifacts, semantic checks and authoring commands; all 19 Lean smoke/export and five pilot acceptance tests passed; whole-pilot compiled validation has zero errors | Eight explained warnings and 14 context-dependent skips remain explicit |
+| M2 | Blueprint, fidelity, search, claims, accessible views, static/API adapters and WebGL fallback; repaired production site passed all 17 final assertions and visual review | No outstanding pilot site acceptance |
+| M3 | Registration, claim and infrastructure PRs merged; governance applied; Pages and data release passed; actual pilot submission PR #16, repair PR #17 and claim release PR #18 passed CI and merged | Real two-account governance tests not performed |
+| M4 | Published fork v0.1.5-homalg.1 and both real CLI engines passed M4-T4; actual pilot Codex run and after-session backup passed; both production status snapshots passed M4-T5 | Cold-start cache and backup-destination limitations are recorded |
+| M5 | Ten reviewed body pages; 44 nodes covering all 29 source items; 13 confirmed foundations and three bridges; independent reviews and all 33 planned tasks complete; compiled validation, remote CI and deployed-pilot acceptance passed | One confirmed source error and seven cited nodes with nine explicit external proof obligations remain visible; original per-page timings were not instrumented |
+| M6 | Concepts/relations, global graph/timeline, provider adapter, import/review, cost guards and real two-source rehearsal; summary independently accepted; consolidated regression passed | Separately paid API execution is not claimed |
+| M7 | SQLite/FTS5 API, static/API parity, 100k benchmark, partitioned search, graph overview, ledger concurrency and security documentation; bounded cold doc-gen4 measurement completed | Optional documentation stays disabled: the local build timed out at 30 minutes; complete output size and GitHub CI time remain unknown |
 
 All advertised CLI commands are implemented; `homalg --help` is the current
 command inventory. Unavailable context is listed in `summary.skipped`. A fast
@@ -28,11 +30,28 @@ did not have. Human-only commands never fabricate approvals.
 
 Local checks on 2026-10-28:
 
-- `make test`: 363 Python tests passed, 17 skipped; Ruff, generated TypeScript,
-  frontend lint/format and 31 frontend unit tests passed. The skipped checks are
-  actual Lean-dependent tests and the opt-in large benchmark, run separately.
-  Site fixture artifacts regenerated from the committed raw-export golden match.
-- Browser suite: 18 tests passed, including static navigation/accessibility,
+- Latest `make test` log (`build/final-infrastructure-tests.log`), from the
+  isolated infrastructure checkout including the empty-escalation fix: 375 Python
+  tests passed, 18 skipped and one warning; Ruff, generated TypeScript, frontend
+  lint/format and 31 frontend unit tests passed. The warning is Starlette's
+  deprecation notice for its `httpx` TestClient integration. Sixteen skips are
+  compiled-test opt-ins and one is the opt-in large benchmark. The remaining
+  MiniSearch/SQLite parity test ran before `npm ci` installed MiniSearch; its
+  subsequent isolated rerun passed (`build/final-search-parity.log`). Site
+  fixture artifacts match the committed raw-export golden.
+- The successful `make validate` record is `build/pilot-engine-make-validate.log`:
+  zero errors, eight warnings and 14 checks skipped for unavailable context;
+  all 19 Lean smoke/export tests passed. Five additional real pilot acceptance
+  tests passed in `build/final-pilot-lean-tests.log`, for 24 tests across those
+  suites. Each validation warning is explained in its
+  node's Formalization notes: four retained source dependencies exceed the direct
+  compiled trace, and four conservative bypass warnings concern the intended
+  comparison or homomorphism constructors. No validation rule was disabled.
+- `make data` generated 61 nodes across three documents and 201 edges with all
+  artifact budgets passing. `make site` produced a 9.1 MiB complete site and
+  144.1 KiB entry JavaScript gzip. Logs are `build/final-data.log` and
+  `build/final-site.log`.
+- Browser suite after the graph-fit repair: 19 tests passed, including static navigation/accessibility,
   evolution rendering, actual SQLite API search/node/timeline/concepts, and
   chapter-scoped requests for a large document.
 - Lifecycle/API focused suite: 46 tests passed. Temporary local Git remotes
@@ -57,12 +76,15 @@ Local checks on 2026-10-28:
   trees and both Python lockfiles have zero findings in the recorded npm/
   pip-audit checks. `docs/SECURITY.md` records scope and limitations.
 
-The most recent complete top-level acceptance run must be repeated after the
-pilot finishes changing Lean source. Use:
+PR #16 also passed remote CI and merged. Repair PR #17 passed its applicable CI
+and the final deployed-pilot browser acceptance passed against its exact merge
+commit. Local tests, status publication and actual deployed-source checks are
+recorded separately below. The acceptance commands are:
 
 ```sh
 make test
 make validate
+make data
 make site
 # With the pinned fork on PATH:
 uv run --project tools --locked --all-extras python tools/scripts/check_engine_integration.py
@@ -99,15 +121,135 @@ unital-algebra assumption or human confirmation is introduced. The current
 policy. Each record includes the author/reviewer sessions and a content hash;
 no human confirmation was invented.
 
+All 33 planned pilot tasks are done. The 44 compiled nodes include the 29 source
+items, three bridges and seven cited nodes. The source-item headlines are
+27 proof complete, one statement complete and one confirmed error. The
+statement-complete item is `Cor_quotient_separable`: its repaired local proof is
+complete, but its faithfully retained source-only edge to the false Theorem 5.1
+keeps the global headline conservative. The seven cited nodes retain nine
+explicit external `sorry` boundaries; these are not counted as proved background
+theorems.
+
+## Remote publication evidence
+
 The public [database repository](https://github.com/YijunYuan/homalg-db) and
-[engine fork](https://github.com/YijunYuan/homalg-horizon) are now published.
-The fork's [v0.1.5-homalg.1 release](https://github.com/YijunYuan/homalg-horizon/releases/tag/v0.1.5-homalg.1)
-contains the wheel, installed into a fresh environment and exercised with real
+[engine fork](https://github.com/YijunYuan/homalg-horizon) are published. The fork's
+[v0.1.5-homalg.1 release](https://github.com/YijunYuan/homalg-horizon/releases/tag/v0.1.5-homalg.1)
+contains the wheel, installed into fresh environments and exercised with real
 engine sessions. Fork CI passed, including both supported Python versions.
-The main repository's registration and claim PRs passed CI and merged; the
-[Pages deployment](https://github.com/YijunYuan/homalg-db/actions/runs/40635391845)
-succeeded after retrying a transient upstream TLS download failure. The site is
-at [yijunyuan.github.io/homalg-db](https://yijunyuan.github.io/homalg-db/).
+Production registration and claim PRs passed CI and merged.
+
+Production infrastructure [PR #15](https://github.com/YijunYuan/homalg-db/pull/15)
+merged as `34ca001157dcccb99eb5878aac4e77be500af79e`. The matching
+[Pages deployment](https://github.com/YijunYuan/homalg-db/actions/runs/40642971475)
+and [data-release run](https://github.com/YijunYuan/homalg-db/actions/runs/40643093648)
+succeeded. The site is at
+[yijunyuan.github.io/homalg-db](https://yijunyuan.github.io/homalg-db/).
+The published [data-2026-10-28 release](https://github.com/YijunYuan/homalg-db/releases/tag/data-2026-10-28)
+contains the actually downloaded and inspected
+[data-2026-10-28.tar.gz](https://github.com/YijunYuan/homalg-db/releases/download/data-2026-10-28/data-2026-10-28.tar.gz):
+
+| Check | Observed result |
+| --- | --- |
+| SHA-256 | `da54d56fdf9bf4d02912b4606968cb4def7b8b4f02e4aefffc85888fb42e4ae3` |
+| Compressed bytes / archive entries | 62,389 bytes / 41 entries |
+| License files | LICENSE, LICENSE-DATA and NOTICE present |
+| Private paths | Absent |
+| Snapshot commit | `34ca001157dcccb99eb5878aac4e77be500af79e` |
+
+The local inspection record is `build/released-data-verification.json`. This is
+the infrastructure snapshot with the registered pilot before its final node
+submission; it is not the completed pilot's formalization release.
+
+The actual `homalg submit Hochschild1945` created production
+[PR #16](https://github.com/YijunYuan/homalg-db/pull/16), head
+`e4b0cd6c8bc7b85e6a02903292d003855cfbcf85`, using the existing claim. Submission
+rebuilt and validated the document in an isolated worktree and backed up the
+committed source. Its
+[CI run 40666512164](https://github.com/YijunYuan/homalg-db/actions/runs/40666512164)
+passed, including the Lean job in 3 minutes 43 seconds. The CLI merge precheck
+reported `BLOCKED`; the standard REST squash endpoint subsequently accepted the
+exact expected head SHA, producing
+`5b4771d924974ea59a9c4c1ec5bd5713af4e6482`. No administrator/force option or rule
+change was used. The precheck did not establish why it refused, so no
+synchronization explanation or non-owner governance conclusion is inferred. The
+[deployment 40667644896](https://github.com/YijunYuan/homalg-db/actions/runs/40667644896)
+passed. Data and interaction checks passed, but screenshot review found that
+the expanded graph clipped a long sparse layout; that issue has a separate
+repair and deployed acceptance below.
+
+[Repair PR #17](https://github.com/YijunYuan/homalg-db/pull/17) includes the
+empty-escalation fix and graph-fit repair. Its
+[CI run 40670365185](https://github.com/YijunYuan/homalg-db/actions/runs/40670365185)
+passed classification, checks and gate; Lean was deliberately skipped because
+these tool/site changes have `needs_lean=false`. Owner approval also passed.
+It merged as `c5489f42b97470d6424778a0b8134ed59c520d0a` through the same standard
+exact-head REST squash operation, without administrator/force options or rule
+changes. Superseded opening/label-event runs were cancelled, not failed checks.
+
+[Deployment 40670763457](https://github.com/YijunYuan/homalg-db/actions/runs/40670763457)
+passed, and the real production browser acceptance completed at
+`2026-10-28T10:21:00.933Z` against that exact manifest commit. All 17 assertions
+passed with zero JavaScript, HTTP or request errors. All 44 expanded graph nodes
+fit inside the viewport; the overview, chapter, list and Fidelity screenshots
+were visually checked. All six nodes' deviation explanations loaded completely.
+Search, proof details, the confirmed source error and the corollary's dependency
+boundary were verified on the public site. Evidence is retained in
+`build/acceptance-live-pilot-final.*` and the
+[cold-start report](COLD_START_ACCEPTANCE.md#final-repaired-deployment-acceptance).
+
+The normal `homalg release Hochschild1945` also completed:
+[PR #18](https://github.com/YijunYuan/homalg-db/pull/18) passed its
+[CI run 40671666694](https://github.com/YijunYuan/homalg-db/actions/runs/40671666694)
+and owner check, then merged as `8fc87a9123aafaa67331b7c4a4f3d590882228be` at
+`2026-10-28T10:25:14Z`. The claim file has `claims: []` and no review request was
+created. Its [deployment 40671979915](https://github.com/YijunYuan/homalg-db/actions/runs/40671979915)
+passed; a real manifest fetch at `2026-10-28T10:31:39.271Z` confirmed the exact
+merge commit, `claim.state: unclaimed` and unchanged 27/1/1 source headlines
+(`build/final-release-live.json`).
+
+The separate [cold-start report](COLD_START_ACCEPTANCE.md) records passed M4-T4:
+real Claude Code and Codex each completed statement and proof tasks from fresh
+clones using the release wheel. The actual submission
+[PR #13](https://github.com/YijunYuan/homalg-db-acceptance/pull/13) passed
+[CI](https://github.com/YijunYuan/homalg-db-acceptance/actions/runs/40642480584)
+and merged normally as `4e96a3939cb0f6c39bd841b485ede6eec9f18745`.
+Its [Pages deployment](https://github.com/YijunYuan/homalg-db-acceptance/actions/runs/40643719471)
+passed, and a real browser observed two proved nodes, zero planned nodes and
+`2 of 2 items proof complete`, with zero JavaScript errors or failed responses.
+The report preserves its narrower scope: shared dependency cache, local private
+backup, initialization-only administrator bypass and no two-account governance
+exercise.
+
+Production M4-T5 passed using the existing pilot claim. The first status
+`e268134aff210abf306872cd2b2bf45e0f4dac51` reached
+[deployment 40645173934](https://github.com/YijunYuan/homalg-db/actions/runs/40645173934).
+The final stable status `ad2ad1ad711004943066ece77332d7ad21de9544` reached
+[deployment 40665487067](https://github.com/YijunYuan/homalg-db/actions/runs/40665487067).
+A real browser compared the complete deployed status with the remote payload
+and observed `27 proof complete · 10 pages reviewed · 0 questions for a human`,
+a green last check, PROOF 6/6 and STMT 12/12, with zero JavaScript, HTTP or request
+failures. Both deployments still used the pre-submission main registration;
+the displayed run progress was explicitly separate from CI-validated published
+formalization. Historical first-capture counts were not rewritten.
+
+The actual Codex Horizon run `0001`, session
+`0002-horizon-Hochschild1945.PROOF.1`, verified the already implemented first
+chapter without changing source. Its after-session hook returned zero, marked
+the task done and recorded `backed_up: true`; its automatic status publication
+was throttled. The remaining chapters subsequently passed their normal stage
+commands. This is final-verification evidence, not a claim that one session
+authored all pilot proofs. The [cold-start report](COLD_START_ACCEPTANCE.md)
+retains the exact session, hook and browser evidence.
+
+The follow-up fix `e219ce0` (rebased from `55234ff`), merged in PR #17, makes
+escalation with no eligible inbox
+candidates a successful no-op before constructing a GitHub client, prompting or
+requiring a human session. Nonempty escalation still requires the original
+human guard and per-item confirmation. Focused regression tests passed, and an
+independent reviewer checked both branches before publication. This behavior is
+included in the deployed repair; no issue was published by the regression tests.
+
 No reviewer was requested for the implementation PRs. At the owner's request,
 Dependabot version-update PRs were closed and automatic version-update creation
 was paused in PR #14; ordinary validation remains enabled.
@@ -127,9 +269,11 @@ counterexample reviews. Its original claim, named unproved theorem and open,
 confirmed dispute are retained. This does not constitute approval of a corrected
 replacement theorem. A genuine quotient-annihilator construction is isolated
 from the false claim, and the following corollary has a complete local repaired
-proof with an explicit proof-route deviation. Its remaining inherited boundary
-is Theorem 4.1. Later statement locks do not claim that these named proof gaps
-have disappeared.
+proof with an explicit proof-route deviation. Theorem 4.1 now also has a complete
+local proof, and final independent review, export, validation and proof-stage
+acceptance passed. Seven classical citation nodes retain nine explicit external
+proof obligations; neither fidelity locks nor local proof completion claim
+proofs of those background results.
 
 ## Specification decisions
 
@@ -181,9 +325,17 @@ have disappeared.
 14. **Historical summaries.** A before/after review summary can report committed
     local proof/fidelity/lock facts from `nodes.json`. It labels them as local;
     it cannot invent historical global headlines without the old complete export.
-15. **Optional doc-gen4.** It is not enabled or claimed within its cost gates
-    without a post-pilot measurement. Its optional status does not waive the
-    required core pipeline, site or mathematical acceptance.
+15. **Optional doc-gen4.** The tooling built successfully, but the actual isolated
+    cold `HomAlg:docs` build exited 124 at its 1,800-second cap. The
+    [measurement report](DOCGEN_MEASUREMENT.md) preserves both elapsed readings:
+    1,800.11 seconds from Python's monotonic clock and `30:49.73` from GNU time;
+    their discrepancy was not independently diagnosed. It did not produce a
+    complete documentation artifact, so final
+    size and link coverage remain unknown; no size-limit failure is claimed.
+    This local run also does not establish GitHub runner timing. Production
+    dependencies and source were unchanged, and optional documentation remains
+    disabled. Its optional status does not waive the required core pipeline,
+    site or mathematical acceptance.
 
 ## Provenance of contributor-authored support nodes
 

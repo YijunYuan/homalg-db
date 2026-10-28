@@ -1,0 +1,8 @@
+{
+  "accepted_commit": "5b4771d924974ea59a9c4c1ec5bd5713af4e6482",
+  "prepared_pr_commit": "e4b0cd6c8bc7b85e6a02903292d003855cfbcf85",
+  "identical_tree": "5191e51f2a4f27301fc395290ef53f95d97ac164",
+  "source_url": "https://github.com/YijunYuan/homalg-db/commit/5b4771d924974ea59a9c4c1ec5bd5713af4e6482",
+  "reason": "Parent reports PR16 normally squash-merged after all CI checks passed. Checkout moved before any documentation measurement; dependency preparation preserved.",
+  "recorded_at": "2026-10-28T10:00:07.635915+00:00"
+}

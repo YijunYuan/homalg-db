@@ -1,0 +1,107 @@
+{
+  "started_at": "2026-10-28T09:45:25.790717+00:00",
+  "source_commit": "e4b0cd6c8bc7b85e6a02903292d003855cfbcf85",
+  "commands": [
+    {
+      "argv": [
+        "git",
+        "clone",
+        "--no-hardlinks",
+        "--no-checkout",
+        "/home/yijunyuan/homalg-db",
+        "/home/yijunyuan/homalg-docgen-benchmark/homalg-e4b0cd6"
+      ],
+      "cwd": "/home/yijunyuan/homalg-docgen-benchmark"
+    },
+    {
+      "argv": [
+        "git",
+        "checkout",
+        "--detach",
+        "e4b0cd6c8bc7b85e6a02903292d003855cfbcf85"
+      ],
+      "cwd": "/home/yijunyuan/homalg-docgen-benchmark/homalg-e4b0cd6"
+    },
+    {
+      "argv": [
+        "git",
+        "remote",
+        "set-url",
+        "origin",
+        "https://github.com/YijunYuan/homalg-db.git"
+      ],
+      "cwd": "/home/yijunyuan/homalg-docgen-benchmark/homalg-e4b0cd6"
+    },
+    {
+      "argv": [
+        "cp",
+        "-a",
+        "--reflink=auto",
+        "/home/yijunyuan/homalg-db/.lake/packages",
+        "/home/yijunyuan/homalg-docgen-benchmark/homalg-e4b0cd6/.lake/packages"
+      ],
+      "cwd": "/home/yijunyuan/homalg-docgen-benchmark"
+    },
+    {
+      "argv": [
+        "cp",
+        "-a",
+        "--reflink=auto",
+        "/home/yijunyuan/homalg-docgen-benchmark/doc-gen4",
+        "/home/yijunyuan/homalg-docgen-benchmark/homalg-e4b0cd6/.lake/packages/doc-gen4"
+      ],
+      "cwd": "/home/yijunyuan/homalg-docgen-benchmark"
+    },
+    {
+      "argv": [
+        "cp",
+        "-a",
+        "--reflink=auto",
+        "/home/yijunyuan/homalg-docgen-benchmark/doc-gen4/.lake/packages/BibtexQuery",
+        "/home/yijunyuan/homalg-docgen-benchmark/homalg-e4b0cd6/.lake/packages/BibtexQuery"
+      ],
+      "cwd": "/home/yijunyuan/homalg-docgen-benchmark"
+    },
+    {
+      "argv": [
+        "cp",
+        "-a",
+        "--reflink=auto",
+        "/home/yijunyuan/homalg-docgen-benchmark/doc-gen4/.lake/packages/MD4Lean",
+        "/home/yijunyuan/homalg-docgen-benchmark/homalg-e4b0cd6/.lake/packages/MD4Lean"
+      ],
+      "cwd": "/home/yijunyuan/homalg-docgen-benchmark"
+    },
+    {
+      "argv": [
+        "cp",
+        "-a",
+        "--reflink=auto",
+        "/home/yijunyuan/homalg-docgen-benchmark/doc-gen4/.lake/packages/UnicodeBasic",
+        "/home/yijunyuan/homalg-docgen-benchmark/homalg-e4b0cd6/.lake/packages/UnicodeBasic"
+      ],
+      "cwd": "/home/yijunyuan/homalg-docgen-benchmark"
+    },
+    {
+      "argv": [
+        "cp",
+        "-a",
+        "--reflink=auto",
+        "/home/yijunyuan/homalg-docgen-benchmark/doc-gen4/.lake/packages/leansqlite",
+        "/home/yijunyuan/homalg-docgen-benchmark/homalg-e4b0cd6/.lake/packages/leansqlite"
+      ],
+      "cwd": "/home/yijunyuan/homalg-docgen-benchmark"
+    },
+    {
+      "argv": [
+        "lake",
+        "update",
+        "doc-gen4"
+      ],
+      "cwd": "/home/yijunyuan/homalg-docgen-benchmark/homalg-e4b0cd6/docbuild"
+    }
+  ],
+  "cache": "Independent copies of pinned dependency source and compiled .olean caches; no HomAlg build cache and no documentation cache copied.",
+  "wall_seconds": 1032.6522783410037,
+  "exit_status": 0
+}

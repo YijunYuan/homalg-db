@@ -27,17 +27,29 @@ for (const field of ["holder", "generated_at"])
   if (entry.claim.run[field] !== expected[field])
     throw new Error(`Published ${field} differs from the status branch`);
 assert.deepEqual(
-  entry.claim.run.counts,
-  expected.counts,
-  "Published numeric counts differ from the status branch",
+  entry.claim.run,
+  expected,
+  "Published run report differs from the status branch",
 );
 
 const browser = await chromium.launch({ headless: true });
 try {
   const page = await browser.newPage();
   const errors = [];
+  const failedResponses = [];
+  const failedRequests = [];
   page.on("pageerror", (error) => errors.push(error.message));
-  await page.goto(new URL("#/claims", base).href);
+  page.on("response", (response) => {
+    if (response.status() >= 400)
+      failedResponses.push({ url: response.url(), status: response.status() });
+  });
+  page.on("requestfailed", (request) =>
+    failedRequests.push({
+      url: request.url(),
+      error: request.failure()?.errorText,
+    }),
+  );
+  await page.goto(new URL("#/claims", base).href, { waitUntil: "networkidle" });
   const card = page.locator(".claim-card").filter({ hasText: entry.title });
   await card.waitFor();
   const notice = await card.locator(".notice").innerText();
@@ -57,6 +69,8 @@ try {
   if (!notice.includes(expectedText))
     throw new Error(`UI counts differ: ${notice}`);
   if (errors.length) throw new Error(errors.join("\n"));
+  assert.deepEqual(failedResponses, [], "The claims page returned HTTP errors");
+  assert.deepEqual(failedRequests, [], "The claims page had failed requests");
   await mkdir(path.dirname(args.out), { recursive: true });
   await page.screenshot({
     path: args.out.replace(/\.json$/, ".png"),
@@ -70,8 +84,13 @@ try {
     doc_key: expected.doc_key,
     status_generated_at: expected.generated_at,
     counts: expected.counts,
+    last_check: expected.last_check,
+    open_for_human: expected.open_for_human,
+    stages: expected.stages,
     visible_notice: notice,
     page_errors: errors,
+    failed_responses: failedResponses,
+    failed_requests: failedRequests,
     passed: true,
   };
   await writeFile(args.out, JSON.stringify(report, null, 2) + "\n");

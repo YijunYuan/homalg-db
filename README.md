@@ -2,14 +2,18 @@
 
 A Lean 4 database of the homological-algebra literature. Each document keeps its
 own definitions and proof route, with one metadata-bearing Lean file per node.
-The [public site](https://yijunyuan.github.io/homalg-db/) exposes dependencies,
-source fidelity, search and concept history.
+The core implementation and pilot publication are complete. The
+[production site](https://yijunyuan.github.io/homalg-db/) provides dependency graphs,
+source-fidelity reviews, search and concept history.
 
-The implementation includes the Lean exporter and validation pipeline, a React
-site, collaboration commands, private PDF ingestion and a local Horizon fork.
-Two original synthetic documents exercise 17 Lean nodes. The Hochschild 1945
-pilot has reviewed visual transcriptions and is undergoing formal proof and fidelity review. See [implementation status](docs/IMPLEMENTATION.md)
-for acceptance evidence and remaining work.
+The independently reviewed Hochschild 1945 pilot contains 44 nodes covering 29
+source items: 27 proof complete, one statement complete and one owner-confirmed
+source error. The statement-complete corollary retains a source-only dependency
+on the false theorem; its repaired local proof is complete. The claim is released.
+See [implementation and acceptance](docs/IMPLEMENTATION.md) and the
+[cold-start report](docs/COLD_START_ACCEPTANCE.md) for validation, publication
+evidence and the remaining external acceptance boundaries. Optional doc-gen4
+remains disabled after a [30-minute cold-build timeout](docs/DOCGEN_MEASUREMENT.md).
 
 ## Quick start
 

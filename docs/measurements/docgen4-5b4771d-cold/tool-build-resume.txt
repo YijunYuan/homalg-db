@@ -1,0 +1,4 @@
+✔ [192/194] Built Main (34s)
+✔ [193/194] Built Main:c.o (2.1s)
+✔ [194/194] Built «doc-gen4»:exe (6.3s)
+Build completed successfully (194 jobs).
