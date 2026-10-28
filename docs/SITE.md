@@ -144,10 +144,19 @@ The October 2026 implementation run used the committed two-document fixtures:
   auxiliary projection, graph ordering, hostile Markdown, math/link diagnostics,
   runtime claim expiry, layout timeout fallback, document search sharding, merged
   decade shards, API overview/truncation, translations and graph contrast.
-- 16 Playwright tests cover real API browsing, chapter-only requests, evolution
+- 18 Playwright tests cover real API browsing, chapter-only requests, evolution
   review isolation and provenance, plus static browsing, deep links, parent expansion persistence, both Shiki
   themes, mobile dialog focus and deployment replacement. Axe checks all six
   required routes and the dark document view for serious/critical violations.
+  Explicitly expanded documents above 20,000 visible nodes lazily load Sigma 4:
+  a real WebGL test renders all 20,001 nodes and 20,000 edges, exports PNG, and
+  switches back to the collapsed Cytoscape view. A separate test disables WebGL
+  and verifies the accessible list remains available. No nodes are sampled away.
+  The WebGL overview uses build-time positions with dependency-rank positions
+  for missing nodes, status glyphs/colors, directed edges, keyboard neighbors,
+  hover statements and links to full node details. PNG captures the viewport;
+  Mermaid includes the complete filtered graph. Full fidelity styling remains
+  available through node details and the Fidelity/List views.
 - Lighthouse 13 reported accessibility 100 for the home page.
 - The initial production JavaScript was approximately 144 KiB gzip; one isolated
   ELK worker and one KaTeX version were emitted. The fixture-free application was
@@ -166,6 +175,8 @@ The October 2026 implementation run used the committed two-document fixtures:
   chapter-collapse view measured 464–468 ms in two consecutive runs against the 500 ms budget. All ten chapter
   summaries and nine aggregated dependencies are present. The optional expanded
   view displays all 2,000 nodes and measured 1,231–1,249 ms; it does not meet 500 ms.
+  After the WebGL fallback was added, another enforced default run measured
+  479 ms; its explicitly expanded 2,000-node stress view measured 1,530 ms.
 - Adding `--api=http://127.0.0.1:8789` uses the persistent real 100,000-node SQLite
   database: chapter overview measured 886–890 ms from navigation, and selecting a
   chapter painted its 1,000 nodes and 999 dependencies in 618–625 ms, both below the

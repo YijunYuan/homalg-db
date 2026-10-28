@@ -330,5 +330,9 @@
   "node.retired.merged": "{id} was merged on {on} by {by}.",
   "node.retired.open": "Open current node: {id}",
   "node.retired.unavailable": "No live replacement is available in this snapshot.",
-  "taxonomy.agentReview": "Independent agent review: {by}"
+  "taxonomy.agentReview": "Independent agent review: {by}",
+  "doc.webglList": "Open accessible node list",
+  "doc.webglMode": "Large graph: WebGL overview. Select a node for its full status and fidelity details. PNG exports the current viewport.",
+  "doc.webglUnavailable": "WebGL is unavailable. Open the node list or collapse chapters to continue.",
+  "doc.exportFailed": "The image could not be exported."
 }

@@ -53,8 +53,9 @@ uv run --project tools python tools/scripts/check_public_tree.py --repo ../homal
 ```
 
 The audit suite records its output under ignored `build/audit-*.log`. At handoff,
-31 frontend unit tests and 16 browser tests pass, including the new historical
-link workflow. The entry bundle remains about 144 KiB gzip. The existing default
+31 frontend unit tests and 18 browser tests pass, including historical links,
+an actual 20,001-node/20,000-edge WebGL document render, PNG export, and a forced
+WebGL-unavailable accessible fallback. The entry bundle remains about 144 KiB gzip. The existing default
 2,000-node graph and real 100,000-node API browser measurements are documented in
 [SITE.md](SITE.md); fully expanded and adversarial topology limitations remain
 explicit.

@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { lazy, Suspense, useEffect, useMemo, useRef, useState } from "react";
 import cytoscape, {
   type Core,
   type ElementDefinition,
@@ -13,11 +13,12 @@ import {
 } from "../../data/graph/contract.mjs";
 import { layout } from "./layout";
 import { seedPositions } from "../../data/graph/seed.mjs";
-import { glyphs, blueprintUrl, ErrorView } from "../../components/ui";
+import { glyphs, blueprintUrl, ErrorView, Loading } from "../../components/ui";
 import type { DocumentBundle, Manifest } from "../../data/source";
 import type { NodeSummary, NodeRef, Edge } from "../../data/types";
 import { t } from "../../i18n/t";
 type GraphNode = (NodeSummary | NodeRef) & { chapterSummary?: boolean };
+const WebGLBlueprint = lazy(() => import("./WebGLBlueprint"));
 export const styles: StylesheetStyle[] = [
   {
     selector: "node",
@@ -340,6 +341,8 @@ export function Blueprint({
     edgeMode,
   ]);
   useEffect(() => {
+    // Expanding a large document must not allocate a second Canvas renderer.
+    if (graph.nodes.length > 20_000) return;
     let cancelled = false;
     setError(undefined);
     const apply = async () => {
@@ -593,6 +596,19 @@ export function Blueprint({
       setNotice(t("doc.copyFailed"));
     }
   };
+  if (graph.nodes.length > 20_000)
+    return (
+      <Suspense fallback={<Loading />}>
+        <WebGLBlueprint
+          nodes={graph.nodes}
+          edges={graph.edges}
+          bundle={bundle}
+          selected={selected}
+          direction={direction}
+          onToggleChapter={onToggleChapter}
+        />
+      </Suspense>
+    );
   return (
     <div className="blueprint">
       <div className="graph-actions">
