@@ -121,6 +121,7 @@ def test_natural_restriction_uses_closed_source_cochain_proofs(compiled: dict) -
         assert not declaration["hollow"], name
         assert set(declaration["axioms"]) <= KERNEL_AXIOMS, name
         assert "Hochschild1945.Thm_5_1" not in declaration["value_uses_nodes"]
-    assert "Hochschild1945.Aux_Def_2_1_formula" in records[
-        "Hochschild1945.restrictCochain_delta"
-    ]["value_uses_nodes"]
+    assert (
+        "Hochschild1945.Aux_Def_2_1_formula"
+        in records["Hochschild1945.restrictCochain_delta"]["value_uses_nodes"]
+    )
