@@ -1,0 +1,19 @@
+{"argv": ["git", "clone", "--no-hardlinks", "--no-checkout", "/home/yijunyuan/homalg-db", "/home/yijunyuan/homalg-docgen-benchmark/homalg-e4b0cd6"], "cwd": "/home/yijunyuan/homalg-docgen-benchmark"}
+Cloning into '/home/yijunyuan/homalg-docgen-benchmark/homalg-e4b0cd6'...
+done.
+{"argv": ["git", "checkout", "--detach", "e4b0cd6c8bc7b85e6a02903292d003855cfbcf85"], "cwd": "/home/yijunyuan/homalg-docgen-benchmark/homalg-e4b0cd6"}
+HEAD is now at e4b0cd6 formalize(Hochschild1945): document update run 1
+{"argv": ["git", "remote", "set-url", "origin", "https://github.com/YijunYuan/homalg-db.git"], "cwd": "/home/yijunyuan/homalg-docgen-benchmark/homalg-e4b0cd6"}
+{"argv": ["cp", "-a", "--reflink=auto", "/home/yijunyuan/homalg-db/.lake/packages", "/home/yijunyuan/homalg-docgen-benchmark/homalg-e4b0cd6/.lake/packages"], "cwd": "/home/yijunyuan/homalg-docgen-benchmark"}
+{"argv": ["cp", "-a", "--reflink=auto", "/home/yijunyuan/homalg-docgen-benchmark/doc-gen4", "/home/yijunyuan/homalg-docgen-benchmark/homalg-e4b0cd6/.lake/packages/doc-gen4"], "cwd": "/home/yijunyuan/homalg-docgen-benchmark"}
+{"argv": ["cp", "-a", "--reflink=auto", "/home/yijunyuan/homalg-docgen-benchmark/doc-gen4/.lake/packages/BibtexQuery", "/home/yijunyuan/homalg-docgen-benchmark/homalg-e4b0cd6/.lake/packages/BibtexQuery"], "cwd": "/home/yijunyuan/homalg-docgen-benchmark"}
+{"argv": ["cp", "-a", "--reflink=auto", "/home/yijunyuan/homalg-docgen-benchmark/doc-gen4/.lake/packages/MD4Lean", "/home/yijunyuan/homalg-docgen-benchmark/homalg-e4b0cd6/.lake/packages/MD4Lean"], "cwd": "/home/yijunyuan/homalg-docgen-benchmark"}
+{"argv": ["cp", "-a", "--reflink=auto", "/home/yijunyuan/homalg-docgen-benchmark/doc-gen4/.lake/packages/UnicodeBasic", "/home/yijunyuan/homalg-docgen-benchmark/homalg-e4b0cd6/.lake/packages/UnicodeBasic"], "cwd": "/home/yijunyuan/homalg-docgen-benchmark"}
+{"argv": ["cp", "-a", "--reflink=auto", "/home/yijunyuan/homalg-docgen-benchmark/doc-gen4/.lake/packages/leansqlite", "/home/yijunyuan/homalg-docgen-benchmark/homalg-e4b0cd6/.lake/packages/leansqlite"], "cwd": "/home/yijunyuan/homalg-docgen-benchmark"}
+{"argv": ["lake", "update", "doc-gen4"], "cwd": "/home/yijunyuan/homalg-docgen-benchmark/homalg-e4b0cd6/docbuild"}
+info: docbuild: no previous manifest, creating one from scratch
+info: doc-gen4: remote URL changed
+  old: https://github.com/leanprover/doc-gen4.git
+  new: https://github.com/leanprover/doc-gen4
+info: toolchain not updated; already up-to-date
+info: mathlib: running post-update hooks

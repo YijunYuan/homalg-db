@@ -1,0 +1,142 @@
+{
+  "docgen": {
+    "commit": "0e1ffe2e4ba5ecfdfaf15c65b8d3805dbb7134ae",
+    "dependencies": [
+      {
+        "configFile": "lakefile.lean",
+        "inherited": false,
+        "inputRev": "main",
+        "manifestFile": "lake-manifest.json",
+        "name": "leansqlite",
+        "rev": "4ed2f27ecf81792abc8ff848670ac4356d0c4794",
+        "scope": "",
+        "subDir": null,
+        "type": "git",
+        "url": "https://github.com/leanprover/leansqlite"
+      },
+      {
+        "configFile": "lakefile.toml",
+        "inherited": false,
+        "inputRev": "main",
+        "manifestFile": "lake-manifest.json",
+        "name": "Cli",
+        "rev": "c24fe6078c630e89b489bffe59b3e20ac30d12c8",
+        "scope": "",
+        "subDir": null,
+        "type": "git",
+        "url": "https://github.com/leanprover/lean4-cli"
+      },
+      {
+        "configFile": "lakefile.lean",
+        "inherited": false,
+        "inputRev": "main",
+        "manifestFile": "lake-manifest.json",
+        "name": "UnicodeBasic",
+        "rev": "6e48acac3a91665fcdc4a20d50b7ce6b7b41711f",
+        "scope": "",
+        "subDir": null,
+        "type": "git",
+        "url": "https://github.com/fgdorais/lean4-unicode-basic"
+      },
+      {
+        "configFile": "lakefile.toml",
+        "inherited": false,
+        "inputRev": "master",
+        "manifestFile": "lake-manifest.json",
+        "name": "BibtexQuery",
+        "rev": "876b844aa52183cbcc0d82fdd4d1fc349f0dac34",
+        "scope": "",
+        "subDir": null,
+        "type": "git",
+        "url": "https://github.com/dupuisf/BibtexQuery"
+      },
+      {
+        "configFile": "lakefile.lean",
+        "inherited": false,
+        "inputRev": "main",
+        "manifestFile": "lake-manifest.json",
+        "name": "MD4Lean",
+        "rev": "31907cc18f48a95384f99cee5582c00fb39e0f67",
+        "scope": "",
+        "subDir": null,
+        "type": "git",
+        "url": "https://github.com/acmepjz/md4lean"
+      }
+    ],
+    "executable_ready": true,
+    "help_verified": true,
+    "manifest_sha256": "d81d2b8ab02f4956801516b5fa31c8a90e9451da40b41b33959f9cca1dda6bbf",
+    "repo": "https://github.com/leanprover/doc-gen4",
+    "tag": "v4.35.0",
+    "toolchain": "leanprover/lean4:v4.35.0"
+  },
+  "documentation_measurement": null,
+  "enabled_in_production": false,
+  "gates": {
+    "evaluated": false,
+    "max_output_bytes": 500000000,
+    "max_wall_seconds": 1800
+  },
+  "preparation_attempts": [
+    {
+      "argv": [
+        "timeout",
+        "1800",
+        "env",
+        "LEAN_NUM_THREADS=4",
+        "lake",
+        "build",
+        "doc-gen4"
+      ],
+      "cwd": "/home/yijunyuan/homalg-docgen-benchmark/doc-gen4",
+      "exit_status": 143,
+      "last_completed_job": "191/194 DocGen4:c.o",
+      "log": "tool-build.log",
+      "max_rss_kib": 1697376,
+      "reason": "Root requested prioritizing pilot review, validation and submission; only this attempt process group was terminated.",
+      "resource_log": "tool-build.time.txt",
+      "status": "interrupted",
+      "wall_seconds": 63.79
+    },
+    {
+      "argv": [
+        "env",
+        "LEAN_NUM_THREADS=4",
+        "/usr/bin/time",
+        "-v",
+        "-o",
+        "tool-build-resume.time.txt",
+        "timeout",
+        "1800",
+        "lake",
+        "build",
+        "doc-gen4"
+      ],
+      "cwd": "/home/yijunyuan/homalg-docgen-benchmark/doc-gen4",
+      "exit_status": 0,
+      "last_completed_job": "194/194 doc-gen4:exe",
+      "log": "tool-build-resume.log",
+      "max_rss_kib": 1667924,
+      "reason": "Resumed only the isolated tool preparation after parent authorization; no HomAlg documentation built and no production lock used.",
+      "resource_log": "tool-build-resume.time.txt",
+      "status": "success",
+      "wall_seconds": 49.24
+    }
+  ],
+  "production_dependency_files": {
+    "lake-manifest.json": "fb9cf70eaac1e5a67967720a9815a817a66491c83b582ed44c944c1160a8e079",
+    "lakefile.toml": "a94f14f04a1b0053b6f5885c18cf1fc1d012a01940e4eb43d233797e6dc87d83",
+    "lean-toolchain": "ca5f1f601d34c49079e38d7e7041eb0f2a9c227fbc1df0f404820069a052330c"
+  },
+  "recorded_at": "2026-10-28T06:40:47.300851+00:00",
+  "runner": {
+    "cpu_model": "Intel Core i7-12700",
+    "lean_num_threads": 4,
+    "logical_cpus": 20,
+    "memory_mib": 24032,
+    "platform": "Linux-6.18.40.1-microsoft-standard-WSL2-x86_64-with-glibc2.39"
+  },
+  "schema_version": 1,
+  "source_commit": null,
+  "status": "tool_ready_awaiting_final_pilot_commit"
+}

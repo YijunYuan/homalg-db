@@ -1,0 +1,297 @@
+#!/usr/bin/env python3
+"""Measure an isolated, pinned HomAlg documentation build without publishing it."""
+
+from __future__ import annotations
+
+import argparse
+import hashlib
+import json
+import os
+import platform
+import signal
+import sqlite3
+import subprocess
+import time
+from collections import defaultdict
+from datetime import UTC, datetime
+from html.parser import HTMLParser
+from pathlib import Path
+
+DOCGEN_SHA = "0e1ffe2e4ba5ecfdfaf15c65b8d3805dbb7134ae"
+TOOLCHAIN = "leanprover/lean4:v4.35.0"
+MAX_SECONDS = 1800
+MAX_BYTES = 500_000_000
+REPRESENTATIVE = "Hochschild1945.separable_iff_first_cohomology_vanishes"
+PRODUCTION = Path("/home/yijunyuan/homalg-db").resolve()
+
+
+def run(*args: str, cwd: Path) -> str:
+    """Return checked command output without invoking a shell."""
+    return subprocess.check_output(args, cwd=cwd, text=True).strip()
+
+
+def sha256(path: Path) -> str:
+    """Hash a small manifest or report file."""
+    return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def tree_bytes(root: Path) -> int:
+    """Count the current output while tolerating atomic writer renames."""
+    total = 0
+    for path in root.rglob("*"):
+        try:
+            if path.is_file():
+                total += path.stat().st_size
+        except FileNotFoundError:
+            continue
+    return total
+
+
+class Anchors(HTMLParser):
+    """Collect actual HTML fragment targets, including field constructors."""
+
+    def __init__(self) -> None:
+        super().__init__(convert_charrefs=True)
+        self.ids: set[str] = set()
+
+    def handle_starttag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
+        for name, value in attrs:
+            if name == "id" and value is not None:
+                self.ids.add(value)
+
+
+def inventory(build: Path) -> dict[str, object]:
+    """Inventory only names whose own module page contains their exact anchor."""
+    docs = build / "doc"
+    db_path = build / "api-docs.db"
+    modules: dict[str, set[str]] = defaultdict(set)
+    with sqlite3.connect(f"{db_path.as_uri()}?mode=ro", uri=True) as db:
+        for module, name in db.execute("SELECT module_name, name FROM name_info"):
+            modules[module].add(name)
+    links: dict[str, str] = {}
+    missing_modules = []
+    for module, names in sorted(modules.items()):
+        relative = Path(*module.split(".")).with_suffix(".html")
+        page = docs / relative
+        if not page.is_file():
+            missing_modules.append(module)
+            continue
+        parser = Anchors()
+        parser.feed(page.read_text(encoding="utf-8"))
+        for name in names & parser.ids:
+            links[name] = f"{relative.as_posix()}#{name}"
+    names = sorted(links)
+    (docs / "decls.txt").write_text("".join(f"{name}\n" for name in names))
+    files = [path for path in docs.rglob("*") if path.is_file()]
+    # The complete website, including declaration inventory, determines the gate.
+    return {
+        "output_bytes": sum(path.stat().st_size for path in files),
+        "output_files": len(files),
+        "decls_count": len(names),
+        "decls_sha256": sha256(docs / "decls.txt"),
+        "homalg_decl_count": sum(
+            len(names & set(links))
+            for module, names in modules.items()
+            if module == "HomAlg" or module.startswith("HomAlg.")
+        ),
+        "missing_module_pages": missing_modules,
+        "representative_declaration": REPRESENTATIVE,
+        "representative_target": links.get(REPRESENTATIVE),
+        "representative_verified": REPRESENTATIVE in links,
+    }
+
+
+def main() -> int:
+    """Run one explicitly labelled cold or warm measurement and retain evidence."""
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--source", required=True, type=Path)
+    parser.add_argument("--commit", required=True)
+    parser.add_argument("--docgen", required=True, type=Path)
+    parser.add_argument("--out", required=True, type=Path)
+    parser.add_argument("--label", choices=("cold", "warm"), default="cold")
+    parser.add_argument("--threads", type=int, default=4)
+    args = parser.parse_args()
+    source = args.source.resolve()
+    docgen = args.docgen.resolve()
+    out = args.out.resolve()
+    build = source / "docbuild" / ".lake" / "build"
+    if source == PRODUCTION or PRODUCTION in source.parents:
+        parser.error(
+            "The production repository is not an isolated measurement checkout."
+        )
+    commit = run("git", "rev-parse", "HEAD", cwd=source)
+    if commit != args.commit or run(
+        "git", "status", "--porcelain", "--untracked-files=no", cwd=source
+    ):
+        parser.error(
+            "The source must be the exact requested commit with clean tracked files."
+        )
+    if run("git", "rev-parse", "HEAD", cwd=docgen) != DOCGEN_SHA:
+        parser.error("Unexpected doc-gen4 commit.")
+    if run("git", "status", "--porcelain", "--untracked-files=no", cwd=docgen):
+        parser.error("The pinned doc-gen4 source contains tracked changes.")
+    manifest = json.loads((source / "docbuild" / "lake-manifest.json").read_text())
+    actual_docgen = next(
+        (package for package in manifest["packages"] if package["name"] in {"doc-gen4", "«doc-gen4»"}),
+        {},
+    )
+    if actual_docgen.get("rev") != DOCGEN_SHA:
+        parser.error(
+            "The actual documentation manifest does not pin the expected doc-gen4 commit."
+        )
+    if (source / "lean-toolchain").read_text().strip() != TOOLCHAIN:
+        parser.error("Unexpected Lean toolchain.")
+    preexisting = [
+        str(path.relative_to(build))
+        for path in (
+            build / "doc",
+            build / "doc-data",
+            build / "api-docs.db",
+            build / "api-docs.db-wal",
+            build / "api-docs.db-shm",
+        )
+        if path.exists()
+    ]
+    if args.label == "cold" and preexisting:
+        parser.error(
+            f"Cold measurement contains documentation artifacts: {preexisting}"
+        )
+    out.mkdir(parents=True, exist_ok=False)
+    argv = [
+        "/usr/bin/time",
+        "-v",
+        "-o",
+        str(out / "resources.txt"),
+        "timeout",
+        "--foreground",
+        "--signal=TERM",
+        "--kill-after=30",
+        str(MAX_SECONDS),
+        "lake",
+        "build",
+        "HomAlg:docs",
+    ]
+    record: dict[str, object] = {
+        "schema_version": 1,
+        "started_at": datetime.now(UTC).isoformat(),
+        "source_commit": commit,
+        "source_tree": run("git", "rev-parse", "HEAD^{tree}", cwd=source),
+        "source_origin": run("git", "remote", "get-url", "origin", cwd=source),
+        "docgen_commit": DOCGEN_SHA,
+        "toolchain": TOOLCHAIN,
+        "argv": argv,
+        "cwd": str(source / "docbuild"),
+        "label": args.label,
+        "preexisting_documentation_artifacts": preexisting,
+        "dependency_cache": "See the separately recorded setup log; no documentation cache is reused for cold runs.",
+        "manifest_sha256": sha256(source / "docbuild" / "lake-manifest.json"),
+        "measure_script_sha256": sha256(Path(__file__)),
+        "production_manifest_sha256_before": sha256(PRODUCTION / "lake-manifest.json"),
+        "production_lakefile_sha256_before": sha256(PRODUCTION / "lakefile.toml"),
+        "runner": {
+            "platform": platform.platform(),
+            "github_actions_runner": False,
+            "ci_time_gate_verified": False,
+            "cpu_count": os.cpu_count(),
+            "lean_num_threads": args.threads,
+            "cpuinfo": Path("/proc/cpuinfo").read_text().split("\n\n")[0],
+            "meminfo": Path("/proc/meminfo").read_text(),
+        },
+        "enabled_in_production": False,
+    }
+    (out / "measure.py").write_bytes(Path(__file__).read_bytes())
+    (out / "measurement.json").write_text(json.dumps(record, indent=2) + "\n")
+    env = os.environ | {"LEAN_NUM_THREADS": str(args.threads)}
+    started = time.monotonic()
+    stop_reason = None
+    with (out / "build.log").open("wb") as log:
+        process = subprocess.Popen(
+            argv,
+            cwd=source / "docbuild",
+            env=env,
+            stdout=log,
+            stderr=subprocess.STDOUT,
+            start_new_session=True,
+        )
+        while process.poll() is None:
+            try:
+                process.wait(timeout=5)
+            except subprocess.TimeoutExpired:
+                output_bytes = tree_bytes(build / "doc")
+                if (
+                    output_bytes > MAX_BYTES
+                    or time.monotonic() - started >= MAX_SECONDS
+                ):
+                    stop_reason = (
+                        "Documentation output exceeded the 500,000,000-byte gate."
+                        if output_bytes > MAX_BYTES
+                        else "Documentation build reached the 1,800-second gate."
+                    ) + " Only this isolated build process group was terminated."
+                    os.killpg(process.pid, signal.SIGTERM)
+                    try:
+                        process.wait(timeout=30)
+                    except subprocess.TimeoutExpired:
+                        os.killpg(process.pid, signal.SIGKILL)
+                        process.wait()
+        exit_status = process.returncode
+        if exit_status != 0:
+            # GNU timeout in foreground mode does not terminate grandchildren.
+            # The new session contains only this explicitly isolated build.
+            try:
+                os.killpg(process.pid, signal.SIGTERM)
+            except ProcessLookupError:
+                pass
+    record.update(
+        exit_status=exit_status,
+        wall_seconds=time.monotonic() - started,
+        stop_reason=stop_reason,
+    )
+    if exit_status == 0:
+        try:
+            record["inventory"] = inventory(build)
+        except (OSError, sqlite3.Error, UnicodeError, ValueError) as error:
+            record["inventory_error"] = f"{type(error).__name__}: {error}"
+    else:
+        record["partial_output_bytes"] = tree_bytes(build / "doc")
+    record["production_manifest_unchanged"] = (
+        sha256(PRODUCTION / "lake-manifest.json")
+        == record["production_manifest_sha256_before"]
+    )
+    record["production_lakefile_unchanged"] = (
+        sha256(PRODUCTION / "lakefile.toml")
+        == record["production_lakefile_sha256_before"]
+    )
+    record["source_tracked_files_unchanged"] = not run(
+        "git", "status", "--porcelain", "--untracked-files=no", cwd=source
+    )
+    result = record.get("inventory", {})
+    gates_pass = (
+        exit_status == 0
+        and record["wall_seconds"] <= MAX_SECONDS
+        and result.get("output_bytes", MAX_BYTES + 1) <= MAX_BYTES
+        and result.get("representative_verified", False)
+        and record["production_manifest_unchanged"]
+        and record["production_lakefile_unchanged"]
+    )
+    record["gates"] = {
+        "max_seconds": MAX_SECONDS,
+        "max_bytes": MAX_BYTES,
+        "local_checks_passed": gates_pass,
+        "local_build_succeeded": exit_status == 0,
+        "complete_size_known": "inventory" in record,
+        "partial_size_exceeds_gate": record.get("partial_output_bytes", 0) > MAX_BYTES,
+        "github_ci_time_verified": False,
+        "production_enablement_authorized": False,
+    }
+    (out / "measurement.json").write_text(json.dumps(record, indent=2) + "\n")
+    print(
+        json.dumps(
+            {key: record[key] for key in ("exit_status", "wall_seconds", "gates")},
+            indent=2,
+        )
+    )
+    return 0 if gates_pass else 1
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
