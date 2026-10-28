@@ -1,0 +1,77 @@
+{
+  "counts": {
+    "aux_headline": {
+      "error": 0,
+      "in_progress": 0,
+      "proof_complete": 8,
+      "statement_complete": 0
+    },
+    "aux_proved": 8,
+    "aux_total": 8,
+    "cited_headline": {
+      "error": 0,
+      "in_progress": 0,
+      "proof_complete": 0,
+      "statement_complete": 7
+    },
+    "cited_total": 7,
+    "disputed": 1,
+    "headline": {
+      "error": 1,
+      "in_progress": 1,
+      "proof_complete": 26,
+      "statement_complete": 1
+    },
+    "informal": 0,
+    "items_total": 29,
+    "locked": 27,
+    "pages_reviewed": 10,
+    "pages_total": 11,
+    "planned": 0,
+    "proved": 22,
+    "proved_modulo_citations": 5,
+    "proved_pending_deps": 1,
+    "proved_with_axioms": 0,
+    "pruned": 0,
+    "stated": 0
+  },
+  "doc_key": "Hochschild1945",
+  "generated_at": "2026-10-28T06:37:20Z",
+  "holder": "YijunYuan",
+  "last_check": {
+    "at": null,
+    "result": "none"
+  },
+  "open_for_human": 1,
+  "schema_version": 1,
+  "scope_chapters": [
+    "1",
+    "2",
+    "3",
+    "4",
+    "5",
+    "6"
+  ],
+  "stages": {
+    "CITED": {
+      "done": 1,
+      "total": 1
+    },
+    "DAG": {
+      "done": 6,
+      "total": 6
+    },
+    "INV": {
+      "done": 6,
+      "total": 6
+    },
+    "STMT": {
+      "done": 6,
+      "total": 12
+    },
+    "T": {
+      "done": 2,
+      "total": 2
+    }
+  }
+}
