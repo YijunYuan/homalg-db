@@ -1,0 +1,412 @@
+{
+  "$defs": {
+    "ClaimView": {
+      "additionalProperties": false,
+      "properties": {
+        "claimed_at": {
+          "$ref": "common.schema.json#/$defs/DateTime"
+        },
+        "effective_expires_at": {
+          "$ref": "common.schema.json#/$defs/DateTime"
+        },
+        "expires_at": {
+          "$ref": "common.schema.json#/$defs/DateTime"
+        },
+        "holder": {
+          "$ref": "common.schema.json#/$defs/Login"
+        },
+        "pr": {
+          "type": "integer"
+        },
+        "run": {
+          "$ref": "run-status.schema.json"
+        },
+        "scope": {
+          "additionalProperties": true,
+          "type": "object"
+        },
+        "state": {
+          "enum": [
+            "unclaimed",
+            "active",
+            "expired"
+          ]
+        }
+      },
+      "required": [
+        "state"
+      ],
+      "type": "object"
+    },
+    "Edge": {
+      "additionalProperties": false,
+      "properties": {
+        "declared": {
+          "type": "boolean"
+        },
+        "from": {
+          "$ref": "common.schema.json#/$defs/NodeId"
+        },
+        "kind": {
+          "enum": [
+            "statement",
+            "proof"
+          ]
+        },
+        "to": {
+          "$ref": "common.schema.json#/$defs/NodeId"
+        },
+        "verified": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "from",
+        "to",
+        "kind",
+        "declared",
+        "verified"
+      ],
+      "type": "object"
+    },
+    "GlobalDerived": {
+      "additionalProperties": false,
+      "properties": {
+        "blob_url": {
+          "format": "uri",
+          "type": "string"
+        },
+        "chapter_title": {
+          "type": "string"
+        },
+        "closure": {
+          "additionalProperties": false,
+          "properties": {
+            "blocked_by": {
+              "items": {
+                "$ref": "common.schema.json#/$defs/NodeId"
+              },
+              "type": "array"
+            }
+          },
+          "required": [
+            "blocked_by"
+          ],
+          "type": "object"
+        },
+        "commit": {
+          "type": "string"
+        },
+        "decl_axioms": {
+          "additionalProperties": {
+            "additionalProperties": false,
+            "properties": {
+              "axioms": {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              "transitive_sorry": {
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "axioms",
+              "transitive_sorry"
+            ],
+            "type": "object"
+          },
+          "type": "object"
+        },
+        "dependents": {
+          "items": {
+            "$ref": "common.schema.json#/$defs/NodeId"
+          },
+          "type": "array"
+        },
+        "doc_authors": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "doc_title": {
+          "type": "string"
+        },
+        "doc_year": {
+          "type": "integer"
+        },
+        "headline": {
+          "oneOf": [
+            {
+              "$ref": "common.schema.json#/$defs/HeadlineStatus"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "rank": {
+          "minimum": 0,
+          "type": "integer"
+        },
+        "reopened": {
+          "type": "boolean"
+        },
+        "status": {
+          "$ref": "common.schema.json#/$defs/Status"
+        }
+      },
+      "required": [
+        "status",
+        "headline",
+        "decl_axioms",
+        "dependents",
+        "closure",
+        "doc_title",
+        "doc_year",
+        "doc_authors",
+        "rank",
+        "commit",
+        "blob_url",
+        "reopened"
+      ],
+      "type": "object"
+    },
+    "IndexNode": {
+      "additionalProperties": false,
+      "properties": {
+        "authored": {
+          "$ref": "nodes-file.schema.json#/$defs/Authored"
+        },
+        "derived": {
+          "$ref": "nodes-file.schema.json#/$defs/LocalDerived"
+        },
+        "global": {
+          "$ref": "#/$defs/GlobalDerived"
+        },
+        "id": {
+          "$ref": "common.schema.json#/$defs/NodeId"
+        }
+      },
+      "required": [
+        "id",
+        "authored",
+        "derived",
+        "global"
+      ],
+      "type": "object"
+    }
+  },
+  "$id": "https://homalg-db/schema/index.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "concepts": {
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "aliases": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "current_bundle_sha256": {
+            "$ref": "common.schema.json#/$defs/Sha256"
+          },
+          "description": {
+            "type": "string"
+          },
+          "first_known": {
+            "additionalProperties": false,
+            "properties": {
+              "doc": {
+                "$ref": "common.schema.json#/$defs/DocKey"
+              },
+              "node": {
+                "$ref": "common.schema.json#/$defs/NodeId"
+              },
+              "note": {
+                "type": "string"
+              }
+            },
+            "type": "object"
+          },
+          "id": {
+            "$ref": "common.schema.json#/$defs/SlugId"
+          },
+          "merged_into": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "common.schema.json#/$defs/SlugId"
+              }
+            ]
+          },
+          "name": {
+            "type": "string"
+          },
+          "parents": {
+            "items": {
+              "$ref": "common.schema.json#/$defs/SlugId"
+            },
+            "type": "array"
+          },
+          "related_tags": {
+            "items": {
+              "$ref": "common.schema.json#/$defs/SlugId"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "id",
+          "name"
+        ],
+        "type": "object"
+      },
+      "type": "array"
+    },
+    "document_graph": {
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "from": {
+            "$ref": "common.schema.json#/$defs/DocKey"
+          },
+          "imports": {
+            "type": "integer"
+          },
+          "relations": {
+            "additionalProperties": false,
+            "properties": {
+              "accepted": {
+                "minimum": 0,
+                "type": "integer"
+              },
+              "unreviewed": {
+                "minimum": 0,
+                "type": "integer"
+              }
+            },
+            "required": [
+              "accepted",
+              "unreviewed"
+            ],
+            "type": "object"
+          },
+          "to": {
+            "$ref": "common.schema.json#/$defs/DocKey"
+          }
+        },
+        "required": [
+          "from",
+          "to",
+          "imports",
+          "relations"
+        ],
+        "type": "object"
+      },
+      "type": "array"
+    },
+    "documents": {
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "claim": {
+            "$ref": "#/$defs/ClaimView"
+          },
+          "document": {
+            "$ref": "document.schema.json"
+          }
+        },
+        "required": [
+          "document",
+          "claim"
+        ],
+        "type": "object"
+      },
+      "type": "array"
+    },
+    "edges": {
+      "items": {
+        "$ref": "#/$defs/Edge"
+      },
+      "type": "array"
+    },
+    "evolution": {
+      "items": {
+        "$ref": "evolution.schema.json"
+      },
+      "type": "array"
+    },
+    "generator": {
+      "$ref": "common.schema.json#/$defs/Generator"
+    },
+    "lean": {
+      "additionalProperties": false,
+      "properties": {
+        "mathlib_rev": {
+          "type": "string"
+        },
+        "toolchain": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "toolchain",
+        "mathlib_rev"
+      ],
+      "type": "object"
+    },
+    "nodes": {
+      "items": {
+        "$ref": "#/$defs/IndexNode"
+      },
+      "type": "array"
+    },
+    "relations": {
+      "items": {
+        "$ref": "common.schema.json#/$defs/Relation"
+      },
+      "type": "array"
+    },
+    "repo_url": {
+      "format": "uri",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": 1
+    },
+    "stats": {
+      "additionalProperties": true,
+      "type": "object"
+    },
+    "tags": {
+      "$ref": "tags.schema.json#/properties/tags"
+    },
+    "retired": {
+      "$ref": "retired.schema.json#/properties/retired"
+    }
+  },
+  "required": [
+    "schema_version",
+    "generator",
+    "lean",
+    "repo_url",
+    "documents",
+    "nodes",
+    "edges",
+    "document_graph",
+    "tags",
+    "concepts",
+    "relations",
+    "evolution",
+    "stats"
+  ],
+  "type": "object"
+}

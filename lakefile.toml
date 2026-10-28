@@ -1,0 +1,21 @@
+name = "homalg"
+defaultTargets = ["HomAlg"]
+
+[leanOptions]
+autoImplicit = false
+relaxedAutoImplicit = false
+
+[[require]]
+name = "mathlib"
+git = "https://github.com/leanprover-community/mathlib4"
+rev = "v4.35.0"
+
+[[lean_lib]]
+name = "HomAlg"
+roots = ["HomAlg"]
+globs = ["HomAlg", "HomAlg.+"]
+
+[[lean_exe]]
+name = "homalg-export"
+root = "HomAlgExport.Main"
+supportInterpreter = true

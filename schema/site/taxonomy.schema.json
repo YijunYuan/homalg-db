@@ -1,0 +1,25 @@
+{
+  "$id": "https://homalg-db/schema/site/taxonomy.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "concepts": {
+      "$ref": "../index.schema.json#/properties/concepts"
+    },
+    "relations": {
+      "items": {
+        "$ref": "../common.schema.json#/$defs/Relation"
+      },
+      "type": "array"
+    },
+    "tags": {
+      "$ref": "../tags.schema.json#/properties/tags"
+    }
+  },
+  "required": [
+    "tags",
+    "concepts",
+    "relations"
+  ],
+  "type": "object"
+}

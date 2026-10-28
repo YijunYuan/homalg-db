@@ -1,0 +1,1065 @@
+{
+  "$defs": {
+    "Date": {
+      "format": "date",
+      "type": "string"
+    },
+    "DateTime": {
+      "format": "date-time",
+      "type": "string"
+    },
+    "DeclKind": {
+      "enum": [
+        "theorem",
+        "def",
+        "abbrev",
+        "instance",
+        "inductive",
+        "structure",
+        "class",
+        "projection",
+        "opaque",
+        "axiom",
+        "ctor",
+        "other"
+      ]
+    },
+    "DeviationKind": {
+      "enum": [
+        "set-theoretic",
+        "universe",
+        "choice-of-representative",
+        "erratum",
+        "notation",
+        "generality",
+        "proof-route",
+        "algorithmic",
+        "other"
+      ]
+    },
+    "Dispute": {
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "else": {
+            "not": {
+              "required": [
+                "resolution"
+              ]
+            }
+          },
+          "if": {
+            "properties": {
+              "status": {
+                "const": "resolved"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "resolution"
+            ]
+          }
+        },
+        {
+          "if": {
+            "required": [
+              "confirmed_by"
+            ]
+          },
+          "then": {
+            "properties": {
+              "resolution": {
+                "properties": {
+                  "via": {
+                    "enum": [
+                      "erratum",
+                      "proof-route"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "kind": {
+                "const": "statement"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "resolution": {
+                "properties": {
+                  "via": {
+                    "enum": [
+                      "erratum",
+                      "withdrawn"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      ],
+      "dependentRequired": {
+        "confirmed_by": [
+          "confirmed_on"
+        ]
+      },
+      "properties": {
+        "confirmed_by": {
+          "$ref": "#/$defs/Login"
+        },
+        "confirmed_on": {
+          "$ref": "#/$defs/Date"
+        },
+        "counterexample": {
+          "type": "string"
+        },
+        "inbox": {
+          "pattern": "^I-[0-9]{4,}$",
+          "type": "string"
+        },
+        "issue": {
+          "minimum": 1,
+          "type": "integer"
+        },
+        "kind": {
+          "enum": [
+            "statement",
+            "proof"
+          ]
+        },
+        "on": {
+          "$ref": "#/$defs/Date"
+        },
+        "opened_by": {
+          "type": "string"
+        },
+        "reason": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "resolution": {
+          "additionalProperties": false,
+          "properties": {
+            "by": {
+              "$ref": "#/$defs/Login"
+            },
+            "note": {
+              "type": "string"
+            },
+            "on": {
+              "$ref": "#/$defs/Date"
+            },
+            "via": {
+              "enum": [
+                "erratum",
+                "proof-route",
+                "withdrawn"
+              ]
+            }
+          },
+          "required": [
+            "via",
+            "by",
+            "on"
+          ],
+          "type": "object"
+        },
+        "status": {
+          "enum": [
+            "open",
+            "resolved"
+          ]
+        }
+      },
+      "required": [
+        "status",
+        "kind",
+        "reason"
+      ],
+      "type": "object"
+    },
+    "DocKey": {
+      "pattern": "^[A-Z][A-Za-z]*[0-9]{4}[A-Za-z0-9]*$",
+      "type": "string"
+    },
+    "FidelityStatus": {
+      "enum": [
+        "faithful",
+        "foundation",
+        "deviates"
+      ]
+    },
+    "Generator": {
+      "additionalProperties": false,
+      "properties": {
+        "commit": {
+          "type": "string"
+        },
+        "generated_at": {
+          "$ref": "#/$defs/DateTime"
+        },
+        "name": {
+          "type": "string"
+        },
+        "version": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "name",
+        "version"
+      ],
+      "type": "object"
+    },
+    "Hash64": {
+      "pattern": "^[0-9a-f]{16}$",
+      "type": "string"
+    },
+    "HeadlineStatus": {
+      "enum": [
+        "in-progress",
+        "statement-complete",
+        "proof-complete",
+        "error"
+      ]
+    },
+    "Kind": {
+      "enum": [
+        "definition",
+        "theorem",
+        "lemma",
+        "proposition",
+        "corollary",
+        "example",
+        "exercise",
+        "remark",
+        "construction",
+        "notation",
+        "axiom",
+        "conjecture"
+      ]
+    },
+    "LeanName": {
+      "pattern": "^[^\\s]+$",
+      "type": "string"
+    },
+    "LocalId": {
+      "pattern": "^[A-Z][A-Za-z0-9]*(_[A-Za-z0-9]+)*$",
+      "type": "string"
+    },
+    "LocalStatus": {
+      "enum": [
+        "planned",
+        "stated",
+        "proved"
+      ]
+    },
+    "Login": {
+      "pattern": "^[A-Za-z0-9](?:[A-Za-z0-9]|-(?=[A-Za-z0-9])){0,38}$",
+      "type": "string"
+    },
+    "MathlibRelation": {
+      "enum": [
+        "same",
+        "specialization",
+        "generalization",
+        "variant",
+        "none"
+      ]
+    },
+    "NodeHeaderFields": {
+      "properties": {
+        "authors_of_formalization": {
+          "items": {
+            "$ref": "#/$defs/Login"
+          },
+          "type": "array"
+        },
+        "aux": {
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "enum": [
+                "lemma",
+                "bridge",
+                "technical"
+              ]
+            },
+            "parent": {
+              "$ref": "#/$defs/NodeId"
+            },
+            "pruned": {
+              "type": "boolean"
+            },
+            "reason": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "parent",
+            "kind",
+            "reason"
+          ],
+          "type": "object"
+        },
+        "cited": {
+          "additionalProperties": false,
+          "properties": {
+            "formulation": {
+              "enum": [
+                "verbatim",
+                "editorial"
+              ]
+            },
+            "source": {
+              "additionalProperties": false,
+              "allOf": [
+                {
+                  "if": {
+                    "properties": {
+                      "kind": {
+                        "const": "document"
+                      }
+                    }
+                  },
+                  "then": {
+                    "required": [
+                      "doc"
+                    ]
+                  }
+                },
+                {
+                  "if": {
+                    "properties": {
+                      "kind": {
+                        "const": "work"
+                      }
+                    }
+                  },
+                  "then": {
+                    "required": [
+                      "ref"
+                    ]
+                  }
+                }
+              ],
+              "properties": {
+                "doc": {
+                  "$ref": "#/$defs/DocKey"
+                },
+                "kind": {
+                  "enum": [
+                    "document",
+                    "work",
+                    "folklore"
+                  ]
+                },
+                "locator": {
+                  "type": "string"
+                },
+                "ref": {
+                  "minLength": 1,
+                  "type": "string"
+                }
+              },
+              "required": [
+                "kind"
+              ],
+              "type": "object"
+            },
+            "used_at": {
+              "items": {
+                "type": "integer"
+              },
+              "type": "array"
+            }
+          },
+          "required": [
+            "source",
+            "formulation"
+          ],
+          "type": "object"
+        },
+        "concepts": {
+          "additionalProperties": false,
+          "properties": {
+            "defines": {
+              "items": {
+                "$ref": "#/$defs/SlugId"
+              },
+              "type": "array"
+            },
+            "uses": {
+              "items": {
+                "$ref": "#/$defs/SlugId"
+              },
+              "type": "array"
+            }
+          },
+          "type": "object"
+        },
+        "decls": {
+          "items": {
+            "$ref": "#/$defs/LeanName"
+          },
+          "type": "array",
+          "uniqueItems": true
+        },
+        "deps": {
+          "additionalProperties": false,
+          "properties": {
+            "proof": {
+              "items": {
+                "$ref": "#/$defs/NodeId"
+              },
+              "type": "array",
+              "uniqueItems": true
+            },
+            "statement": {
+              "items": {
+                "$ref": "#/$defs/NodeId"
+              },
+              "type": "array",
+              "uniqueItems": true
+            }
+          },
+          "required": [
+            "statement",
+            "proof"
+          ],
+          "type": "object"
+        },
+        "dispute": {
+          "$ref": "#/$defs/Dispute"
+        },
+        "dispute_history": {
+          "items": {
+            "allOf": [
+              {
+                "$ref": "#/$defs/Dispute"
+              },
+              {
+                "properties": {
+                  "status": {
+                    "const": "resolved"
+                  }
+                }
+              }
+            ]
+          },
+          "type": "array"
+        },
+        "doc": {
+          "$ref": "#/$defs/DocKey"
+        },
+        "fidelity": {
+          "additionalProperties": false,
+          "if": {
+            "properties": {
+              "status": {
+                "const": "deviates"
+              }
+            }
+          },
+          "properties": {
+            "deviations": {
+              "items": {
+                "additionalProperties": false,
+                "properties": {
+                  "kind": {
+                    "$ref": "#/$defs/DeviationKind"
+                  },
+                  "what": {
+                    "type": "string"
+                  },
+                  "why": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "kind",
+                  "what",
+                  "why"
+                ],
+                "type": "object"
+              },
+              "type": "array"
+            },
+            "reviewed": {
+              "additionalProperties": false,
+              "properties": {
+                "by": {
+                  "$ref": "#/$defs/Login"
+                },
+                "decl_hashes": {
+                  "additionalProperties": {
+                    "additionalProperties": false,
+                    "properties": {
+                      "meaning_hash": {
+                        "$ref": "#/$defs/Hash64"
+                      },
+                      "statement_sha256": {
+                        "$ref": "#/$defs/Sha256"
+                      },
+                      "type_hash": {
+                        "$ref": "#/$defs/Hash64"
+                      }
+                    },
+                    "required": [
+                      "statement_sha256",
+                      "type_hash",
+                      "meaning_hash"
+                    ],
+                    "type": "object"
+                  },
+                  "type": "object"
+                },
+                "kind": {
+                  "enum": [
+                    "agent",
+                    "human"
+                  ]
+                },
+                "note": {
+                  "type": "string"
+                },
+                "on": {
+                  "$ref": "#/$defs/Date"
+                },
+                "session": {
+                  "type": "string"
+                },
+                "status": {
+                  "const": "satisfactory"
+                },
+                "author_session": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              },
+              "required": [
+                "by",
+                "kind",
+                "on",
+                "status",
+                "decl_hashes"
+              ],
+              "type": "object"
+            },
+            "status": {
+              "$ref": "#/$defs/FidelityStatus"
+            }
+          },
+          "required": [
+            "status"
+          ],
+          "then": {
+            "properties": {
+              "deviations": {
+                "minItems": 1
+              }
+            },
+            "required": [
+              "deviations"
+            ]
+          },
+          "type": "object"
+        },
+        "history": {
+          "items": {
+            "additionalProperties": false,
+            "properties": {
+              "claim": {
+                "type": "string"
+              },
+              "ref": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "claim"
+            ],
+            "type": "object"
+          },
+          "type": "array"
+        },
+        "id": {
+          "$ref": "#/$defs/NodeId"
+        },
+        "informal": {
+          "additionalProperties": false,
+          "properties": {
+            "reason": {
+              "minLength": 1,
+              "type": "string"
+            }
+          },
+          "required": [
+            "reason"
+          ],
+          "type": "object"
+        },
+        "kind": {
+          "$ref": "#/$defs/Kind"
+        },
+        "mathlib": {
+          "additionalProperties": false,
+          "properties": {
+            "bridge": {
+              "$ref": "#/$defs/NodeId"
+            },
+            "decls": {
+              "items": {
+                "$ref": "#/$defs/LeanName"
+              },
+              "type": "array"
+            },
+            "note": {
+              "type": "string"
+            },
+            "relation": {
+              "$ref": "#/$defs/MathlibRelation"
+            }
+          },
+          "required": [
+            "relation"
+          ],
+          "type": "object"
+        },
+        "nl_proof_source": {
+          "additionalProperties": false,
+          "properties": {
+            "follows": {
+              "enum": [
+                "document",
+                "other",
+                "agent"
+              ]
+            },
+            "ref": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "follows"
+          ],
+          "type": "object"
+        },
+        "related": {
+          "items": {
+            "additionalProperties": false,
+            "properties": {
+              "confidence": {
+                "enum": [
+                  "high",
+                  "medium",
+                  "low"
+                ]
+              },
+              "note": {
+                "type": "string"
+              },
+              "on": {
+                "$ref": "#/$defs/Date"
+              },
+              "target": {
+                "$ref": "#/$defs/NodeId"
+              },
+              "type": {
+                "$ref": "#/$defs/RelationType"
+              }
+            },
+            "required": [
+              "type",
+              "target",
+              "on"
+            ],
+            "type": "object"
+          },
+          "type": "array"
+        },
+        "repair": {
+          "additionalProperties": false,
+          "properties": {
+            "reason": {
+              "type": "string"
+            },
+            "since": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "since",
+            "reason"
+          ],
+          "type": "object"
+        },
+        "source": {
+          "additionalProperties": false,
+          "properties": {
+            "appendix": {
+              "type": "string"
+            },
+            "chapter": {
+              "type": "string"
+            },
+            "label": {
+              "minLength": 1,
+              "type": "string"
+            },
+            "number": {
+              "type": "string"
+            },
+            "pages": {
+              "items": {
+                "minimum": 1,
+                "type": "integer"
+              },
+              "minItems": 1,
+              "type": "array"
+            },
+            "section": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "label",
+            "pages"
+          ],
+          "type": "object"
+        },
+        "tags": {
+          "items": {
+            "$ref": "#/$defs/SlugId"
+          },
+          "minItems": 1,
+          "type": "array",
+          "uniqueItems": true
+        },
+        "title": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "kind",
+        "doc",
+        "source",
+        "tags",
+        "deps",
+        "fidelity"
+      ],
+      "type": "object"
+    },
+    "NodeId": {
+      "pattern": "^[A-Z][A-Za-z]*[0-9]{4}[A-Za-z0-9]*\\.[A-Z][A-Za-z0-9]*(_[A-Za-z0-9]+)*$",
+      "type": "string"
+    },
+    "PageRange": {
+      "additionalProperties": false,
+      "properties": {
+        "first": {
+          "type": "integer"
+        },
+        "last": {
+          "type": "integer"
+        }
+      },
+      "required": [
+        "first",
+        "last"
+      ],
+      "type": "object"
+    },
+    "Provenance": {
+      "additionalProperties": false,
+      "properties": {
+        "bundle_commit": {
+          "type": "string"
+        },
+        "bundle_sha256": {
+          "$ref": "#/$defs/Sha256"
+        },
+        "by": {
+          "enum": [
+            "human",
+            "formalizer",
+            "llm"
+          ]
+        },
+        "confidence": {
+          "maximum": 1,
+          "minimum": 0,
+          "type": "number"
+        },
+        "cost_usd": {
+          "minimum": 0,
+          "type": "number"
+        },
+        "evidence": {
+          "type": "string"
+        },
+        "handle": {
+          "$ref": "#/$defs/Login"
+        },
+        "max_cost_usd": {
+          "minimum": 0,
+          "type": "number"
+        },
+        "model": {
+          "type": "string"
+        },
+        "on": {
+          "$ref": "#/$defs/Date"
+        },
+        "prompt_version": {
+          "type": "integer"
+        },
+        "provider": {
+          "type": "string"
+        },
+        "run": {
+          "$ref": "#/$defs/DateTime"
+        },
+        "usage": {
+          "additionalProperties": false,
+          "properties": {
+            "input_tokens": {
+              "minimum": 0,
+              "type": "integer"
+            },
+            "output_tokens": {
+              "minimum": 0,
+              "type": "integer"
+            }
+          },
+          "required": [
+            "input_tokens",
+            "output_tokens"
+          ],
+          "type": "object"
+        }
+      },
+      "required": [
+        "by",
+        "on"
+      ],
+      "type": "object"
+    },
+    "Relation": {
+      "additionalProperties": false,
+      "properties": {
+        "bridge": {
+          "$ref": "#/$defs/NodeId"
+        },
+        "id": {
+          "pattern": "^rel-(h-)?[0-9a-f]{8}$",
+          "type": "string"
+        },
+        "note": {
+          "type": "string"
+        },
+        "provenance": {
+          "$ref": "#/$defs/Provenance"
+        },
+        "review": {
+          "$ref": "#/$defs/Review"
+        },
+        "source": {
+          "$ref": "#/$defs/NodeId"
+        },
+        "target": {
+          "$ref": "#/$defs/NodeId"
+        },
+        "type": {
+          "$ref": "#/$defs/RelationType"
+        }
+      },
+      "required": [
+        "id",
+        "type",
+        "source",
+        "target",
+        "provenance",
+        "review"
+      ],
+      "type": "object"
+    },
+    "RelationType": {
+      "enum": [
+        "same_as",
+        "equivalent_to",
+        "generalizes",
+        "specializes",
+        "reformulates",
+        "strengthens",
+        "weakens",
+        "corrects",
+        "cites",
+        "precursor_of",
+        "uses_definition_of"
+      ]
+    },
+    "Review": {
+      "additionalProperties": false,
+      "properties": {
+        "by": {
+          "$ref": "#/$defs/Login"
+        },
+        "note": {
+          "type": "string"
+        },
+        "on": {
+          "$ref": "#/$defs/Date"
+        },
+        "status": {
+          "enum": [
+            "unreviewed",
+            "accepted",
+            "rejected"
+          ]
+        },
+        "kind": {
+          "const": "agent"
+        },
+        "session": {
+          "type": "string",
+          "minLength": 1
+        },
+        "author_session": {
+          "type": "string",
+          "minLength": 1
+        },
+        "report": {
+          "type": "string",
+          "minLength": 1
+        },
+        "report_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "subject_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        }
+      },
+      "required": [
+        "status"
+      ],
+      "type": "object",
+      "allOf": [
+        {
+          "if": {
+            "required": [
+              "kind"
+            ],
+            "properties": {
+              "kind": {
+                "const": "agent"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "by",
+              "on",
+              "kind",
+              "session",
+              "author_session",
+              "report",
+              "report_sha256",
+              "subject_sha256"
+            ]
+          }
+        }
+      ]
+    },
+    "ReviewStatus": {
+      "enum": [
+        "satisfactory",
+        "partial",
+        "mismatch",
+        "unverified",
+        "needs-adjudication"
+      ]
+    },
+    "Severity": {
+      "enum": [
+        "blocker",
+        "major",
+        "minor",
+        "note"
+      ]
+    },
+    "Sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "SlugId": {
+      "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$",
+      "type": "string"
+    },
+    "Status": {
+      "enum": [
+        "planned",
+        "stated",
+        "proved-pending-deps",
+        "proved-modulo-citations",
+        "proved",
+        "proved-with-axioms",
+        "disputed",
+        "pruned"
+      ]
+    },
+    "AgentReview": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "const": "agent"
+        },
+        "by": {
+          "$ref": "#/$defs/Login"
+        },
+        "status": {
+          "const": "satisfactory"
+        },
+        "on": {
+          "$ref": "#/$defs/Date"
+        },
+        "session": {
+          "type": "string",
+          "minLength": 1
+        },
+        "author_session": {
+          "type": "string",
+          "minLength": 1
+        },
+        "note": {
+          "type": "string"
+        },
+        "content_sha256": {
+          "$ref": "#/$defs/Sha256"
+        }
+      },
+      "required": [
+        "kind",
+        "by",
+        "status",
+        "on",
+        "session",
+        "author_session"
+      ]
+    }
+  },
+  "$id": "https://homalg-db/schema/common.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema"
+}

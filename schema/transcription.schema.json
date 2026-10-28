@@ -1,0 +1,166 @@
+{
+  "$id": "https://homalg-db/schema/transcription.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "doc_key": {
+      "$ref": "common.schema.json#/$defs/DocKey"
+    },
+    "pages": {
+      "additionalProperties": {
+        "additionalProperties": false,
+        "if": {
+          "properties": {
+            "status": {
+              "const": "reviewed"
+            }
+          }
+        },
+        "properties": {
+          "file_sha256": {
+            "$ref": "common.schema.json#/$defs/Sha256"
+          },
+          "reviews": {
+            "items": {
+              "additionalProperties": false,
+              "properties": {
+                "at": {
+                  "$ref": "common.schema.json#/$defs/DateTime"
+                },
+                "by": {
+                  "type": "string"
+                },
+                "file_sha256": {
+                  "$ref": "common.schema.json#/$defs/Sha256"
+                },
+                "findings": {
+                  "items": {
+                    "additionalProperties": false,
+                    "properties": {
+                      "kind": {
+                        "enum": [
+                          "sign",
+                          "index",
+                          "relation",
+                          "quantifier",
+                          "omission",
+                          "footnote",
+                          "page-break",
+                          "illegible",
+                          "other"
+                        ]
+                      },
+                      "note": {
+                        "type": "string"
+                      },
+                      "severity": {
+                        "$ref": "common.schema.json#/$defs/Severity"
+                      },
+                      "where": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "kind",
+                      "where",
+                      "severity"
+                    ],
+                    "type": "object"
+                  },
+                  "type": "array"
+                },
+                "kind": {
+                  "enum": [
+                    "agent",
+                    "human"
+                  ]
+                },
+                "status": {
+                  "$ref": "common.schema.json#/$defs/ReviewStatus"
+                }
+              },
+              "required": [
+                "status",
+                "by",
+                "at",
+                "file_sha256"
+              ],
+              "type": "object"
+            },
+            "type": "array"
+          },
+          "status": {
+            "enum": [
+              "todo",
+              "transcribed",
+              "reviewed",
+              "disputed"
+            ]
+          },
+          "transcribed_by": {
+            "additionalProperties": false,
+            "properties": {
+              "at": {
+                "$ref": "common.schema.json#/$defs/DateTime"
+              },
+              "engine": {
+                "type": "string"
+              },
+              "model": {
+                "type": "string"
+              },
+              "session": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "session",
+              "at"
+            ],
+            "type": "object"
+          }
+        },
+        "required": [
+          "status"
+        ],
+        "then": {
+          "properties": {
+            "reviews": {
+              "contains": {
+                "properties": {
+                  "status": {
+                    "const": "satisfactory"
+                  }
+                }
+              },
+              "minItems": 1
+            }
+          },
+          "required": [
+            "file_sha256",
+            "transcribed_by",
+            "reviews"
+          ]
+        },
+        "type": "object"
+      },
+      "propertyNames": {
+        "pattern": "^[0-9]{4}$"
+      },
+      "type": "object"
+    },
+    "pdf_sha256": {
+      "$ref": "common.schema.json#/$defs/Sha256"
+    },
+    "schema_version": {
+      "const": 1
+    }
+  },
+  "required": [
+    "schema_version",
+    "doc_key",
+    "pdf_sha256",
+    "pages"
+  ],
+  "type": "object"
+}

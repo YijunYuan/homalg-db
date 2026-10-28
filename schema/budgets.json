@@ -1,0 +1,9 @@
+{
+  "data_bytes": 314572800,
+  "document_bundle_bytes": 6291456,
+  "global_dag_shard_bytes": 8388608,
+  "health_bytes": 1048576,
+  "manifest_bytes": 524288,
+  "search_shard_bytes": 4194304,
+  "site_bytes": 943718400
+}

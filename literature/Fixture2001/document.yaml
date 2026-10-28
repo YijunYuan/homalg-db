@@ -1,0 +1,55 @@
+{
+  "schema_version": 1,
+  "doc_key": "Fixture2001",
+  "type": "synthetic",
+  "title": "Pointed toy chain complexes",
+  "authors": [
+    {
+      "family": "HomAlgDB fixture authors"
+    }
+  ],
+  "year": 2001,
+  "language": "en",
+  "structure": [
+    {
+      "chapter": "1",
+      "title": "Pointed toy chain complexes",
+      "pages": {
+        "first": 1,
+        "last": 1
+      },
+      "sections": [
+        {
+          "id": "1.1",
+          "title": "Pointed toy chain complexes",
+          "pages": {
+            "first": 1,
+            "last": 1
+          }
+        }
+      ]
+    }
+  ],
+  "foundations": [
+    {
+      "notion": "Natural numbers and elementary arithmetic",
+      "mathlib": [
+        "Nat",
+        "Nat.add_zero",
+        "Nat.mul_one"
+      ],
+      "justification": "The synthetic source assumes ordinary natural-number arithmetic.",
+      "status": "confirmed",
+      "evidence": "docs/fixtures/Fixture2001.md, p. 1: We use ordinary natural numbers and elementary arithmetic as background.",
+      "confirmed_by": "fixture-reviewer"
+    }
+  ],
+  "item_kinds": [
+    "definition",
+    "theorem",
+    "lemma",
+    "proposition",
+    "remark"
+  ],
+  "notes": "Project-authored synthetic regression document: docs/fixtures/Fixture2001.md. All dates and fixture-reviewer adjudications are fictitious test data, not evidence of an actual human review."
+}

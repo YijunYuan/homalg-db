@@ -1,0 +1,31 @@
+{
+  "concept": "cohomology",
+  "narrative_md": "The earlier paper connects semisimplicity and reflexivity (`Hochschild1942.Def_3_3`, `Hochschild1942.Thm_3_4`), with an associative derivation criterion (`Hochschild1942.Thm_2_2`, `Hochschild1942.Thm_3_2`). The later paper states its criterion through first cohomology: `Hochschild1945.Thm_4_1` characterizes separability by vanishing for every two-sided module. Its introduction explicitly describes the earlier result as a predecessor. This supports studying the change of language and ground-field scope, but does not establish an unrestricted theorem-equivalence edge. The supplied records contain editorial paraphrases and no Lean proofs.",
+  "stages": [
+    {
+      "period": "1942",
+      "doc": "Hochschild1942",
+      "nodes": [
+        "Hochschild1942.Def_3_3",
+        "Hochschild1942.Thm_2_2",
+        "Hochschild1942.Thm_3_2",
+        "Hochschild1942.Thm_3_4"
+      ],
+      "change": "Derivation and reflexivity criteria in the source’s algebraic setting."
+    },
+    {
+      "period": "1945",
+      "doc": "Hochschild1945",
+      "nodes": [
+        "Hochschild1945.Thm_4_1"
+      ],
+      "change": "Separability is expressed by the universal vanishing of first cohomology."
+    }
+  ],
+  "proposed_relations": [],
+  "proposed_aliases": [],
+  "open_questions": [
+    "Audit dimensional conventions, bimodule conventions and the associative restriction before proposing a formal implication.",
+    "Resolve the printed 1941 citation against the publisher’s 1942 date without silently altering transcription."
+  ]
+}

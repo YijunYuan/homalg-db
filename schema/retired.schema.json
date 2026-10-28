@@ -1,0 +1,87 @@
+{
+  "$id": "https://homalg-db/schema/retired.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "retired": {
+      "items": {
+        "additionalProperties": false,
+        "allOf": [
+          {
+            "if": {
+              "properties": {
+                "kind": {
+                  "const": "moved"
+                }
+              }
+            },
+            "then": {
+              "required": [
+                "moved_to"
+              ]
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "kind": {
+                  "const": "merged"
+                }
+              }
+            },
+            "then": {
+              "required": [
+                "merged_into"
+              ]
+            }
+          }
+        ],
+        "properties": {
+          "by": {
+            "$ref": "common.schema.json#/$defs/Login"
+          },
+          "id": {
+            "$ref": "common.schema.json#/$defs/NodeId"
+          },
+          "kind": {
+            "enum": [
+              "pruned",
+              "merged",
+              "moved"
+            ]
+          },
+          "merged_into": {
+            "$ref": "common.schema.json#/$defs/NodeId"
+          },
+          "moved_to": {
+            "$ref": "common.schema.json#/$defs/NodeId"
+          },
+          "on": {
+            "$ref": "common.schema.json#/$defs/Date"
+          },
+          "reason": {
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "kind",
+          "on",
+          "by",
+          "reason"
+        ],
+        "type": "object"
+      },
+      "type": "array"
+    },
+    "schema_version": {
+      "const": 1
+    }
+  },
+  "required": [
+    "schema_version",
+    "retired"
+  ],
+  "type": "object"
+}

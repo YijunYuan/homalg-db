@@ -1,0 +1,199 @@
+name: Validate
+
+on:
+  pull_request:
+    branches: [main]
+    types: [opened, synchronize, reopened, labeled, unlabeled]
+  merge_group:
+  workflow_dispatch:
+
+permissions: {}
+defaults:
+  run:
+    shell: bash
+concurrency:
+  group: validate-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+env:
+  BASE: ${{ github.event.pull_request.base.sha || github.event.merge_group.base_sha || 'HEAD' }}
+  HEAD: ${{ github.event.pull_request.head.sha || github.event.merge_group.head_sha || github.sha }}
+  AUTHOR: ${{ github.event.pull_request.user.login || github.actor }}
+  PR: ${{ github.event.pull_request.number }}
+  CREATED: ${{ github.event.pull_request.created_at }}
+  HOMALG_OWNER: ${{ vars.HOMALG_OWNER }}
+
+jobs:
+  classify:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+    outputs:
+      kind: ${{ steps.classify.outputs.kind }}
+      doc: ${{ steps.classify.outputs.doc }}
+      needs_lean: ${{ steps.classify.outputs.needs_lean }}
+      labels: ${{ steps.classify.outputs.labels }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          fetch-depth: 0
+          ref: ${{ env.HEAD }}
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@07a047e608db84b3d8c06cd9a7c7dcc9c355c18e # v10.3.2
+      - run: |
+          uv sync --project tools --locked
+          echo "$GITHUB_WORKSPACE/tools/.venv/bin" >> "$GITHUB_PATH"
+      - id: classify
+        env:
+          GH_TOKEN: ${{ github.token }}
+          HEAD_BRANCH: ${{ github.event.pull_request.head.ref }}
+        run: |
+          if [[ "$HEAD_BRANCH" == status/* ]]; then
+            echo 'status branches are not merged' >&2
+            exit 1
+          fi
+          LABELS=''
+          if [[ -n "$PR" ]]; then
+            LABELS="$(gh pr view "$PR" --json labels -q '[.labels[].name]|join(",")')"
+          fi
+          homalg classify --pr-base "$BASE" --pr-head "$HEAD" --pr-author "$AUTHOR" --pr-labels "$LABELS" --json > classification.json
+          python - <<'PY'
+          import json, os
+          data = json.load(open('classification.json'))['data']
+          with open(os.environ['GITHUB_OUTPUT'], 'a') as output:
+              for key in ('kind', 'doc', 'needs_lean'):
+                  value = data[key]
+                  value = str(value).lower() if isinstance(value, bool) else value or ''
+                  output.write(f'{key}={value}\n')
+              output.write('labels=' + ','.join(data['labels']) + '\n')
+          PY
+          if [[ -n "$PR" ]]; then
+            KIND="$(python -c 'import json; print(json.load(open("classification.json"))["data"]["kind"])')"
+            gh pr edit "$PR" --add-label "$KIND"
+          fi
+
+  checks:
+    needs: classify
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: read
+      actions: read
+    env:
+      LABELS: ${{ needs.classify.outputs.labels }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          fetch-depth: 0
+          ref: ${{ env.HEAD }}
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@07a047e608db84b3d8c06cd9a7c7dcc9c355c18e # v10.3.2
+      - run: |
+          uv sync --project tools --locked
+          echo "$GITHUB_WORKSPACE/tools/.venv/bin" >> "$GITHUB_PATH"
+      - name: Stop when main needs repair
+        env:
+          GH_TOKEN: ${{ github.token }}
+        if: github.event_name == 'pull_request'
+        run: |
+          CONCLUSION="$(gh run list --workflow deploy.yml --branch main --limit 1 --json conclusion -q '.[0].conclusion // ""')"
+          if [[ "$CONCLUSION" == failure && ",$LABELS," != *,repair,* ]]; then
+            echo 'main is red; repair first' >&2
+            exit 1
+          fi
+      - run: homalg validate --fast
+      - name: Check live PR policy
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GIT_CONFIG_COUNT: '2'
+          GIT_CONFIG_KEY_0: credential.helper
+          GIT_CONFIG_VALUE_0: ''
+          GIT_CONFIG_KEY_1: credential.helper
+          GIT_CONFIG_VALUE_1: '!gh auth git-credential'
+        if: github.event_name == 'pull_request'
+        run: |
+          homalg pr-check --pr-base "$BASE" --pr-head "$HEAD" --pr-author "$AUTHOR" \
+            --pr-labels "$LABELS" --pr-number "$PR" --pr-created-at "$CREATED" --now "$(date -u +%FT%TZ)"
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7
+        if: needs.classify.outputs.kind == 'infra'
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: site/package-lock.json
+      - if: needs.classify.outputs.kind == 'infra'
+        run: make test
+      - if: needs.classify.outputs.kind == 'infra'
+        run: make site
+
+  lean:
+    needs: classify
+    if: needs.classify.outputs.needs_lean == 'true'
+    runs-on: ${{ vars.LEAN_RUNNER || 'ubuntu-latest' }}
+    timeout-minutes: 330
+    permissions:
+      contents: read
+      pull-requests: write
+    env:
+      DOC: ${{ needs.classify.outputs.doc }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          fetch-depth: 0
+          ref: ${{ env.HEAD }}
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@07a047e608db84b3d8c06cd9a7c7dcc9c355c18e # v10.3.2
+      - run: |
+          uv sync --project tools --locked
+          echo "$GITHUB_WORKSPACE/tools/.venv/bin" >> "$GITHUB_PATH"
+      - uses: leanprover/lean-action@fe408643ea7367d8c0404a8be3975bb145f5fb64 # v1
+        with:
+          auto-config: false
+          build: false
+          test: false
+          lint: false
+          use-github-cache: false
+          use-mathlib-cache: true
+      - uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6
+        if: vars.LEAN_RUNNER == ''
+        with:
+          path: .lake/build
+          key: lake-build-${{ hashFiles('lean-toolchain', 'lake-manifest.json') }}-${{ github.sha }}
+          restore-keys: lake-build-${{ hashFiles('lean-toolchain', 'lake-manifest.json') }}-
+      - name: Build and verify Lean-derived data
+        timeout-minutes: 300
+        run: |
+          if [[ -n "$DOC" ]]; then
+            lake build "HomAlg.$DOC" 2>&1 | tee lake-build.log
+            homalg extract --doc "$DOC"
+            homalg export-lean --doc "$DOC"
+            homalg validate --doc "$DOC"
+          else
+            lake build 2>&1 | tee lake-build.log
+            homalg extract
+            homalg export-lean --all
+            homalg validate
+          fi
+          git diff --exit-code -- 'literature/*/nodes.json'
+      - name: Post document review summary
+        env:
+          GH_TOKEN: ${{ github.token }}
+        if: ${{ !cancelled() && github.event_name == 'pull_request' && env.DOC != '' }}
+        run: |
+          homalg review-summary --doc "$DOC" > summary.md
+          gh pr comment "$PR" --edit-last --create-if-none --body-file summary.md
+
+  gate:
+    needs: [classify, checks, lean]
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Require all applicable checks
+        env:
+          CLASSIFY: ${{ needs.classify.result }}
+          CHECKS: ${{ needs.checks.result }}
+          LEAN: ${{ needs.lean.result }}
+        run: |
+          test "$CLASSIFY" = success
+          test "$CHECKS" = success
+          test "$LEAN" = success || test "$LEAN" = skipped

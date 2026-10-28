@@ -1,0 +1,15 @@
+{
+  "claims": [
+    {
+      "claimed_at": "2000-01-01T00:00:00Z",
+      "expires_at": "soon",
+      "holder": "fixture-reviewer",
+      "scope": {
+        "chapters": [],
+        "sections": []
+      }
+    }
+  ],
+  "doc_key": "Fixture2000",
+  "schema_version": 1
+}

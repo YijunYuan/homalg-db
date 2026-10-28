@@ -1,0 +1,47 @@
+{
+  "$id": "https://homalg-db/schema/foundations-template.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "entries": {
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "justification": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "mathlib": {
+            "items": {
+              "$ref": "common.schema.json#/$defs/LeanName"
+            },
+            "minItems": 1,
+            "type": "array"
+          },
+          "note": {
+            "type": "string"
+          },
+          "notion": {
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        "required": [
+          "notion",
+          "mathlib",
+          "justification"
+        ],
+        "type": "object"
+      },
+      "type": "array"
+    },
+    "schema_version": {
+      "const": 1
+    }
+  },
+  "required": [
+    "schema_version",
+    "entries"
+  ],
+  "type": "object"
+}

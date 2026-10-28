@@ -1,0 +1,8 @@
+{
+  "$id": "https://homalg-db/schema/site/search.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "items": {
+    "$ref": "common.schema.json#/$defs/SearchRecord"
+  },
+  "type": "array"
+}

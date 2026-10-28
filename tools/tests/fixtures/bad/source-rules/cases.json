@@ -1,0 +1,38 @@
+[
+  [
+    "namespace",
+    "/-- Foreign declaration. -/\ntheorem escaped : True := trivial\n"
+  ],
+  [
+    "lean-style",
+    "namespace Fixture2000\nexport Nat (add)\nend Fixture2000\n"
+  ],
+  [
+    "lean-style",
+    "namespace Fixture2000\nnotation \"bad\" => True\nend Fixture2000\n"
+  ],
+  [
+    "lean-style",
+    "namespace Fixture2000\nattribute [simp] Nat.add_comm\nend Fixture2000\n"
+  ],
+  [
+    "lean-style",
+    "namespace Fixture2000\n/-- Unsafe. -/\nunsafe def unsafeThing : Nat := 1\nend Fixture2000\n"
+  ],
+  [
+    "lean-style",
+    "namespace Fixture2000\n/-- Private. -/\nprivate def secret : Nat := 1\nend Fixture2000\n"
+  ],
+  [
+    "sorry-named",
+    "namespace Fixture2000\nexample : True := by sorry\nend Fixture2000\n"
+  ],
+  [
+    "sorry-named",
+    "namespace Fixture2000\n/-- Data. -/\ndef blank : Nat := by sorry\nend Fixture2000\n"
+  ],
+  [
+    "decl-unique",
+    "namespace Fixture2000\n/-- Duplicate. -/\ntheorem degree_add_zero : True := trivial\nend Fixture2000\n"
+  ]
+]

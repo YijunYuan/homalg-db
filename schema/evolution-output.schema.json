@@ -1,0 +1,94 @@
+{
+  "$id": "https://homalg-db/schema/evolution-output.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "concept": {
+      "$ref": "common.schema.json#/$defs/SlugId"
+    },
+    "narrative_md": {
+      "type": "string"
+    },
+    "open_questions": {
+      "items": {
+        "type": "string"
+      },
+      "type": "array"
+    },
+    "proposed_aliases": {
+      "items": {
+        "type": "string"
+      },
+      "type": "array"
+    },
+    "proposed_relations": {
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "confidence": {
+            "maximum": 1,
+            "minimum": 0,
+            "type": "number"
+          },
+          "evidence": {
+            "type": "string"
+          },
+          "source": {
+            "$ref": "common.schema.json#/$defs/NodeId"
+          },
+          "target": {
+            "$ref": "common.schema.json#/$defs/NodeId"
+          },
+          "type": {
+            "$ref": "common.schema.json#/$defs/RelationType"
+          }
+        },
+        "required": [
+          "type",
+          "source",
+          "target",
+          "evidence"
+        ],
+        "type": "object"
+      },
+      "type": "array"
+    },
+    "stages": {
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "change": {
+            "type": "string"
+          },
+          "doc": {
+            "$ref": "common.schema.json#/$defs/DocKey"
+          },
+          "nodes": {
+            "items": {
+              "$ref": "common.schema.json#/$defs/NodeId"
+            },
+            "type": "array"
+          },
+          "period": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "period",
+          "doc",
+          "nodes",
+          "change"
+        ],
+        "type": "object"
+      },
+      "type": "array"
+    }
+  },
+  "required": [
+    "narrative_md",
+    "proposed_relations",
+    "stages",
+    "concept"
+  ],
+  "type": "object"
+}

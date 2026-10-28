@@ -1,0 +1,150 @@
+{
+  "concepts": [
+    {
+      "id": "chain-complex",
+      "name": "Chain complex"
+    }
+  ],
+  "document_graph": [],
+  "documents": [
+    {
+      "claim": {
+        "state": "unclaimed"
+      },
+      "document": {
+        "authors": [
+          {
+            "family": "Fixture Maintainers"
+          }
+        ],
+        "doc_key": "Fixture2000",
+        "foundations": [],
+        "language": "en",
+        "schema_version": 1,
+        "structure": [
+          {
+            "chapter": "1",
+            "pages": {
+              "first": 1,
+              "last": 3
+            },
+            "sections": [
+              "1.1"
+            ],
+            "title": "Toy complexes"
+          }
+        ],
+        "title": "Toy chain complexes",
+        "type": "synthetic",
+        "year": 2000
+      }
+    }
+  ],
+  "edges": [],
+  "evolution": [],
+  "generator": {
+    "name": "homalg",
+    "version": "1"
+  },
+  "lean": {
+    "mathlib_rev": "v4.35.0",
+    "toolchain": "leanprover/lean4:v4.35.0"
+  },
+  "nodes": [
+    {
+      "authored": {
+        "concepts": {
+          "defines": [],
+          "uses": [
+            "chain-complex"
+          ]
+        },
+        "decls": [],
+        "deps": {
+          "proof": [],
+          "statement": []
+        },
+        "description_md": "A planned remark used to exercise the data contract.",
+        "doc": "Fixture2000",
+        "fidelity": {
+          "status": "faithful"
+        },
+        "id": "Fixture2000.Rem_1",
+        "kind": "remark",
+        "source": {
+          "chapter": "1",
+          "label": "Remark 1",
+          "pages": [
+            3
+          ],
+          "section": "1.1"
+        },
+        "statement_md": "The toy complex is indexed by natural numbers.",
+        "tags": [
+          "chain-complex"
+        ]
+      },
+      "derived": {
+        "decl_info": [],
+        "declared_deps": {
+          "proof": [],
+          "statement": []
+        },
+        "deps_diff": {
+          "declared_not_verified": {
+            "proof": [],
+            "statement": []
+          },
+          "verified_not_declared": []
+        },
+        "file": {
+          "lines": 1,
+          "path": "HomAlg/Fixture2000/Rem_1.lean",
+          "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+        },
+        "imports": {
+          "mathlib": [],
+          "nodes": []
+        },
+        "local_status": "planned",
+        "sorry_count_text": 0,
+        "verified_deps": {
+          "proof": [],
+          "statement": []
+        }
+      },
+      "global": {
+        "blob_url": "https://github.com/example/homalg-db/blob/fixture/HomAlg/Fixture2000/Rem_1.lean",
+        "closure": {
+          "blocked_by": []
+        },
+        "commit": "fixture",
+        "decl_axioms": {},
+        "dependents": [],
+        "doc_authors": [
+          "Fixture Maintainers"
+        ],
+        "doc_title": "Toy chain complexes",
+        "doc_year": 2000,
+        "headline": "in-progress",
+        "rank": 0,
+        "reopened": false,
+        "status": "planned"
+      },
+      "id": "Fixture2000.Rem_1"
+    }
+  ],
+  "relations": [],
+  "repo_url": "https://github.com/example/homalg-db",
+  "schema_version": 1,
+  "stats": {
+    "nodes": 1
+  },
+  "tags": [
+    {
+      "id": "chain-complex",
+      "label": "Chain complex",
+      "parent": null
+    }
+  ]
+}

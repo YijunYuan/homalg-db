@@ -1,0 +1,6 @@
+schema_version: 1
+claim_ttl_days: 90
+claim_activity_grace_days: 14
+max_active_claims_per_holder: 2
+claimed_at_window_hours: 24
+claim_pr_max_age_days: 7

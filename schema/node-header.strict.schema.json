@@ -1,0 +1,10 @@
+{
+  "$id": "https://homalg-db/schema/node-header.strict.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "allOf": [
+    {
+      "$ref": "common.schema.json#/$defs/NodeHeaderFields"
+    }
+  ],
+  "unevaluatedProperties": false
+}

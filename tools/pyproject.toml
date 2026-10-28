@@ -1,0 +1,46 @@
+[build-system]
+requires = ["setuptools==80.10.2"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "homalg"
+version = "0.1.0"
+description = "A source-faithful Lean literature database and metadata pipeline"
+requires-python = ">=3.12"
+license = "Apache-2.0"
+dependencies = [
+  "click>=8.1,<9",
+  "jsonschema[format]>=4.23,<5",
+  "networkx>=3.4,<4",
+  "referencing>=0.36,<1",
+  "rich>=13,<15",
+  "ruamel.yaml>=0.18,<0.20",
+]
+
+[project.optional-dependencies]
+ingest = ["pymupdf>=1.25,<2"]
+serve = ["fastapi>=0.115,<1", "uvicorn>=0.34,<1"]
+evolution = ["openai>=2,<3"]
+
+[dependency-groups]
+dev = ["pytest>=8,<10", "ruff>=0.11,<1", "httpx>=0.28,<1"]
+
+[project.scripts]
+homalg = "homalg.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["homalg*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.ruff]
+target-version = "py312"
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]
+
+[tool.setuptools.package-data]
+homalg = ["evolution/prompts/*.md"]

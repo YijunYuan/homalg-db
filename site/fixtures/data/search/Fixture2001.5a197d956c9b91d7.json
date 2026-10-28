@@ -1,0 +1,60 @@
+[
+  {
+    "authors": [
+      "HomAlgDB fixture authors"
+    ],
+    "chapter": "1",
+    "concepts": [],
+    "decl_names": [
+      "Fixture2001.PointedToyComplex"
+    ],
+    "description_text": "A later source extends the earlier definition while retaining an explicit cross-document dependency.",
+    "doc": "Fixture2001",
+    "doc_title": "Pointed toy chain complexes",
+    "fidelity": "faithful",
+    "has_mathlib": false,
+    "headline": "in-progress",
+    "id": "Fixture2001.Def_1",
+    "is_aux": false,
+    "kind": "definition",
+    "label": "Definition 1",
+    "local_id": "Def_1",
+    "statement_text": "A pointed toy chain complex is a toy chain complex in the sense of Fixture2000, together with a chosen natural number.",
+    "status": "proved",
+    "tags": [
+      "basic",
+      "chain-complex"
+    ],
+    "title": "Definition 1",
+    "year": 2001
+  },
+  {
+    "authors": [
+      "HomAlgDB fixture authors"
+    ],
+    "chapter": "1",
+    "concepts": [],
+    "decl_names": [
+      "Fixture2001.degree_add_zero"
+    ],
+    "description_text": "A later theorem cites the earlier two-part theorem through an explicit fully qualified name.",
+    "doc": "Fixture2001",
+    "doc_title": "Pointed toy chain complexes",
+    "fidelity": "faithful",
+    "has_mathlib": false,
+    "headline": "in-progress",
+    "id": "Fixture2001.Thm_1",
+    "is_aux": false,
+    "kind": "theorem",
+    "label": "Theorem 1",
+    "local_id": "Thm_1",
+    "statement_text": "If C is a pointed toy chain complex, the degree of its underlying complex is unchanged by adding zero.",
+    "status": "proved",
+    "tags": [
+      "basic",
+      "chain-complex"
+    ],
+    "title": "Theorem 1",
+    "year": 2001
+  }
+]

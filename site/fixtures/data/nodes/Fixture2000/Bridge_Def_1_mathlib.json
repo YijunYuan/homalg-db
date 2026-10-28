@@ -1,0 +1,208 @@
+{
+  "authored": {
+    "aux": {
+      "kind": "bridge",
+      "parent": "Fixture2000.Def_1",
+      "reason": "Relate the pointwise source formulation to library function composition."
+    },
+    "concepts": {
+      "defines": [],
+      "uses": []
+    },
+    "decls": [
+      "Fixture2000.differential_comp_zero"
+    ],
+    "deps": {
+      "proof": [],
+      "statement": [
+        "Fixture2000.Def_1"
+      ]
+    },
+    "description_md": "An extensional reformulation of the square-zero law using library function composition.",
+    "doc": "Fixture2000",
+    "fidelity": {
+      "status": "faithful"
+    },
+    "id": "Fixture2000.Bridge_Def_1_mathlib",
+    "kind": "lemma",
+    "nl_proof_source": {
+      "follows": "agent"
+    },
+    "proof_md": "Apply function extensionality and the square-zero law of Definition 1.",
+    "source": {
+      "chapter": "1",
+      "label": "Bridge for Definition 1",
+      "pages": [
+        1
+      ],
+      "section": "1.1"
+    },
+    "statement_md": "The composite of consecutive differentials of a toy chain complex is the constant zero function.",
+    "tags": [
+      "chain-complex",
+      "bridge"
+    ],
+    "title": "Bridge for Definition 1"
+  },
+  "dependencies": {
+    "proof": [],
+    "statement": [
+      {
+        "doc": "Fixture2000",
+        "headline": "in-progress",
+        "id": "Fixture2000.Def_1",
+        "label": "Definition 1",
+        "status": "proved"
+      }
+    ]
+  },
+  "dependents": [],
+  "derived": {
+    "decl_info": [
+      {
+        "direct_sorry": false,
+        "docstring": "**Bridge for Definition 1** (Fixture2000). Function extensionality converts the pointwise square-zero law into an equality of functions. ",
+        "hollow": false,
+        "is_prop": true,
+        "kind": "theorem",
+        "line": 64,
+        "meaning_hash": "8e63e3a108b82a98",
+        "name": "Fixture2000.differential_comp_zero",
+        "type": "∀ (c : Fixture2000.ChainComplexToy) (n : ℕ), c.differential n ∘ c.differential (n + 1) = fun x ↦ 0",
+        "type_hash": "00000000d461a9fb",
+        "type_sha256": "d32b7e397520df44c658f40e1e64ef13f75c614d581f68c6c5eeaa1165f987e2",
+        "type_uses_external": [
+          "Eq",
+          "Function.comp",
+          "HAdd.hAdd",
+          "Nat",
+          "OfNat.ofNat",
+          "instAddNat",
+          "instHAdd",
+          "instOfNatNat"
+        ],
+        "type_uses_external_truncated": false,
+        "type_uses_nodes": [
+          "Fixture2000.Def_1"
+        ],
+        "value_uses_external": [
+          "Function.comp",
+          "HAdd.hAdd",
+          "Nat",
+          "OfNat.ofNat",
+          "funext",
+          "instAddNat",
+          "instHAdd",
+          "instOfNatNat"
+        ],
+        "value_uses_external_truncated": false,
+        "value_uses_nodes": []
+      }
+    ],
+    "declared_deps": {
+      "proof": [],
+      "statement": [
+        "Fixture2000.Def_1"
+      ]
+    },
+    "deps_diff": {
+      "declared_not_verified": {
+        "proof": [],
+        "statement": []
+      },
+      "verified_not_declared": []
+    },
+    "file": {
+      "lines": 70,
+      "path": "HomAlg/Fixture2000/Bridge_Def_1_mathlib.lean",
+      "sha256": "93917fb8dd4884822fc5d7b5dc92456142373d091ce008da51ac3bbf1a75cf3a"
+    },
+    "imports": {
+      "mathlib": [],
+      "nodes": [
+        "Fixture2000.Def_1"
+      ]
+    },
+    "local_status": "proved",
+    "sorry_count_text": 0,
+    "verified_deps": {
+      "proof": [],
+      "statement": [
+        "Fixture2000.Def_1"
+      ]
+    }
+  },
+  "global": {
+    "blob_url": "https://github.com/example/homalg-db/blob/fixture/HomAlg/Fixture2000/Bridge_Def_1_mathlib.lean#L64",
+    "chapter_title": "Toy chain complexes",
+    "closure": {
+      "blocked_by": []
+    },
+    "commit": "fixture",
+    "decl_axioms": {
+      "Fixture2000.differential_comp_zero": {
+        "axioms": [
+          "Quot.sound"
+        ],
+        "transitive_sorry": false
+      }
+    },
+    "dependents": [],
+    "doc_authors": [
+      "HomAlgDB fixture authors"
+    ],
+    "doc_title": "Toy chain complexes",
+    "doc_year": 2000,
+    "headline": "proof-complete",
+    "rank": 1,
+    "reopened": false,
+    "status": "proved"
+  },
+  "lean": {
+    "signature_html": "<pre class=\"shiki shiki-themes github-light github-dark\" style=\"--shiki-light:#24292e;--shiki-dark:#e1e4e8;--shiki-light-bg:#fff;--shiki-dark-bg:#24292e\" tabindex=\"0\"><code><span class=\"line\"><span style=\"--shiki-light:#24292E;--shiki-dark:#E1E4E8\">Fixture2000.differential_comp_zero : ∀ (c : Fixture2000.ChainComplexToy) (n : ℕ), c.differential n ∘ c.differential (n + </span><span style=\"--shiki-light:#005CC5;--shiki-dark:#79B8FF\">1</span><span style=\"--shiki-light:#24292E;--shiki-dark:#E1E4E8\">) = </span><span style=\"--shiki-light:#D73A49;--shiki-dark:#F97583\">fun</span><span style=\"--shiki-light:#24292E;--shiki-dark:#E1E4E8\"> x ↦ </span><span style=\"--shiki-light:#005CC5;--shiki-dark:#79B8FF\">0</span></span></code></pre>",
+    "source_html": "<pre class=\"shiki shiki-themes github-light github-dark\" style=\"--shiki-light:#24292e;--shiki-dark:#e1e4e8;--shiki-light-bg:#fff;--shiki-dark-bg:#24292e\" tabindex=\"0\"><code><span class=\"line\"><span style=\"--shiki-light:#D73A49;--shiki-dark:#F97583\">import</span><span style=\"--shiki-light:#24292E;--shiki-dark:#E1E4E8\"> HomAlg.Fixture2000.Def_1</span></span>\n<span class=\"line\"></span>\n<span class=\"line\"><span style=\"--shiki-light:#6A737D;--shiki-dark:#6A737D\">/-!</span></span>\n<span class=\"line\"><span style=\"--shiki-light:#6A737D;--shiki-dark:#6A737D\">```yaml node</span></span>\n<span class=\"line\"><span style=\"--shiki-light:#6A737D;--shiki-dark:#6A737D\">{</span></span>\n<span class=\"line\"><span style=\"--shiki-light:#6A737D;--shiki-dark:#6A737D\">  \"id\": \"Fixture2000.Bridge_Def_1_mathlib\",</span></span>\n<span class=\"line\"><span style=\"--shiki-light:#6A737D;--shiki-dark:#6A737D\">  \"kind\": \"lemma\",</span></span>\n<span class=\"line\"><span style=\"--shiki-light:#6A737D;--shiki-dark:#6A737D\">  \"doc\": \"Fixture2000\",</span></span>\n<span class=\"line\"><span style=\"--shiki-light:#6A737D;--shiki-dark:#6A737D\">  \"source\": {</span></span>\n<span class=\"line\"><span style=\"--shiki-light:#6A737D;--shiki-dark:#6A737D\">    \"chapter\": \"1\",</span></span>\n<span class=\"line\"><span style=\"--shiki-light:#6A737D;--shiki-dark:#6A737D\">    \"section\": \"1.1\",</span></span>\n<span class=\"line\"><span style=\"--shiki-light:#6A737D;--shiki-dark:#6A737D\">    \"label\": \"Bridge for Definition 1\",</span></span>\n<span class=\"line\"><span style=\"--shiki-light:#6A737D;--shiki-dark:#6A737D\">    \"pages\": [</span></span>\n<span class=\"line\"><span style=\"--shiki-light:#6A737D;--shiki-dark:#6A737D\">      1</span></span>\n<span class=\"line\"><span style=\"--shiki-light:#6A737D;--shiki-dark:#6A737D\">    ]</span></span>\n<span class=\"line\"><span style=\"--shiki-light:#6A737D;--shiki-dark:#6A737D\">  },</span></span>\n<span class=\"line\"><span style=\"--shiki-light:#6A737D;--shiki-dark:#6A737D\">  \"title\": \"Bridge for Definition 1\",</span></span>\n<span class=\"line\"><span style=\"--shiki-light:#6A737D;--shiki-dark:#6A737D\">  \"tags\": [</span></span>\n<span class=\"line\"><span style=\"--shiki-light:#6A737D;--shiki-dark:#6A737D\">    \"chain-complex\",</span></span>\n<span class=\"line\"><span style=\"--shiki-light:#6A737D;--shiki-dark:#6A737D\">    \"bridge\"</span></span>\n<span class=\"line\"><span style=\"--shiki-light:#6A737D;--shiki-dark:#6A737D\">  ],</span></span>\n<span class=\"line\"><span style=\"--shiki-light:#6A737D;--shiki-dark:#6A737D\">  \"concepts\": {</span></span>\n<span class=\"line\"><span style=\"--shiki-light:#6A737D;--shiki-dark:#6A737D\">    \"defines\": [],</span></span>\n<span class=\"line\"><span style=\"--shiki-light:#6A737D;--shiki-dark:#6A737D\">    \"uses\": []</span></span>\n<span class=\"line\"><span style=\"--shiki-light:#6A737D;--shiki-dark:#6A737D\">  },</span></span>\n<span class=\"line\"><span style=\"--shiki-light:#6A737D;--shiki-dark:#6A737D\">  \"deps\": {</span></span>\n<span class=\"line\"><span style=\"--shiki-light:#6A737D;--shiki-dark:#6A737D\">    \"statement\": [</span></span>\n<span class=\"line\"><span style=\"--shiki-light:#6A737D;--shiki-dark:#6A737D\">      \"Fixture2000.Def_1\"</span></span>\n<span class=\"line\"><span style=\"--shiki-light:#6A737D;--shiki-dark:#6A737D\">    ],</span></span>\n<span class=\"line\"><span style=\"--shiki-light:#6A737D;--shiki-dark:#6A737D\">    \"proof\": []</span></span>\n<span class=\"line\"><span style=\"--shiki-light:#6A737D;--shiki-dark:#6A737D\">  },</span></span>\n<span class=\"line\"><span style=\"--shiki-light:#6A737D;--shiki-dark:#6A737D\">  \"decls\": [</span></span>\n<span class=\"line\"><span style=\"--shiki-light:#6A737D;--shiki-dark:#6A737D\">    \"Fixture2000.differential_comp_zero\"</span></span>\n<span class=\"line\"><span style=\"--shiki-light:#6A737D;--shiki-dark:#6A737D\">  ],</span></span>\n<span class=\"line\"><span style=\"--shiki-light:#6A737D;--shiki-dark:#6A737D\">  \"fidelity\": {</span></span>\n<span class=\"line\"><span style=\"--shiki-light:#6A737D;--shiki-dark:#6A737D\">    \"status\": \"faithful\"</span></span>\n<span class=\"line\"><span style=\"--shiki-light:#6A737D;--shiki-dark:#6A737D\">  },</span></span>\n<span class=\"line\"><span style=\"--shiki-light:#6A737D;--shiki-dark:#6A737D\">  \"nl_proof_source\": {</span></span>\n<span class=\"line\"><span style=\"--shiki-light:#6A737D;--shiki-dark:#6A737D\">    \"follows\": \"agent\"</span></span>\n<span class=\"line\"><span style=\"--shiki-light:#6A737D;--shiki-dark:#6A737D\">  },</span></span>\n<span class=\"line\"><span style=\"--shiki-light:#6A737D;--shiki-dark:#6A737D\">  \"aux\": {</span></span>\n<span class=\"line\"><span style=\"--shiki-light:#6A737D;--shiki-dark:#6A737D\">    \"parent\": \"Fixture2000.Def_1\",</span></span>\n<span class=\"line\"><span style=\"--shiki-light:#6A737D;--shiki-dark:#6A737D\">    \"kind\": \"bridge\",</span></span>\n<span class=\"line\"><span style=\"--shiki-light:#6A737D;--shiki-dark:#6A737D\">    \"reason\": \"Relate the pointwise source formulation to library function composition.\"</span></span>\n<span class=\"line\"><span style=\"--shiki-light:#6A737D;--shiki-dark:#6A737D\">  }</span></span>\n<span class=\"line\"><span style=\"--shiki-light:#6A737D;--shiki-dark:#6A737D\">}</span></span>\n<span class=\"line\"><span style=\"--shiki-light:#6A737D;--shiki-dark:#6A737D\">```</span></span>\n<span class=\"line\"></span>\n<span class=\"line\"><span style=\"--shiki-light:#6A737D;--shiki-dark:#6A737D\">## Statement</span></span>\n<span class=\"line\"></span>\n<span class=\"line\"><span style=\"--shiki-light:#6A737D;--shiki-dark:#6A737D\">The composite of consecutive differentials of a toy chain complex is the constant zero function.</span></span>\n<span class=\"line\"></span>\n<span class=\"line\"><span style=\"--shiki-light:#6A737D;--shiki-dark:#6A737D\">## Proof</span></span>\n<span class=\"line\"></span>\n<span class=\"line\"><span style=\"--shiki-light:#6A737D;--shiki-dark:#6A737D\">Apply function extensionality and the square-zero law of Definition 1.</span></span>\n<span class=\"line\"></span>\n<span class=\"line\"><span style=\"--shiki-light:#6A737D;--shiki-dark:#6A737D\">## Description</span></span>\n<span class=\"line\"></span>\n<span class=\"line\"><span style=\"--shiki-light:#6A737D;--shiki-dark:#6A737D\">An extensional reformulation of the square-zero law using library function composition.</span></span>\n<span class=\"line\"><span style=\"--shiki-light:#6A737D;--shiki-dark:#6A737D\">-/</span></span>\n<span class=\"line\"></span>\n<span class=\"line\"><span style=\"--shiki-light:#D73A49;--shiki-dark:#F97583\">namespace</span><span style=\"--shiki-light:#24292E;--shiki-dark:#E1E4E8\"> Fixture2000</span></span>\n<span class=\"line\"></span>\n<span class=\"line\"><span style=\"--shiki-light:#6A737D;--shiki-dark:#6A737D\">/-- **Bridge for Definition 1** (Fixture2000). Function extensionality converts the pointwise square-zero law into an equality of functions. -/</span></span>\n<span class=\"line\"><span style=\"--shiki-light:#D73A49;--shiki-dark:#F97583\">theorem</span><span style=\"--shiki-light:#6F42C1;--shiki-dark:#B392F0\"> differential_comp_zero</span><span style=\"--shiki-light:#24292E;--shiki-dark:#E1E4E8\"> (c : ChainComplexToy) (n : Nat) :</span></span>\n<span class=\"line\"><span style=\"--shiki-light:#24292E;--shiki-dark:#E1E4E8\">    Function.comp (c.differential n) (c.differential (n + </span><span style=\"--shiki-light:#005CC5;--shiki-dark:#79B8FF\">1</span><span style=\"--shiki-light:#24292E;--shiki-dark:#E1E4E8\">)) = </span><span style=\"--shiki-light:#D73A49;--shiki-dark:#F97583\">fun</span><span style=\"--shiki-light:#24292E;--shiki-dark:#E1E4E8\"> _ => </span><span style=\"--shiki-light:#005CC5;--shiki-dark:#79B8FF\">0</span><span style=\"--shiki-light:#24292E;--shiki-dark:#E1E4E8\"> := </span><span style=\"--shiki-light:#D73A49;--shiki-dark:#F97583\">by</span></span>\n<span class=\"line\"><span style=\"--shiki-light:#24292E;--shiki-dark:#E1E4E8\">  funext x</span></span>\n<span class=\"line\"><span style=\"--shiki-light:#24292E;--shiki-dark:#E1E4E8\">  exact c.square_zero n x</span></span>\n<span class=\"line\"></span>\n<span class=\"line\"><span style=\"--shiki-light:#D73A49;--shiki-dark:#F97583\">end</span><span style=\"--shiki-light:#24292E;--shiki-dark:#E1E4E8\"> Fixture2000</span></span>\n<span class=\"line\"></span></code></pre>",
+    "source_text": "import HomAlg.Fixture2000.Def_1\n\n/-!\n```yaml node\n{\n  \"id\": \"Fixture2000.Bridge_Def_1_mathlib\",\n  \"kind\": \"lemma\",\n  \"doc\": \"Fixture2000\",\n  \"source\": {\n    \"chapter\": \"1\",\n    \"section\": \"1.1\",\n    \"label\": \"Bridge for Definition 1\",\n    \"pages\": [\n      1\n    ]\n  },\n  \"title\": \"Bridge for Definition 1\",\n  \"tags\": [\n    \"chain-complex\",\n    \"bridge\"\n  ],\n  \"concepts\": {\n    \"defines\": [],\n    \"uses\": []\n  },\n  \"deps\": {\n    \"statement\": [\n      \"Fixture2000.Def_1\"\n    ],\n    \"proof\": []\n  },\n  \"decls\": [\n    \"Fixture2000.differential_comp_zero\"\n  ],\n  \"fidelity\": {\n    \"status\": \"faithful\"\n  },\n  \"nl_proof_source\": {\n    \"follows\": \"agent\"\n  },\n  \"aux\": {\n    \"parent\": \"Fixture2000.Def_1\",\n    \"kind\": \"bridge\",\n    \"reason\": \"Relate the pointwise source formulation to library function composition.\"\n  }\n}\n```\n\n## Statement\n\nThe composite of consecutive differentials of a toy chain complex is the constant zero function.\n\n## Proof\n\nApply function extensionality and the square-zero law of Definition 1.\n\n## Description\n\nAn extensional reformulation of the square-zero law using library function composition.\n-/\n\nnamespace Fixture2000\n\n/-- **Bridge for Definition 1** (Fixture2000). Function extensionality converts the pointwise square-zero law into an equality of functions. -/\ntheorem differential_comp_zero (c : ChainComplexToy) (n : Nat) :\n    Function.comp (c.differential n) (c.differential (n + 1)) = fun _ => 0 := by\n  funext x\n  exact c.square_zero n x\n\nend Fixture2000\n"
+  },
+  "links": {
+    "github_blame": "https://github.com/example/homalg-db/blame/fixture/HomAlg/Fixture2000/Bridge_Def_1_mathlib.lean#L64",
+    "github_blob": "https://github.com/example/homalg-db/blob/fixture/HomAlg/Fixture2000/Bridge_Def_1_mathlib.lean#L64"
+  },
+  "relations": [],
+  "summary": {
+    "aux_kind": "bridge",
+    "aux_parent": "Fixture2000.Def_1",
+    "chapter": "1",
+    "concepts_defines": [],
+    "concepts_uses": [],
+    "decl_names": [
+      "Fixture2000.differential_comp_zero"
+    ],
+    "deps_mismatch": false,
+    "disputed": false,
+    "doc": "Fixture2000",
+    "fidelity_status": "faithful",
+    "has_mathlib": false,
+    "headline": "proof-complete",
+    "id": "Fixture2000.Bridge_Def_1_mathlib",
+    "is_aux": true,
+    "kind": "lemma",
+    "label": "Bridge for Definition 1",
+    "local_id": "Bridge_Def_1_mathlib",
+    "local_status": "proved",
+    "needs_repair": false,
+    "pages": [
+      1
+    ],
+    "rank": 1,
+    "reopened": false,
+    "reviewed": false,
+    "section": "1.1",
+    "statement_first_line": "The composite of consecutive differentials of a toy chain complex is the constant zero function.",
+    "status": "proved",
+    "tags": [
+      "bridge",
+      "chain-complex"
+    ],
+    "title": "Bridge for Definition 1"
+  }
+}

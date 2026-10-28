@@ -1,0 +1,31 @@
+{
+  "concepts": {
+    "defines": [],
+    "uses": [
+      "chain-complex"
+    ]
+  },
+  "decls": [],
+  "deps": {
+    "proof": [],
+    "statement": []
+  },
+  "doc": "Fixture2000",
+  "fidelity": {
+    "status": "faithful"
+  },
+  "id": "Fixture2000.Rem_1",
+  "kind": "remark",
+  "source": {
+    "chapter": "1",
+    "label": "Remark 1",
+    "pages": [
+      3
+    ],
+    "section": "1.1"
+  },
+  "status": "proved",
+  "tags": [
+    "chain-complex"
+  ]
+}

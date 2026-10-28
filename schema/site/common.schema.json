@@ -1,0 +1,433 @@
+{
+  "$defs": {
+    "ClaimView": {
+      "$ref": "../index.schema.json#/$defs/ClaimView"
+    },
+    "Edge": {
+      "$ref": "../index.schema.json#/$defs/Edge"
+    },
+    "FidelityCounts": {
+      "additionalProperties": false,
+      "properties": {
+        "deviates": {
+          "minimum": 0,
+          "type": "integer"
+        },
+        "faithful": {
+          "minimum": 0,
+          "type": "integer"
+        },
+        "foundation": {
+          "minimum": 0,
+          "type": "integer"
+        },
+        "reviewed": {
+          "minimum": 0,
+          "type": "integer"
+        }
+      },
+      "required": [
+        "faithful",
+        "foundation",
+        "deviates",
+        "reviewed"
+      ],
+      "type": "object"
+    },
+    "HeadlineCounts": {
+      "additionalProperties": false,
+      "properties": {
+        "error": {
+          "minimum": 0,
+          "type": "integer"
+        },
+        "in-progress": {
+          "minimum": 0,
+          "type": "integer"
+        },
+        "proof-complete": {
+          "minimum": 0,
+          "type": "integer"
+        },
+        "statement-complete": {
+          "minimum": 0,
+          "type": "integer"
+        }
+      },
+      "required": [
+        "in-progress",
+        "statement-complete",
+        "proof-complete",
+        "error"
+      ],
+      "type": "object"
+    },
+    "NodeCounts": {
+      "additionalProperties": false,
+      "properties": {
+        "cited": {
+          "minimum": 0,
+          "type": "integer"
+        },
+        "disputed": {
+          "minimum": 0,
+          "type": "integer"
+        },
+        "informal": {
+          "minimum": 0,
+          "type": "integer"
+        },
+        "planned": {
+          "minimum": 0,
+          "type": "integer"
+        },
+        "proved": {
+          "minimum": 0,
+          "type": "integer"
+        },
+        "proved-modulo-citations": {
+          "minimum": 0,
+          "type": "integer"
+        },
+        "proved-pending-deps": {
+          "minimum": 0,
+          "type": "integer"
+        },
+        "proved-with-axioms": {
+          "minimum": 0,
+          "type": "integer"
+        },
+        "pruned": {
+          "minimum": 0,
+          "type": "integer"
+        },
+        "stated": {
+          "minimum": 0,
+          "type": "integer"
+        }
+      },
+      "required": [
+        "planned",
+        "informal",
+        "stated",
+        "proved-pending-deps",
+        "proved-modulo-citations",
+        "cited",
+        "proved",
+        "proved-with-axioms",
+        "disputed",
+        "pruned"
+      ],
+      "type": "object"
+    },
+    "NodeRef": {
+      "additionalProperties": false,
+      "properties": {
+        "doc": {
+          "$ref": "../common.schema.json#/$defs/DocKey"
+        },
+        "headline": {
+          "oneOf": [
+            {
+              "$ref": "../common.schema.json#/$defs/HeadlineStatus"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "id": {
+          "$ref": "../common.schema.json#/$defs/NodeId"
+        },
+        "label": {
+          "type": "string"
+        },
+        "status": {
+          "$ref": "../common.schema.json#/$defs/Status"
+        }
+      },
+      "required": [
+        "id",
+        "label",
+        "headline",
+        "status",
+        "doc"
+      ],
+      "type": "object"
+    },
+    "NodeSummary": {
+      "additionalProperties": false,
+      "properties": {
+        "aux_kind": {
+          "enum": [
+            "lemma",
+            "bridge",
+            "technical"
+          ]
+        },
+        "aux_parent": {
+          "$ref": "../common.schema.json#/$defs/NodeId"
+        },
+        "chapter": {
+          "type": "string"
+        },
+        "concepts_defines": {
+          "items": {
+            "$ref": "../common.schema.json#/$defs/SlugId"
+          },
+          "type": "array"
+        },
+        "concepts_uses": {
+          "items": {
+            "$ref": "../common.schema.json#/$defs/SlugId"
+          },
+          "type": "array"
+        },
+        "decl_names": {
+          "items": {
+            "$ref": "../common.schema.json#/$defs/LeanName"
+          },
+          "type": "array"
+        },
+        "deps_mismatch": {
+          "type": "boolean"
+        },
+        "disputed": {
+          "type": "boolean"
+        },
+        "doc": {
+          "$ref": "../common.schema.json#/$defs/DocKey"
+        },
+        "fidelity_status": {
+          "$ref": "../common.schema.json#/$defs/FidelityStatus"
+        },
+        "has_mathlib": {
+          "type": "boolean"
+        },
+        "headline": {
+          "oneOf": [
+            {
+              "$ref": "../common.schema.json#/$defs/HeadlineStatus"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "id": {
+          "$ref": "../common.schema.json#/$defs/NodeId"
+        },
+        "is_aux": {
+          "type": "boolean"
+        },
+        "kind": {
+          "$ref": "../common.schema.json#/$defs/Kind"
+        },
+        "label": {
+          "type": "string"
+        },
+        "local_id": {
+          "$ref": "../common.schema.json#/$defs/LocalId"
+        },
+        "local_status": {
+          "$ref": "../common.schema.json#/$defs/LocalStatus"
+        },
+        "mathlib_relation": {
+          "$ref": "../common.schema.json#/$defs/MathlibRelation"
+        },
+        "needs_repair": {
+          "type": "boolean"
+        },
+        "pages": {
+          "items": {
+            "minimum": 1,
+            "type": "integer"
+          },
+          "type": "array"
+        },
+        "rank": {
+          "minimum": 0,
+          "type": "integer"
+        },
+        "reopened": {
+          "type": "boolean"
+        },
+        "reviewed": {
+          "type": "boolean"
+        },
+        "section": {
+          "type": "string"
+        },
+        "statement_first_line": {
+          "maxLength": 160,
+          "type": "string"
+        },
+        "status": {
+          "$ref": "../common.schema.json#/$defs/Status"
+        },
+        "tags": {
+          "items": {
+            "$ref": "../common.schema.json#/$defs/SlugId"
+          },
+          "type": "array"
+        },
+        "title": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "local_id",
+        "doc",
+        "kind",
+        "label",
+        "pages",
+        "headline",
+        "status",
+        "local_status",
+        "fidelity_status",
+        "reviewed",
+        "reopened",
+        "is_aux",
+        "has_mathlib",
+        "disputed",
+        "needs_repair",
+        "deps_mismatch",
+        "tags",
+        "concepts_defines",
+        "concepts_uses",
+        "statement_first_line",
+        "decl_names",
+        "rank"
+      ],
+      "type": "object"
+    },
+    "Point": {
+      "additionalProperties": false,
+      "properties": {
+        "x": {
+          "type": "number"
+        },
+        "y": {
+          "type": "number"
+        }
+      },
+      "required": [
+        "x",
+        "y"
+      ],
+      "type": "object"
+    },
+    "SearchRecord": {
+      "additionalProperties": false,
+      "properties": {
+        "authors": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "chapter": {
+          "type": "string"
+        },
+        "concepts": {
+          "items": {
+            "$ref": "../common.schema.json#/$defs/SlugId"
+          },
+          "type": "array"
+        },
+        "decl_names": {
+          "items": {
+            "$ref": "../common.schema.json#/$defs/LeanName"
+          },
+          "type": "array"
+        },
+        "description_text": {
+          "maxLength": 300,
+          "type": "string"
+        },
+        "doc": {
+          "$ref": "../common.schema.json#/$defs/DocKey"
+        },
+        "doc_title": {
+          "type": "string"
+        },
+        "fidelity": {
+          "$ref": "../common.schema.json#/$defs/FidelityStatus"
+        },
+        "has_mathlib": {
+          "type": "boolean"
+        },
+        "headline": {
+          "oneOf": [
+            {
+              "$ref": "../common.schema.json#/$defs/HeadlineStatus"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "id": {
+          "$ref": "../common.schema.json#/$defs/NodeId"
+        },
+        "is_aux": {
+          "type": "boolean"
+        },
+        "kind": {
+          "$ref": "../common.schema.json#/$defs/Kind"
+        },
+        "label": {
+          "type": "string"
+        },
+        "local_id": {
+          "$ref": "../common.schema.json#/$defs/LocalId"
+        },
+        "statement_text": {
+          "maxLength": 300,
+          "type": "string"
+        },
+        "status": {
+          "$ref": "../common.schema.json#/$defs/Status"
+        },
+        "tags": {
+          "items": {
+            "$ref": "../common.schema.json#/$defs/SlugId"
+          },
+          "type": "array"
+        },
+        "title": {
+          "type": "string"
+        },
+        "year": {
+          "type": "integer"
+        }
+      },
+      "required": [
+        "id",
+        "doc",
+        "doc_title",
+        "local_id",
+        "kind",
+        "headline",
+        "status",
+        "fidelity",
+        "has_mathlib",
+        "is_aux",
+        "title",
+        "label",
+        "tags",
+        "concepts",
+        "year",
+        "authors",
+        "chapter",
+        "decl_names",
+        "statement_text",
+        "description_text"
+      ],
+      "type": "object"
+    }
+  },
+  "$id": "https://homalg-db/schema/site/common.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema"
+}

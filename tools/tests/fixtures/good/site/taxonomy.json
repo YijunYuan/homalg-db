@@ -1,0 +1,16 @@
+{
+  "concepts": [
+    {
+      "id": "chain-complex",
+      "name": "Chain complex"
+    }
+  ],
+  "relations": [],
+  "tags": [
+    {
+      "id": "chain-complex",
+      "label": "Chain complex",
+      "parent": null
+    }
+  ]
+}

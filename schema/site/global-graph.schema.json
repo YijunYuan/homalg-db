@@ -1,0 +1,212 @@
+{
+  "$id": "https://homalg-db/schema/site/global-graph.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "concepts": {
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "arcs": {
+            "items": {
+              "additionalProperties": false,
+              "properties": {
+                "review_status": {
+                  "enum": [
+                    "accepted",
+                    "unreviewed"
+                  ]
+                },
+                "source": {
+                  "$ref": "../common.schema.json#/$defs/NodeId"
+                },
+                "target": {
+                  "$ref": "../common.schema.json#/$defs/NodeId"
+                },
+                "type": {
+                  "$ref": "../common.schema.json#/$defs/RelationType"
+                }
+              },
+              "required": [
+                "type",
+                "source",
+                "target",
+                "review_status"
+              ],
+              "type": "object"
+            },
+            "type": "array"
+          },
+          "id": {
+            "$ref": "../common.schema.json#/$defs/SlugId"
+          },
+          "lanes": {
+            "items": {
+              "additionalProperties": false,
+              "properties": {
+                "defines": {
+                  "items": {
+                    "additionalProperties": false,
+                    "properties": {
+                      "doc": {
+                        "$ref": "../common.schema.json#/$defs/DocKey"
+                      },
+                      "headline": {
+                        "oneOf": [
+                          {
+                            "$ref": "../common.schema.json#/$defs/HeadlineStatus"
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
+                      },
+                      "id": {
+                        "$ref": "../common.schema.json#/$defs/NodeId"
+                      },
+                      "label": {
+                        "type": "string"
+                      },
+                      "status": {
+                        "$ref": "../common.schema.json#/$defs/Status"
+                      },
+                      "x": {
+                        "type": "number"
+                      },
+                      "y": {
+                        "type": "number"
+                      }
+                    },
+                    "required": [
+                      "id",
+                      "label",
+                      "headline",
+                      "status",
+                      "doc",
+                      "x",
+                      "y"
+                    ],
+                    "type": "object"
+                  },
+                  "type": "array"
+                },
+                "doc": {
+                  "$ref": "../common.schema.json#/$defs/DocKey"
+                },
+                "uses_count": {
+                  "minimum": 0,
+                  "type": "integer"
+                },
+                "year": {
+                  "type": "integer"
+                }
+              },
+              "required": [
+                "doc",
+                "year",
+                "defines",
+                "uses_count"
+              ],
+              "type": "object"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "id",
+          "lanes",
+          "arcs"
+        ],
+        "type": "object"
+      },
+      "type": "array"
+    },
+    "document_edges": {
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "from": {
+            "$ref": "../common.schema.json#/$defs/DocKey"
+          },
+          "imports": {
+            "minimum": 0,
+            "type": "integer"
+          },
+          "relations": {
+            "additionalProperties": false,
+            "properties": {
+              "accepted": {
+                "minimum": 0,
+                "type": "integer"
+              },
+              "unreviewed": {
+                "minimum": 0,
+                "type": "integer"
+              }
+            },
+            "required": [
+              "accepted",
+              "unreviewed"
+            ],
+            "type": "object"
+          },
+          "to": {
+            "$ref": "../common.schema.json#/$defs/DocKey"
+          },
+          "via_aux": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "from",
+          "to",
+          "imports",
+          "relations"
+        ],
+        "type": "object"
+      },
+      "type": "array"
+    },
+    "documents": {
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "counts": {
+            "additionalProperties": {
+              "minimum": 0,
+              "type": "integer"
+            },
+            "type": "object"
+          },
+          "doc_key": {
+            "$ref": "../common.schema.json#/$defs/DocKey"
+          },
+          "x": {
+            "type": "number"
+          },
+          "y": {
+            "type": "number"
+          },
+          "year": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "doc_key",
+          "year",
+          "x",
+          "y",
+          "counts"
+        ],
+        "type": "object"
+      },
+      "type": "array"
+    }
+  },
+  "required": [
+    "documents",
+    "document_edges",
+    "concepts"
+  ],
+  "type": "object"
+}

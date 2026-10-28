@@ -1,0 +1,433 @@
+[
+  {
+    "authors": [
+      "HomAlgDB fixture authors"
+    ],
+    "chapter": "1",
+    "concepts": [],
+    "decl_names": [
+      "Fixture2000.aux_add_zero"
+    ],
+    "description_text": "An unused auxiliary proof step marked as a pruning candidate.",
+    "doc": "Fixture2000",
+    "doc_title": "Toy chain complexes",
+    "fidelity": "faithful",
+    "has_mathlib": false,
+    "headline": null,
+    "id": "Fixture2000.Aux_Thm_1_step",
+    "is_aux": true,
+    "kind": "lemma",
+    "label": "Auxiliary to Theorem 1",
+    "local_id": "Aux_Thm_1_step",
+    "statement_text": "For every natural number n, n+0=n.",
+    "status": "pruned",
+    "tags": [
+      "technical"
+    ],
+    "title": "Auxiliary to Theorem 1",
+    "year": 2000
+  },
+  {
+    "authors": [
+      "HomAlgDB fixture authors"
+    ],
+    "chapter": "1",
+    "concepts": [],
+    "decl_names": [
+      "Fixture2000.differential_comp_zero"
+    ],
+    "description_text": "An extensional reformulation of the square-zero law using library function composition.",
+    "doc": "Fixture2000",
+    "doc_title": "Toy chain complexes",
+    "fidelity": "faithful",
+    "has_mathlib": false,
+    "headline": "proof-complete",
+    "id": "Fixture2000.Bridge_Def_1_mathlib",
+    "is_aux": true,
+    "kind": "lemma",
+    "label": "Bridge for Definition 1",
+    "local_id": "Bridge_Def_1_mathlib",
+    "statement_text": "The composite of consecutive differentials of a toy chain complex is the constant zero function.",
+    "status": "proved",
+    "tags": [
+      "bridge",
+      "chain-complex"
+    ],
+    "title": "Bridge for Definition 1",
+    "year": 2000
+  },
+  {
+    "authors": [
+      "HomAlgDB fixture authors"
+    ],
+    "chapter": "1",
+    "concepts": [],
+    "decl_names": [
+      "Fixture2000.cited_mul_comm"
+    ],
+    "description_text": "A background result cited without proof and intentionally left as an external proof obligation.",
+    "doc": "Fixture2000",
+    "doc_title": "Toy chain complexes",
+    "fidelity": "faithful",
+    "has_mathlib": false,
+    "headline": "in-progress",
+    "id": "Fixture2000.Cited_mul_comm",
+    "is_aux": false,
+    "kind": "theorem",
+    "label": "Cited result (p. 4)",
+    "local_id": "Cited_mul_comm",
+    "statement_text": "Multiplication of natural numbers is commutative: mn=nm.",
+    "status": "stated",
+    "tags": [
+      "basic"
+    ],
+    "title": "Cited result (p. 4)",
+    "year": 2000
+  },
+  {
+    "authors": [
+      "HomAlgDB fixture authors"
+    ],
+    "chapter": "1",
+    "concepts": [
+      "chain-complex"
+    ],
+    "decl_names": [
+      "Fixture2000.ChainComplexToy"
+    ],
+    "description_text": "A deliberately elementary model of a square-zero differential, indexed by natural numbers.",
+    "doc": "Fixture2000",
+    "doc_title": "Toy chain complexes",
+    "fidelity": "faithful",
+    "has_mathlib": true,
+    "headline": "in-progress",
+    "id": "Fixture2000.Def_1",
+    "is_aux": false,
+    "kind": "definition",
+    "label": "Definition 1",
+    "local_id": "Def_1",
+    "statement_text": "A toy chain complex consists of a natural number called its degree and a family of functions dn : \\mathbb{N} \\to \\mathbb{N} such that dn(0)=0 and dn(d{n+1}(x))=0 for every n,x \\in \\mathbb{N}.",
+    "status": "proved",
+    "tags": [
+      "basic",
+      "chain-complex"
+    ],
+    "title": "Definition 1",
+    "year": 2000
+  },
+  {
+    "authors": [
+      "HomAlgDB fixture authors"
+    ],
+    "chapter": "1",
+    "concepts": [],
+    "decl_names": [
+      "Fixture2000.AbelianGroup"
+    ],
+    "description_text": "A recall entry for the foundational additive abelian group structure.",
+    "doc": "Fixture2000",
+    "doc_title": "Toy chain complexes",
+    "fidelity": "faithful",
+    "has_mathlib": true,
+    "headline": "in-progress",
+    "id": "Fixture2000.Def_2",
+    "is_aux": false,
+    "kind": "definition",
+    "label": "Definition 2",
+    "local_id": "Def_2",
+    "statement_text": "We recall the usual notion of an abelian group, written additively. In this text AbelianGroup means that background structure.",
+    "status": "proved",
+    "tags": [
+      "basic"
+    ],
+    "title": "Definition 2",
+    "year": 2000
+  },
+  {
+    "authors": [
+      "HomAlgDB fixture authors"
+    ],
+    "chapter": "1",
+    "concepts": [],
+    "decl_names": [
+      "Fixture2000.zeroComplex"
+    ],
+    "description_text": "The constant zero toy complex, with its published degree correction recorded explicitly.",
+    "doc": "Fixture2000",
+    "doc_title": "Toy chain complexes",
+    "fidelity": "deviates",
+    "has_mathlib": false,
+    "headline": "in-progress",
+    "id": "Fixture2000.Def_3",
+    "is_aux": false,
+    "kind": "definition",
+    "label": "Definition 3",
+    "local_id": "Def_3",
+    "statement_text": "The zero complex has degree one and every differential is the constant zero function.",
+    "status": "proved",
+    "tags": [
+      "chain-complex",
+      "erratum"
+    ],
+    "title": "Definition 3",
+    "year": 2000
+  },
+  {
+    "authors": [
+      "HomAlgDB fixture authors"
+    ],
+    "chapter": "1",
+    "concepts": [],
+    "decl_names": [
+      "Fixture2000.degree_le_mul_one"
+    ],
+    "description_text": "An elementary bound whose deliberately deferred proof tests direct sorry detection.",
+    "doc": "Fixture2000",
+    "doc_title": "Toy chain complexes",
+    "fidelity": "faithful",
+    "has_mathlib": false,
+    "headline": "in-progress",
+    "id": "Fixture2000.Lem_1",
+    "is_aux": false,
+    "kind": "lemma",
+    "label": "Lemma 1",
+    "local_id": "Lem_1",
+    "statement_text": "For every toy chain complex C, its degree satisfies \\deg C \\leq (\\deg C)\\cdot 1.",
+    "status": "stated",
+    "tags": [
+      "basic",
+      "chain-complex"
+    ],
+    "title": "Lemma 1",
+    "year": 2000
+  },
+  {
+    "authors": [
+      "HomAlgDB fixture authors"
+    ],
+    "chapter": "1",
+    "concepts": [],
+    "decl_names": [
+      "Fixture2000.add_zero_natural"
+    ],
+    "description_text": "A proved lemma used explicitly by the two-part theorem, testing exported proof dependencies.",
+    "doc": "Fixture2000",
+    "doc_title": "Toy chain complexes",
+    "fidelity": "faithful",
+    "has_mathlib": false,
+    "headline": "in-progress",
+    "id": "Fixture2000.Lem_2",
+    "is_aux": false,
+    "kind": "lemma",
+    "label": "Lemma 2",
+    "local_id": "Lem_2",
+    "statement_text": "For every natural number n, n+0=n.",
+    "status": "proved",
+    "tags": [
+      "basic"
+    ],
+    "title": "Addition of zero",
+    "year": 2000
+  },
+  {
+    "authors": [
+      "HomAlgDB fixture authors"
+    ],
+    "chapter": "1",
+    "concepts": [],
+    "decl_names": [
+      "Fixture2000.degree_positive"
+    ],
+    "description_text": "An unconfirmed statement dispute; the zero complex supplies a counterexample.",
+    "doc": "Fixture2000",
+    "doc_title": "Toy chain complexes",
+    "fidelity": "faithful",
+    "has_mathlib": false,
+    "headline": "in-progress",
+    "id": "Fixture2000.Prop_1",
+    "is_aux": false,
+    "kind": "proposition",
+    "label": "Proposition 1",
+    "local_id": "Prop_1",
+    "statement_text": "Every toy chain complex has strictly positive degree.",
+    "status": "disputed",
+    "tags": [
+      "basic",
+      "chain-complex"
+    ],
+    "title": "Proposition 1",
+    "year": 2000
+  },
+  {
+    "authors": [
+      "HomAlgDB fixture authors"
+    ],
+    "chapter": "1",
+    "concepts": [],
+    "decl_names": [
+      "Fixture2000.degree_self_disputed"
+    ],
+    "description_text": "A true assertion with an explicitly invalid source proof and a synthetic confirmed proof dispute.",
+    "doc": "Fixture2000",
+    "doc_title": "Toy chain complexes",
+    "fidelity": "faithful",
+    "has_mathlib": false,
+    "headline": "error",
+    "id": "Fixture2000.Prop_2",
+    "is_aux": false,
+    "kind": "proposition",
+    "label": "Proposition 2",
+    "local_id": "Prop_2",
+    "statement_text": "For every toy chain complex C, \\deg C=\\deg C.",
+    "status": "disputed",
+    "tags": [
+      "basic",
+      "chain-complex"
+    ],
+    "title": "Proposition 2",
+    "year": 2000
+  },
+  {
+    "authors": [
+      "HomAlgDB fixture authors"
+    ],
+    "chapter": "1",
+    "concepts": [],
+    "decl_names": [],
+    "description_text": "A formalizable remark kept at the planned stage to test header-only Lean modules.",
+    "doc": "Fixture2000",
+    "doc_title": "Toy chain complexes",
+    "fidelity": "faithful",
+    "has_mathlib": false,
+    "headline": "in-progress",
+    "id": "Fixture2000.Rem_1",
+    "is_aux": false,
+    "kind": "remark",
+    "label": "Remark 1",
+    "local_id": "Rem_1",
+    "statement_text": "The distinguished degree of the zero complex is zero.",
+    "status": "planned",
+    "tags": [
+      "basic",
+      "chain-complex"
+    ],
+    "title": "Remark 1",
+    "year": 2000
+  },
+  {
+    "authors": [
+      "HomAlgDB fixture authors"
+    ],
+    "chapter": "1",
+    "concepts": [],
+    "decl_names": [
+      "Fixture2000.degree_add_zero",
+      "Fixture2000.eq_degree_zero"
+    ],
+    "description_text": "Two parts of one theorem share a node; the second declaration deliberately starts with eq.",
+    "doc": "Fixture2000",
+    "doc_title": "Toy chain complexes",
+    "fidelity": "faithful",
+    "has_mathlib": false,
+    "headline": "in-progress",
+    "id": "Fixture2000.Thm_1",
+    "is_aux": false,
+    "kind": "theorem",
+    "label": "Theorem 1",
+    "local_id": "Thm_1",
+    "statement_text": "For every toy chain complex C, \\deg C+0=\\deg C. If \\deg C=0, then \\deg C+0=0.",
+    "status": "proved",
+    "tags": [
+      "basic",
+      "chain-complex"
+    ],
+    "title": "Theorem 1",
+    "year": 2000
+  },
+  {
+    "authors": [
+      "HomAlgDB fixture authors"
+    ],
+    "chapter": "1",
+    "concepts": [],
+    "decl_names": [
+      "Fixture2000.two_add_two"
+    ],
+    "description_text": "A decidable arithmetic statement whose compiled evaluation uses a nonstandard trust axiom.",
+    "doc": "Fixture2000",
+    "doc_title": "Toy chain complexes",
+    "fidelity": "faithful",
+    "has_mathlib": false,
+    "headline": "in-progress",
+    "id": "Fixture2000.Thm_2",
+    "is_aux": false,
+    "kind": "theorem",
+    "label": "Theorem 2",
+    "local_id": "Thm_2",
+    "statement_text": "The sum 2+2 is 4.",
+    "status": "proved-with-axioms",
+    "tags": [
+      "basic"
+    ],
+    "title": "Theorem 2",
+    "year": 2000
+  },
+  {
+    "authors": [
+      "HomAlgDB fixture authors"
+    ],
+    "chapter": "1",
+    "concepts": [],
+    "decl_names": [
+      "Fixture2000.degree_le_mul_one_add_zero"
+    ],
+    "description_text": "The proof is written, but the separate lemma on which it depends still contains sorry.",
+    "doc": "Fixture2000",
+    "doc_title": "Toy chain complexes",
+    "fidelity": "faithful",
+    "has_mathlib": false,
+    "headline": "in-progress",
+    "id": "Fixture2000.Thm_3",
+    "is_aux": false,
+    "kind": "theorem",
+    "label": "Theorem 3",
+    "local_id": "Thm_3",
+    "statement_text": "For every toy chain complex C, \\deg C \\leq (\\deg C)\\cdot 1+0.",
+    "status": "proved-pending-deps",
+    "tags": [
+      "basic",
+      "chain-complex"
+    ],
+    "title": "Theorem 3",
+    "year": 2000
+  },
+  {
+    "authors": [
+      "HomAlgDB fixture authors"
+    ],
+    "chapter": "1",
+    "concepts": [],
+    "decl_names": [
+      "Fixture2000.degree_mul_comm"
+    ],
+    "description_text": "A complete proof modulo the single unproved cited arithmetic result.",
+    "doc": "Fixture2000",
+    "doc_title": "Toy chain complexes",
+    "fidelity": "faithful",
+    "has_mathlib": false,
+    "headline": "in-progress",
+    "id": "Fixture2000.Thm_4",
+    "is_aux": false,
+    "kind": "theorem",
+    "label": "Theorem 4",
+    "local_id": "Thm_4",
+    "statement_text": "For every toy chain complex C and natural number n, (\\deg C)n=n(\\deg C).",
+    "status": "proved-modulo-citations",
+    "tags": [
+      "basic",
+      "chain-complex"
+    ],
+    "title": "Theorem 4",
+    "year": 2000
+  }
+]

@@ -1,0 +1,78 @@
+{
+  "doc_key": "Fixture2000",
+  "generator": {
+    "name": "homalg",
+    "version": "1"
+  },
+  "lean": {
+    "mathlib_rev": "v4.35.0",
+    "toolchain": "leanprover/lean4:v4.35.0"
+  },
+  "nodes": [
+    {
+      "authored": {
+        "concepts": {
+          "defines": [],
+          "uses": [
+            "chain-complex"
+          ]
+        },
+        "decls": [],
+        "deps": {
+          "proof": [],
+          "statement": []
+        },
+        "description_md": "A planned remark used to exercise the data contract.",
+        "doc": "Fixture2000",
+        "fidelity": {
+          "status": "faithful"
+        },
+        "id": "Fixture2000.Rem_1",
+        "kind": "remark",
+        "source": {
+          "chapter": "1",
+          "label": "Remark 1",
+          "pages": [
+            3
+          ],
+          "section": "1.1"
+        },
+        "statement_md": "The toy complex is indexed by natural numbers.",
+        "tags": [
+          "chain-complex"
+        ]
+      },
+      "derived": {
+        "decl_info": [],
+        "declared_deps": {
+          "proof": [],
+          "statement": []
+        },
+        "deps_diff": {
+          "declared_not_verified": {
+            "proof": [],
+            "statement": []
+          },
+          "verified_not_declared": []
+        },
+        "file": {
+          "lines": 1,
+          "path": "HomAlg/Fixture2000/Rem_1.lean",
+          "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+        },
+        "imports": {
+          "mathlib": [],
+          "nodes": []
+        },
+        "local_status": "planned",
+        "sorry_count_text": 0,
+        "verified_deps": {
+          "proof": [],
+          "statement": []
+        }
+      },
+      "id": "Fixture2000.Rem_1"
+    }
+  ],
+  "schema_version": 1
+}

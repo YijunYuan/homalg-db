@@ -1,0 +1,78 @@
+name: Release data snapshot
+
+on:
+  schedule:
+    - cron: '47 4 * * 0'
+  workflow_dispatch:
+
+permissions: {}
+defaults:
+  run:
+    shell: bash
+concurrency:
+  group: release-data
+  cancel-in-progress: false
+
+jobs:
+  release:
+    runs-on: ${{ vars.LEAN_RUNNER || 'ubuntu-latest' }}
+    timeout-minutes: 330
+    permissions:
+      contents: write
+      pull-requests: read
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@07a047e608db84b3d8c06cd9a7c7dcc9c355c18e # v10.3.2
+      - run: |
+          uv sync --project tools --locked
+          echo "$GITHUB_WORKSPACE/tools/.venv/bin" >> "$GITHUB_PATH"
+      - uses: leanprover/lean-action@fe408643ea7367d8c0404a8be3975bb145f5fb64 # v1
+        with:
+          auto-config: false
+          build: false
+          test: false
+          lint: false
+          use-github-cache: false
+          use-mathlib-cache: true
+      - uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6
+        if: vars.LEAN_RUNNER == ''
+        with:
+          path: .lake/build
+          key: lake-build-${{ hashFiles('lean-toolchain', 'lake-manifest.json') }}-${{ github.sha }}
+          restore-keys: lake-build-${{ hashFiles('lean-toolchain', 'lake-manifest.json') }}-
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: site/package-lock.json
+      - run: |
+          npm ci --prefix site
+          lake build
+          homalg extract
+          homalg export-lean --all
+          homalg validate
+      - name: Generate the public snapshot
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          homalg index
+          homalg site-data --check-budgets
+          git diff --exit-code -- 'literature/*/nodes.json'
+      - name: Package licensed data and publish the weekly snapshot
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          TAG="data-$(date -u +%F)"
+          mkdir -p build/release
+          cp LICENSE LICENSE-DATA NOTICE build/release/
+          cp -a site/public/data build/release/data
+          tar -C build/release -czf "build/$TAG.tar.gz" .
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            gh release upload "$TAG" "build/$TAG.tar.gz" --clobber
+          else
+            gh release create "$TAG" "build/$TAG.tar.gz" --target "$GITHUB_SHA" \
+              --title "HomAlgDB data $TAG" --notes 'Validated data snapshot. Includes LICENSE, LICENSE-DATA and NOTICE; source excerpts retain their original rights.'
+          fi

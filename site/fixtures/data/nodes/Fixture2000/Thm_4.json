@@ -1,0 +1,210 @@
+{
+  "authored": {
+    "concepts": {
+      "defines": [],
+      "uses": []
+    },
+    "decls": [
+      "Fixture2000.degree_mul_comm"
+    ],
+    "deps": {
+      "proof": [
+        "Fixture2000.Cited_mul_comm"
+      ],
+      "statement": [
+        "Fixture2000.Def_1"
+      ]
+    },
+    "description_md": "A complete proof modulo the single unproved cited arithmetic result.",
+    "doc": "Fixture2000",
+    "fidelity": {
+      "status": "faithful"
+    },
+    "id": "Fixture2000.Thm_4",
+    "kind": "theorem",
+    "nl_proof_source": {
+      "follows": "document"
+    },
+    "proof_md": "Use the well-known commutativity of multiplication, taking the first factor to be the degree. [uses `Fixture2000.Cited_mul_comm`]",
+    "source": {
+      "chapter": "1",
+      "label": "Theorem 4",
+      "pages": [
+        4
+      ],
+      "section": "1.1"
+    },
+    "statement_md": "For every toy chain complex $C$ and natural number $n$, $(\\deg C)n=n(\\deg C)$.",
+    "tags": [
+      "chain-complex",
+      "basic"
+    ],
+    "title": "Theorem 4"
+  },
+  "dependencies": {
+    "proof": [
+      {
+        "doc": "Fixture2000",
+        "headline": "in-progress",
+        "id": "Fixture2000.Cited_mul_comm",
+        "label": "Cited result (p. 4)",
+        "status": "stated"
+      }
+    ],
+    "statement": [
+      {
+        "doc": "Fixture2000",
+        "headline": "in-progress",
+        "id": "Fixture2000.Def_1",
+        "label": "Definition 1",
+        "status": "proved"
+      }
+    ]
+  },
+  "dependents": [],
+  "derived": {
+    "decl_info": [
+      {
+        "direct_sorry": false,
+        "docstring": "**Theorem 4** (Fixture2000). Specialize the cited commutativity law to the degree. ",
+        "hollow": false,
+        "is_prop": true,
+        "kind": "theorem",
+        "line": 62,
+        "meaning_hash": "f20842c61f5bc7d2",
+        "name": "Fixture2000.degree_mul_comm",
+        "type": "∀ (c : Fixture2000.ChainComplexToy) (n : ℕ), c.degree * n = n * c.degree",
+        "type_hash": "00000000db923723",
+        "type_sha256": "919122b191fec797234393637a4608780e8c6dde71b1b0af204fb0f015986206",
+        "type_uses_external": [
+          "Eq",
+          "HMul.hMul",
+          "Nat",
+          "instHMul",
+          "instMulNat"
+        ],
+        "type_uses_external_truncated": false,
+        "type_uses_nodes": [
+          "Fixture2000.Def_1"
+        ],
+        "value_uses_external": [
+          "Nat"
+        ],
+        "value_uses_external_truncated": false,
+        "value_uses_nodes": [
+          "Fixture2000.Cited_mul_comm"
+        ]
+      }
+    ],
+    "declared_deps": {
+      "proof": [
+        "Fixture2000.Cited_mul_comm"
+      ],
+      "statement": [
+        "Fixture2000.Def_1"
+      ]
+    },
+    "deps_diff": {
+      "declared_not_verified": {
+        "proof": [],
+        "statement": []
+      },
+      "verified_not_declared": []
+    },
+    "file": {
+      "lines": 66,
+      "path": "HomAlg/Fixture2000/Thm_4.lean",
+      "sha256": "7915de595660a949a7e0d3279b593135b84a5d8a2d6df748a25daa48d3b7308a"
+    },
+    "imports": {
+      "mathlib": [],
+      "nodes": [
+        "Fixture2000.Cited_mul_comm",
+        "Fixture2000.Def_1"
+      ]
+    },
+    "local_status": "proved",
+    "sorry_count_text": 0,
+    "verified_deps": {
+      "proof": [
+        "Fixture2000.Cited_mul_comm"
+      ],
+      "statement": [
+        "Fixture2000.Def_1"
+      ]
+    }
+  },
+  "global": {
+    "blob_url": "https://github.com/example/homalg-db/blob/fixture/HomAlg/Fixture2000/Thm_4.lean#L62",
+    "chapter_title": "Toy chain complexes",
+    "closure": {
+      "blocked_by": [
+        "Fixture2000.Cited_mul_comm"
+      ]
+    },
+    "commit": "fixture",
+    "decl_axioms": {
+      "Fixture2000.degree_mul_comm": {
+        "axioms": [
+          "sorryAx"
+        ],
+        "transitive_sorry": true
+      }
+    },
+    "dependents": [],
+    "doc_authors": [
+      "HomAlgDB fixture authors"
+    ],
+    "doc_title": "Toy chain complexes",
+    "doc_year": 2000,
+    "headline": "in-progress",
+    "rank": 1,
+    "reopened": false,
+    "status": "proved-modulo-citations"
+  },
+  "lean": {
+    "signature_html": "<pre class=\"shiki shiki-themes github-light github-dark\" style=\"--shiki-light:#24292e;--shiki-dark:#e1e4e8;--shiki-light-bg:#fff;--shiki-dark-bg:#24292e\" tabindex=\"0\"><code><span class=\"line\"><span style=\"--shiki-light:#24292E;--shiki-dark:#E1E4E8\">Fixture2000.degree_mul_comm : ∀ (c : Fixture2000.ChainComplexToy) (n : ℕ), c.degree * n = n * c.degree</span></span></code></pre>",
+    "source_html": "<pre class=\"shiki shiki-themes github-light github-dark\" style=\"--shiki-light:#24292e;--shiki-dark:#e1e4e8;--shiki-light-bg:#fff;--shiki-dark-bg:#24292e\" tabindex=\"0\"><code><span class=\"line\"><span style=\"--shiki-light:#D73A49;--shiki-dark:#F97583\">import</span><span style=\"--shiki-light:#24292E;--shiki-dark:#E1E4E8\"> HomAlg.Fixture2000.Def_1</span></span>\n<span class=\"line\"><span style=\"--shiki-light:#D73A49;--shiki-dark:#F97583\">import</span><span style=\"--shiki-light:#24292E;--shiki-dark:#E1E4E8\"> HomAlg.Fixture2000.Cited_mul_comm</span></span>\n<span class=\"line\"></span>\n<span class=\"line\"><span style=\"--shiki-light:#6A737D;--shiki-dark:#6A737D\">/-!</span></span>\n<span class=\"line\"><span style=\"--shiki-light:#6A737D;--shiki-dark:#6A737D\">```yaml node</span></span>\n<span class=\"line\"><span style=\"--shiki-light:#6A737D;--shiki-dark:#6A737D\">{</span></span>\n<span class=\"line\"><span style=\"--shiki-light:#6A737D;--shiki-dark:#6A737D\">  \"id\": \"Fixture2000.Thm_4\",</span></span>\n<span class=\"line\"><span style=\"--shiki-light:#6A737D;--shiki-dark:#6A737D\">  \"kind\": \"theorem\",</span></span>\n<span class=\"line\"><span style=\"--shiki-light:#6A737D;--shiki-dark:#6A737D\">  \"doc\": \"Fixture2000\",</span></span>\n<span class=\"line\"><span style=\"--shiki-light:#6A737D;--shiki-dark:#6A737D\">  \"source\": {</span></span>\n<span class=\"line\"><span style=\"--shiki-light:#6A737D;--shiki-dark:#6A737D\">    \"chapter\": \"1\",</span></span>\n<span class=\"line\"><span style=\"--shiki-light:#6A737D;--shiki-dark:#6A737D\">    \"section\": \"1.1\",</span></span>\n<span class=\"line\"><span style=\"--shiki-light:#6A737D;--shiki-dark:#6A737D\">    \"label\": \"Theorem 4\",</span></span>\n<span class=\"line\"><span style=\"--shiki-light:#6A737D;--shiki-dark:#6A737D\">    \"pages\": [</span></span>\n<span class=\"line\"><span style=\"--shiki-light:#6A737D;--shiki-dark:#6A737D\">      4</span></span>\n<span class=\"line\"><span style=\"--shiki-light:#6A737D;--shiki-dark:#6A737D\">    ]</span></span>\n<span class=\"line\"><span style=\"--shiki-light:#6A737D;--shiki-dark:#6A737D\">  },</span></span>\n<span class=\"line\"><span style=\"--shiki-light:#6A737D;--shiki-dark:#6A737D\">  \"title\": \"Theorem 4\",</span></span>\n<span class=\"line\"><span style=\"--shiki-light:#6A737D;--shiki-dark:#6A737D\">  \"tags\": [</span></span>\n<span class=\"line\"><span style=\"--shiki-light:#6A737D;--shiki-dark:#6A737D\">    \"chain-complex\",</span></span>\n<span class=\"line\"><span style=\"--shiki-light:#6A737D;--shiki-dark:#6A737D\">    \"basic\"</span></span>\n<span class=\"line\"><span style=\"--shiki-light:#6A737D;--shiki-dark:#6A737D\">  ],</span></span>\n<span class=\"line\"><span style=\"--shiki-light:#6A737D;--shiki-dark:#6A737D\">  \"concepts\": {</span></span>\n<span class=\"line\"><span style=\"--shiki-light:#6A737D;--shiki-dark:#6A737D\">    \"defines\": [],</span></span>\n<span class=\"line\"><span style=\"--shiki-light:#6A737D;--shiki-dark:#6A737D\">    \"uses\": []</span></span>\n<span class=\"line\"><span style=\"--shiki-light:#6A737D;--shiki-dark:#6A737D\">  },</span></span>\n<span class=\"line\"><span style=\"--shiki-light:#6A737D;--shiki-dark:#6A737D\">  \"deps\": {</span></span>\n<span class=\"line\"><span style=\"--shiki-light:#6A737D;--shiki-dark:#6A737D\">    \"statement\": [</span></span>\n<span class=\"line\"><span style=\"--shiki-light:#6A737D;--shiki-dark:#6A737D\">      \"Fixture2000.Def_1\"</span></span>\n<span class=\"line\"><span style=\"--shiki-light:#6A737D;--shiki-dark:#6A737D\">    ],</span></span>\n<span class=\"line\"><span style=\"--shiki-light:#6A737D;--shiki-dark:#6A737D\">    \"proof\": [</span></span>\n<span class=\"line\"><span style=\"--shiki-light:#6A737D;--shiki-dark:#6A737D\">      \"Fixture2000.Cited_mul_comm\"</span></span>\n<span class=\"line\"><span style=\"--shiki-light:#6A737D;--shiki-dark:#6A737D\">    ]</span></span>\n<span class=\"line\"><span style=\"--shiki-light:#6A737D;--shiki-dark:#6A737D\">  },</span></span>\n<span class=\"line\"><span style=\"--shiki-light:#6A737D;--shiki-dark:#6A737D\">  \"decls\": [</span></span>\n<span class=\"line\"><span style=\"--shiki-light:#6A737D;--shiki-dark:#6A737D\">    \"Fixture2000.degree_mul_comm\"</span></span>\n<span class=\"line\"><span style=\"--shiki-light:#6A737D;--shiki-dark:#6A737D\">  ],</span></span>\n<span class=\"line\"><span style=\"--shiki-light:#6A737D;--shiki-dark:#6A737D\">  \"fidelity\": {</span></span>\n<span class=\"line\"><span style=\"--shiki-light:#6A737D;--shiki-dark:#6A737D\">    \"status\": \"faithful\"</span></span>\n<span class=\"line\"><span style=\"--shiki-light:#6A737D;--shiki-dark:#6A737D\">  },</span></span>\n<span class=\"line\"><span style=\"--shiki-light:#6A737D;--shiki-dark:#6A737D\">  \"nl_proof_source\": {</span></span>\n<span class=\"line\"><span style=\"--shiki-light:#6A737D;--shiki-dark:#6A737D\">    \"follows\": \"document\"</span></span>\n<span class=\"line\"><span style=\"--shiki-light:#6A737D;--shiki-dark:#6A737D\">  }</span></span>\n<span class=\"line\"><span style=\"--shiki-light:#6A737D;--shiki-dark:#6A737D\">}</span></span>\n<span class=\"line\"><span style=\"--shiki-light:#6A737D;--shiki-dark:#6A737D\">```</span></span>\n<span class=\"line\"></span>\n<span class=\"line\"><span style=\"--shiki-light:#6A737D;--shiki-dark:#6A737D\">## Statement</span></span>\n<span class=\"line\"></span>\n<span class=\"line\"><span style=\"--shiki-light:#6A737D;--shiki-dark:#6A737D\">For every toy chain complex $C$ and natural number $n$, $(\\deg C)n=n(\\deg C)$.</span></span>\n<span class=\"line\"></span>\n<span class=\"line\"><span style=\"--shiki-light:#6A737D;--shiki-dark:#6A737D\">## Proof</span></span>\n<span class=\"line\"></span>\n<span class=\"line\"><span style=\"--shiki-light:#6A737D;--shiki-dark:#6A737D\">Use the well-known commutativity of multiplication, taking the first factor to be the degree. [uses `Fixture2000.Cited_mul_comm`]</span></span>\n<span class=\"line\"></span>\n<span class=\"line\"><span style=\"--shiki-light:#6A737D;--shiki-dark:#6A737D\">## Description</span></span>\n<span class=\"line\"></span>\n<span class=\"line\"><span style=\"--shiki-light:#6A737D;--shiki-dark:#6A737D\">A complete proof modulo the single unproved cited arithmetic result.</span></span>\n<span class=\"line\"><span style=\"--shiki-light:#6A737D;--shiki-dark:#6A737D\">-/</span></span>\n<span class=\"line\"></span>\n<span class=\"line\"><span style=\"--shiki-light:#D73A49;--shiki-dark:#F97583\">namespace</span><span style=\"--shiki-light:#24292E;--shiki-dark:#E1E4E8\"> Fixture2000</span></span>\n<span class=\"line\"></span>\n<span class=\"line\"><span style=\"--shiki-light:#6A737D;--shiki-dark:#6A737D\">/-- **Theorem 4** (Fixture2000). Specialize the cited commutativity law to the degree. -/</span></span>\n<span class=\"line\"><span style=\"--shiki-light:#D73A49;--shiki-dark:#F97583\">theorem</span><span style=\"--shiki-light:#6F42C1;--shiki-dark:#B392F0\"> degree_mul_comm</span><span style=\"--shiki-light:#24292E;--shiki-dark:#E1E4E8\"> (c : ChainComplexToy) (n : Nat) : c.degree * n = n * c.degree :=</span></span>\n<span class=\"line\"><span style=\"--shiki-light:#24292E;--shiki-dark:#E1E4E8\">  cited_mul_comm c.degree n</span></span>\n<span class=\"line\"></span>\n<span class=\"line\"><span style=\"--shiki-light:#D73A49;--shiki-dark:#F97583\">end</span><span style=\"--shiki-light:#24292E;--shiki-dark:#E1E4E8\"> Fixture2000</span></span>\n<span class=\"line\"></span></code></pre>",
+    "source_text": "import HomAlg.Fixture2000.Def_1\nimport HomAlg.Fixture2000.Cited_mul_comm\n\n/-!\n```yaml node\n{\n  \"id\": \"Fixture2000.Thm_4\",\n  \"kind\": \"theorem\",\n  \"doc\": \"Fixture2000\",\n  \"source\": {\n    \"chapter\": \"1\",\n    \"section\": \"1.1\",\n    \"label\": \"Theorem 4\",\n    \"pages\": [\n      4\n    ]\n  },\n  \"title\": \"Theorem 4\",\n  \"tags\": [\n    \"chain-complex\",\n    \"basic\"\n  ],\n  \"concepts\": {\n    \"defines\": [],\n    \"uses\": []\n  },\n  \"deps\": {\n    \"statement\": [\n      \"Fixture2000.Def_1\"\n    ],\n    \"proof\": [\n      \"Fixture2000.Cited_mul_comm\"\n    ]\n  },\n  \"decls\": [\n    \"Fixture2000.degree_mul_comm\"\n  ],\n  \"fidelity\": {\n    \"status\": \"faithful\"\n  },\n  \"nl_proof_source\": {\n    \"follows\": \"document\"\n  }\n}\n```\n\n## Statement\n\nFor every toy chain complex $C$ and natural number $n$, $(\\deg C)n=n(\\deg C)$.\n\n## Proof\n\nUse the well-known commutativity of multiplication, taking the first factor to be the degree. [uses `Fixture2000.Cited_mul_comm`]\n\n## Description\n\nA complete proof modulo the single unproved cited arithmetic result.\n-/\n\nnamespace Fixture2000\n\n/-- **Theorem 4** (Fixture2000). Specialize the cited commutativity law to the degree. -/\ntheorem degree_mul_comm (c : ChainComplexToy) (n : Nat) : c.degree * n = n * c.degree :=\n  cited_mul_comm c.degree n\n\nend Fixture2000\n"
+  },
+  "links": {
+    "github_blame": "https://github.com/example/homalg-db/blame/fixture/HomAlg/Fixture2000/Thm_4.lean#L62",
+    "github_blob": "https://github.com/example/homalg-db/blob/fixture/HomAlg/Fixture2000/Thm_4.lean#L62"
+  },
+  "relations": [],
+  "summary": {
+    "chapter": "1",
+    "concepts_defines": [],
+    "concepts_uses": [],
+    "decl_names": [
+      "Fixture2000.degree_mul_comm"
+    ],
+    "deps_mismatch": false,
+    "disputed": false,
+    "doc": "Fixture2000",
+    "fidelity_status": "faithful",
+    "has_mathlib": false,
+    "headline": "in-progress",
+    "id": "Fixture2000.Thm_4",
+    "is_aux": false,
+    "kind": "theorem",
+    "label": "Theorem 4",
+    "local_id": "Thm_4",
+    "local_status": "proved",
+    "needs_repair": false,
+    "pages": [
+      4
+    ],
+    "rank": 1,
+    "reopened": false,
+    "reviewed": false,
+    "section": "1.1",
+    "statement_first_line": "For every toy chain complex C and natural number n, (\\deg C)n=n(\\deg C).",
+    "status": "proved-modulo-citations",
+    "tags": [
+      "basic",
+      "chain-complex"
+    ],
+    "title": "Theorem 4"
+  }
+}

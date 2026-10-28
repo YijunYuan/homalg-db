@@ -1,0 +1,3 @@
+schema_version: 1
+# Explicitly enabled by the user: independent agents may review source fidelity and foundations.
+allow_independent_agent_reviews: true

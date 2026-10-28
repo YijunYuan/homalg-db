@@ -1,0 +1,88 @@
+name: Deploy Pages
+
+on:
+  push:
+    branches: [main]
+  schedule:
+    - cron: '17 3 * * *'
+  workflow_dispatch:
+
+permissions: {}
+defaults:
+  run:
+    shell: bash
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ${{ vars.LEAN_RUNNER || 'ubuntu-latest' }}
+    timeout-minutes: 330
+    permissions:
+      contents: read
+      pull-requests: read
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@07a047e608db84b3d8c06cd9a7c7dcc9c355c18e # v10.3.2
+      - run: |
+          uv sync --project tools --locked
+          echo "$GITHUB_WORKSPACE/tools/.venv/bin" >> "$GITHUB_PATH"
+      - uses: leanprover/lean-action@fe408643ea7367d8c0404a8be3975bb145f5fb64 # v1
+        with:
+          auto-config: false
+          build: false
+          test: false
+          lint: false
+          use-github-cache: false
+          use-mathlib-cache: true
+      - uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6
+        if: vars.LEAN_RUNNER == ''
+        with:
+          path: .lake/build
+          key: lake-build-${{ hashFiles('lean-toolchain', 'lake-manifest.json') }}-${{ github.sha }}
+          restore-keys: lake-build-${{ hashFiles('lean-toolchain', 'lake-manifest.json') }}-
+      - run: lake build 2>&1 | tee lake-build.log
+        timeout-minutes: 300
+      - uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6
+        if: always() && vars.LEAN_RUNNER == ''
+        with:
+          path: .lake/build
+          key: lake-build-${{ hashFiles('lean-toolchain', 'lake-manifest.json') }}-${{ github.sha }}
+      - name: Generate and validate the published index
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          homalg extract
+          homalg export-lean --all
+          homalg index
+          homalg validate
+          git diff --exit-code -- 'literature/*/nodes.json'
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: site/package-lock.json
+      - run: npm ci --prefix site
+      - run: homalg site-data --check-budgets
+      - run: npm run build --prefix site
+      - run: homalg site-data --check-budgets --dist site/dist
+      - uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5
+        with:
+          path: site/dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@368f82528645a54fb793d4d04e342629a3f51346 # v5

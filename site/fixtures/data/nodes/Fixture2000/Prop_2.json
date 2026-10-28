@@ -1,0 +1,207 @@
+{
+  "authored": {
+    "concepts": {
+      "defines": [],
+      "uses": []
+    },
+    "decls": [
+      "Fixture2000.degree_self_disputed"
+    ],
+    "deps": {
+      "proof": [],
+      "statement": [
+        "Fixture2000.Def_1"
+      ]
+    },
+    "description_md": "A true assertion with an explicitly invalid source proof and a synthetic confirmed proof dispute.",
+    "dispute": {
+      "confirmed_by": "fixture-reviewer",
+      "confirmed_on": "2000-01-02",
+      "inbox": "I-0002",
+      "kind": "proof",
+      "on": "2000-01-01",
+      "opened_by": "fixture-author",
+      "reason": "The proof relies on the false claim that every natural number equals its successor.",
+      "status": "open"
+    },
+    "doc": "Fixture2000",
+    "fidelity": {
+      "status": "faithful"
+    },
+    "id": "Fixture2000.Prop_2",
+    "kind": "proposition",
+    "nl_proof_source": {
+      "follows": "document"
+    },
+    "proof_md": "Every natural number equals its successor. It follows in particular that the degree equals itself.",
+    "source": {
+      "chapter": "1",
+      "label": "Proposition 2",
+      "pages": [
+        3
+      ],
+      "section": "1.1"
+    },
+    "statement_md": "For every toy chain complex $C$, $\\deg C=\\deg C$.",
+    "tags": [
+      "chain-complex",
+      "basic"
+    ],
+    "title": "Proposition 2"
+  },
+  "dependencies": {
+    "proof": [],
+    "statement": [
+      {
+        "doc": "Fixture2000",
+        "headline": "in-progress",
+        "id": "Fixture2000.Def_1",
+        "label": "Definition 1",
+        "status": "proved"
+      }
+    ]
+  },
+  "dependents": [],
+  "derived": {
+    "decl_info": [
+      {
+        "direct_sorry": true,
+        "docstring": "**Proposition 2** (Fixture2000). PROOF-DISPUTED: the source claims every number equals its successor.\nThe source proof asserts n + 1 = n for every natural number and infers reflexivity of the degree;\nthat argument is invalid and must not be silently replaced by the trivial alternative proof. ",
+        "hollow": false,
+        "is_prop": true,
+        "kind": "theorem",
+        "line": 69,
+        "meaning_hash": "b652b7834df82cac",
+        "name": "Fixture2000.degree_self_disputed",
+        "type": "∀ (c : Fixture2000.ChainComplexToy), c.degree = c.degree",
+        "type_hash": "000000008b8031e5",
+        "type_sha256": "d6f1d4c34231afe09a10f4721c4b5fdbfb709efe1e59de79636e262f68a3db10",
+        "type_uses_external": [
+          "Eq",
+          "Nat"
+        ],
+        "type_uses_external_truncated": false,
+        "type_uses_nodes": [
+          "Fixture2000.Def_1"
+        ],
+        "value_uses_external": [
+          "Bool.false",
+          "Eq",
+          "Lean.Name",
+          "Lean.Name.anonymous",
+          "Lean.Name.num",
+          "Lean.Name.str",
+          "Nat",
+          "OfNat.ofNat",
+          "instOfNatNat",
+          "sorryAx"
+        ],
+        "value_uses_external_truncated": false,
+        "value_uses_nodes": []
+      }
+    ],
+    "declared_deps": {
+      "proof": [],
+      "statement": [
+        "Fixture2000.Def_1"
+      ]
+    },
+    "deps_diff": {
+      "declared_not_verified": {
+        "proof": [],
+        "statement": []
+      },
+      "verified_not_declared": []
+    },
+    "file": {
+      "lines": 75,
+      "path": "HomAlg/Fixture2000/Prop_2.lean",
+      "sha256": "6f260c86457f8980063cbe9d63e033a0e788252baed69811fe44dfb55345aeef"
+    },
+    "imports": {
+      "mathlib": [],
+      "nodes": [
+        "Fixture2000.Def_1"
+      ]
+    },
+    "local_status": "stated",
+    "sorry_count_text": 1,
+    "verified_deps": {
+      "proof": [],
+      "statement": [
+        "Fixture2000.Def_1"
+      ]
+    }
+  },
+  "global": {
+    "blob_url": "https://github.com/example/homalg-db/blob/fixture/HomAlg/Fixture2000/Prop_2.lean#L69",
+    "chapter_title": "Toy chain complexes",
+    "closure": {
+      "blocked_by": []
+    },
+    "commit": "fixture",
+    "decl_axioms": {
+      "Fixture2000.degree_self_disputed": {
+        "axioms": [
+          "sorryAx"
+        ],
+        "transitive_sorry": true
+      }
+    },
+    "dependents": [],
+    "doc_authors": [
+      "HomAlgDB fixture authors"
+    ],
+    "doc_title": "Toy chain complexes",
+    "doc_year": 2000,
+    "headline": "error",
+    "rank": 1,
+    "reopened": false,
+    "status": "disputed"
+  },
+  "lean": {
+    "signature_html": "<pre class=\"shiki shiki-themes github-light github-dark\" style=\"--shiki-light:#24292e;--shiki-dark:#e1e4e8;--shiki-light-bg:#fff;--shiki-dark-bg:#24292e\" tabindex=\"0\"><code><span class=\"line\"><span style=\"--shiki-light:#24292E;--shiki-dark:#E1E4E8\">Fixture2000.degree_self_disputed : ∀ (c : Fixture2000.ChainComplexToy), c.degree = c.degree</span></span></code></pre>",
+    "source_html": "<pre class=\"shiki shiki-themes github-light github-dark\" style=\"--shiki-light:#24292e;--shiki-dark:#e1e4e8;--shiki-light-bg:#fff;--shiki-dark-bg:#24292e\" tabindex=\"0\"><code><span class=\"line\"><span style=\"--shiki-light:#D73A49;--shiki-dark:#F97583\">import</span><span style=\"--shiki-light:#24292E;--shiki-dark:#E1E4E8\"> HomAlg.Fixture2000.Def_1</span></span>\n<span class=\"line\"></span>\n<span class=\"line\"><span style=\"--shiki-light:#6A737D;--shiki-dark:#6A737D\">/-!</span></span>\n<span class=\"line\"><span style=\"--shiki-light:#6A737D;--shiki-dark:#6A737D\">```yaml node</span></span>\n<span class=\"line\"><span style=\"--shiki-light:#6A737D;--shiki-dark:#6A737D\">{</span></span>\n<span class=\"line\"><span style=\"--shiki-light:#6A737D;--shiki-dark:#6A737D\">  \"id\": \"Fixture2000.Prop_2\",</span></span>\n<span class=\"line\"><span style=\"--shiki-light:#6A737D;--shiki-dark:#6A737D\">  \"kind\": \"proposition\",</span></span>\n<span class=\"line\"><span style=\"--shiki-light:#6A737D;--shiki-dark:#6A737D\">  \"doc\": \"Fixture2000\",</span></span>\n<span class=\"line\"><span style=\"--shiki-light:#6A737D;--shiki-dark:#6A737D\">  \"source\": {</span></span>\n<span class=\"line\"><span style=\"--shiki-light:#6A737D;--shiki-dark:#6A737D\">    \"chapter\": \"1\",</span></span>\n<span class=\"line\"><span style=\"--shiki-light:#6A737D;--shiki-dark:#6A737D\">    \"section\": \"1.1\",</span></span>\n<span class=\"line\"><span style=\"--shiki-light:#6A737D;--shiki-dark:#6A737D\">    \"label\": \"Proposition 2\",</span></span>\n<span class=\"line\"><span style=\"--shiki-light:#6A737D;--shiki-dark:#6A737D\">    \"pages\": [</span></span>\n<span class=\"line\"><span style=\"--shiki-light:#6A737D;--shiki-dark:#6A737D\">      3</span></span>\n<span class=\"line\"><span style=\"--shiki-light:#6A737D;--shiki-dark:#6A737D\">    ]</span></span>\n<span class=\"line\"><span style=\"--shiki-light:#6A737D;--shiki-dark:#6A737D\">  },</span></span>\n<span class=\"line\"><span style=\"--shiki-light:#6A737D;--shiki-dark:#6A737D\">  \"title\": \"Proposition 2\",</span></span>\n<span class=\"line\"><span style=\"--shiki-light:#6A737D;--shiki-dark:#6A737D\">  \"tags\": [</span></span>\n<span class=\"line\"><span style=\"--shiki-light:#6A737D;--shiki-dark:#6A737D\">    \"chain-complex\",</span></span>\n<span class=\"line\"><span style=\"--shiki-light:#6A737D;--shiki-dark:#6A737D\">    \"basic\"</span></span>\n<span class=\"line\"><span style=\"--shiki-light:#6A737D;--shiki-dark:#6A737D\">  ],</span></span>\n<span class=\"line\"><span style=\"--shiki-light:#6A737D;--shiki-dark:#6A737D\">  \"concepts\": {</span></span>\n<span class=\"line\"><span style=\"--shiki-light:#6A737D;--shiki-dark:#6A737D\">    \"defines\": [],</span></span>\n<span class=\"line\"><span style=\"--shiki-light:#6A737D;--shiki-dark:#6A737D\">    \"uses\": []</span></span>\n<span class=\"line\"><span style=\"--shiki-light:#6A737D;--shiki-dark:#6A737D\">  },</span></span>\n<span class=\"line\"><span style=\"--shiki-light:#6A737D;--shiki-dark:#6A737D\">  \"deps\": {</span></span>\n<span class=\"line\"><span style=\"--shiki-light:#6A737D;--shiki-dark:#6A737D\">    \"statement\": [</span></span>\n<span class=\"line\"><span style=\"--shiki-light:#6A737D;--shiki-dark:#6A737D\">      \"Fixture2000.Def_1\"</span></span>\n<span class=\"line\"><span style=\"--shiki-light:#6A737D;--shiki-dark:#6A737D\">    ],</span></span>\n<span class=\"line\"><span style=\"--shiki-light:#6A737D;--shiki-dark:#6A737D\">    \"proof\": []</span></span>\n<span class=\"line\"><span style=\"--shiki-light:#6A737D;--shiki-dark:#6A737D\">  },</span></span>\n<span class=\"line\"><span style=\"--shiki-light:#6A737D;--shiki-dark:#6A737D\">  \"decls\": [</span></span>\n<span class=\"line\"><span style=\"--shiki-light:#6A737D;--shiki-dark:#6A737D\">    \"Fixture2000.degree_self_disputed\"</span></span>\n<span class=\"line\"><span style=\"--shiki-light:#6A737D;--shiki-dark:#6A737D\">  ],</span></span>\n<span class=\"line\"><span style=\"--shiki-light:#6A737D;--shiki-dark:#6A737D\">  \"fidelity\": {</span></span>\n<span class=\"line\"><span style=\"--shiki-light:#6A737D;--shiki-dark:#6A737D\">    \"status\": \"faithful\"</span></span>\n<span class=\"line\"><span style=\"--shiki-light:#6A737D;--shiki-dark:#6A737D\">  },</span></span>\n<span class=\"line\"><span style=\"--shiki-light:#6A737D;--shiki-dark:#6A737D\">  \"nl_proof_source\": {</span></span>\n<span class=\"line\"><span style=\"--shiki-light:#6A737D;--shiki-dark:#6A737D\">    \"follows\": \"document\"</span></span>\n<span class=\"line\"><span style=\"--shiki-light:#6A737D;--shiki-dark:#6A737D\">  },</span></span>\n<span class=\"line\"><span style=\"--shiki-light:#6A737D;--shiki-dark:#6A737D\">  \"dispute\": {</span></span>\n<span class=\"line\"><span style=\"--shiki-light:#6A737D;--shiki-dark:#6A737D\">    \"status\": \"open\",</span></span>\n<span class=\"line\"><span style=\"--shiki-light:#6A737D;--shiki-dark:#6A737D\">    \"kind\": \"proof\",</span></span>\n<span class=\"line\"><span style=\"--shiki-light:#6A737D;--shiki-dark:#6A737D\">    \"reason\": \"The proof relies on the false claim that every natural number equals its successor.\",</span></span>\n<span class=\"line\"><span style=\"--shiki-light:#6A737D;--shiki-dark:#6A737D\">    \"opened_by\": \"fixture-author\",</span></span>\n<span class=\"line\"><span style=\"--shiki-light:#6A737D;--shiki-dark:#6A737D\">    \"on\": \"2000-01-01\",</span></span>\n<span class=\"line\"><span style=\"--shiki-light:#6A737D;--shiki-dark:#6A737D\">    \"confirmed_by\": \"fixture-reviewer\",</span></span>\n<span class=\"line\"><span style=\"--shiki-light:#6A737D;--shiki-dark:#6A737D\">    \"confirmed_on\": \"2000-01-02\",</span></span>\n<span class=\"line\"><span style=\"--shiki-light:#6A737D;--shiki-dark:#6A737D\">    \"inbox\": \"I-0002\"</span></span>\n<span class=\"line\"><span style=\"--shiki-light:#6A737D;--shiki-dark:#6A737D\">  }</span></span>\n<span class=\"line\"><span style=\"--shiki-light:#6A737D;--shiki-dark:#6A737D\">}</span></span>\n<span class=\"line\"><span style=\"--shiki-light:#6A737D;--shiki-dark:#6A737D\">```</span></span>\n<span class=\"line\"></span>\n<span class=\"line\"><span style=\"--shiki-light:#6A737D;--shiki-dark:#6A737D\">## Statement</span></span>\n<span class=\"line\"></span>\n<span class=\"line\"><span style=\"--shiki-light:#6A737D;--shiki-dark:#6A737D\">For every toy chain complex $C$, $\\deg C=\\deg C$.</span></span>\n<span class=\"line\"></span>\n<span class=\"line\"><span style=\"--shiki-light:#6A737D;--shiki-dark:#6A737D\">## Proof</span></span>\n<span class=\"line\"></span>\n<span class=\"line\"><span style=\"--shiki-light:#6A737D;--shiki-dark:#6A737D\">Every natural number equals its successor. It follows in particular that the degree equals itself.</span></span>\n<span class=\"line\"></span>\n<span class=\"line\"><span style=\"--shiki-light:#6A737D;--shiki-dark:#6A737D\">## Description</span></span>\n<span class=\"line\"></span>\n<span class=\"line\"><span style=\"--shiki-light:#6A737D;--shiki-dark:#6A737D\">A true assertion with an explicitly invalid source proof and a synthetic confirmed proof dispute.</span></span>\n<span class=\"line\"><span style=\"--shiki-light:#6A737D;--shiki-dark:#6A737D\">-/</span></span>\n<span class=\"line\"></span>\n<span class=\"line\"><span style=\"--shiki-light:#D73A49;--shiki-dark:#F97583\">namespace</span><span style=\"--shiki-light:#24292E;--shiki-dark:#E1E4E8\"> Fixture2000</span></span>\n<span class=\"line\"></span>\n<span class=\"line\"><span style=\"--shiki-light:#6A737D;--shiki-dark:#6A737D\">/-- **Proposition 2** (Fixture2000). PROOF-DISPUTED: the source claims every number equals its successor.</span></span>\n<span class=\"line\"><span style=\"--shiki-light:#6A737D;--shiki-dark:#6A737D\">The source proof asserts n + 1 = n for every natural number and infers reflexivity of the degree;</span></span>\n<span class=\"line\"><span style=\"--shiki-light:#6A737D;--shiki-dark:#6A737D\">that argument is invalid and must not be silently replaced by the trivial alternative proof. -/</span></span>\n<span class=\"line\"><span style=\"--shiki-light:#D73A49;--shiki-dark:#F97583\">theorem</span><span style=\"--shiki-light:#6F42C1;--shiki-dark:#B392F0\"> degree_self_disputed</span><span style=\"--shiki-light:#24292E;--shiki-dark:#E1E4E8\"> (c : ChainComplexToy) : c.degree = c.degree := </span><span style=\"--shiki-light:#D73A49;--shiki-dark:#F97583\">by</span></span>\n<span class=\"line\"><span style=\"--shiki-light:#B31D28;--shiki-light-font-style:italic;--shiki-dark:#FDAEB7;--shiki-dark-font-style:italic\">  sorry</span></span>\n<span class=\"line\"></span>\n<span class=\"line\"><span style=\"--shiki-light:#D73A49;--shiki-dark:#F97583\">end</span><span style=\"--shiki-light:#24292E;--shiki-dark:#E1E4E8\"> Fixture2000</span></span>\n<span class=\"line\"></span></code></pre>",
+    "source_text": "import HomAlg.Fixture2000.Def_1\n\n/-!\n```yaml node\n{\n  \"id\": \"Fixture2000.Prop_2\",\n  \"kind\": \"proposition\",\n  \"doc\": \"Fixture2000\",\n  \"source\": {\n    \"chapter\": \"1\",\n    \"section\": \"1.1\",\n    \"label\": \"Proposition 2\",\n    \"pages\": [\n      3\n    ]\n  },\n  \"title\": \"Proposition 2\",\n  \"tags\": [\n    \"chain-complex\",\n    \"basic\"\n  ],\n  \"concepts\": {\n    \"defines\": [],\n    \"uses\": []\n  },\n  \"deps\": {\n    \"statement\": [\n      \"Fixture2000.Def_1\"\n    ],\n    \"proof\": []\n  },\n  \"decls\": [\n    \"Fixture2000.degree_self_disputed\"\n  ],\n  \"fidelity\": {\n    \"status\": \"faithful\"\n  },\n  \"nl_proof_source\": {\n    \"follows\": \"document\"\n  },\n  \"dispute\": {\n    \"status\": \"open\",\n    \"kind\": \"proof\",\n    \"reason\": \"The proof relies on the false claim that every natural number equals its successor.\",\n    \"opened_by\": \"fixture-author\",\n    \"on\": \"2000-01-01\",\n    \"confirmed_by\": \"fixture-reviewer\",\n    \"confirmed_on\": \"2000-01-02\",\n    \"inbox\": \"I-0002\"\n  }\n}\n```\n\n## Statement\n\nFor every toy chain complex $C$, $\\deg C=\\deg C$.\n\n## Proof\n\nEvery natural number equals its successor. It follows in particular that the degree equals itself.\n\n## Description\n\nA true assertion with an explicitly invalid source proof and a synthetic confirmed proof dispute.\n-/\n\nnamespace Fixture2000\n\n/-- **Proposition 2** (Fixture2000). PROOF-DISPUTED: the source claims every number equals its successor.\nThe source proof asserts n + 1 = n for every natural number and infers reflexivity of the degree;\nthat argument is invalid and must not be silently replaced by the trivial alternative proof. -/\ntheorem degree_self_disputed (c : ChainComplexToy) : c.degree = c.degree := by\n  sorry\n\nend Fixture2000\n"
+  },
+  "links": {
+    "github_blame": "https://github.com/example/homalg-db/blame/fixture/HomAlg/Fixture2000/Prop_2.lean#L69",
+    "github_blob": "https://github.com/example/homalg-db/blob/fixture/HomAlg/Fixture2000/Prop_2.lean#L69"
+  },
+  "relations": [],
+  "summary": {
+    "chapter": "1",
+    "concepts_defines": [],
+    "concepts_uses": [],
+    "decl_names": [
+      "Fixture2000.degree_self_disputed"
+    ],
+    "deps_mismatch": false,
+    "disputed": true,
+    "doc": "Fixture2000",
+    "fidelity_status": "faithful",
+    "has_mathlib": false,
+    "headline": "error",
+    "id": "Fixture2000.Prop_2",
+    "is_aux": false,
+    "kind": "proposition",
+    "label": "Proposition 2",
+    "local_id": "Prop_2",
+    "local_status": "stated",
+    "needs_repair": false,
+    "pages": [
+      3
+    ],
+    "rank": 1,
+    "reopened": false,
+    "reviewed": false,
+    "section": "1.1",
+    "statement_first_line": "For every toy chain complex C, \\deg C=\\deg C.",
+    "status": "disputed",
+    "tags": [
+      "basic",
+      "chain-complex"
+    ],
+    "title": "Proposition 2"
+  }
+}

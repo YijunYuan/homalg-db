@@ -1,0 +1,125 @@
+{
+  "$id": "https://homalg-db/schema/site/evolution.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "concept": {
+      "$ref": "../common.schema.json#/$defs/SlugId"
+    },
+    "current_bundle_sha256": {
+      "$ref": "../common.schema.json#/$defs/Sha256"
+    },
+    "summaries": {
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "narrative_md": {
+            "type": "string"
+          },
+          "open_questions": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "proposed_aliases": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "proposed_relations": {
+            "items": {
+              "additionalProperties": false,
+              "properties": {
+                "confidence": {
+                  "maximum": 1,
+                  "minimum": 0,
+                  "type": "number"
+                },
+                "evidence": {
+                  "type": "string"
+                },
+                "source": {
+                  "$ref": "../common.schema.json#/$defs/NodeId"
+                },
+                "target": {
+                  "$ref": "../common.schema.json#/$defs/NodeId"
+                },
+                "type": {
+                  "$ref": "../common.schema.json#/$defs/RelationType"
+                }
+              },
+              "required": [
+                "type",
+                "source",
+                "target"
+              ],
+              "type": "object"
+            },
+            "type": "array"
+          },
+          "provenance": {
+            "$ref": "../common.schema.json#/$defs/Provenance"
+          },
+          "review": {
+            "$ref": "../common.schema.json#/$defs/Review"
+          },
+          "stages": {
+            "items": {
+              "additionalProperties": false,
+              "properties": {
+                "change": {
+                  "type": "string"
+                },
+                "doc": {
+                  "$ref": "../common.schema.json#/$defs/DocKey"
+                },
+                "nodes": {
+                  "items": {
+                    "$ref": "../common.schema.json#/$defs/NodeId"
+                  },
+                  "type": "array"
+                },
+                "period": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "period",
+                "doc",
+                "nodes",
+                "change"
+              ],
+              "type": "object"
+            },
+            "type": "array"
+          },
+          "stale": {
+            "type": "boolean"
+          },
+          "version": {
+            "minimum": 1,
+            "type": "integer"
+          }
+        },
+        "required": [
+          "version",
+          "provenance",
+          "narrative_md",
+          "stages",
+          "review",
+          "stale"
+        ],
+        "type": "object"
+      },
+      "type": "array"
+    }
+  },
+  "required": [
+    "concept",
+    "current_bundle_sha256",
+    "summaries"
+  ],
+  "type": "object"
+}

@@ -1,0 +1,52 @@
+name: Owner approval
+
+on:
+  pull_request:
+    branches: [main]
+    types: [opened, synchronize, reopened, labeled, unlabeled]
+  pull_request_review:
+    types: [submitted, dismissed]
+  merge_group:
+  workflow_dispatch:
+
+permissions: {}
+defaults:
+  run:
+    shell: bash
+concurrency:
+  group: owner-approval-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  owner-approval:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: read
+    env:
+      HOMALG_OWNER: ${{ vars.HOMALG_OWNER }}
+      BASE: ${{ github.event.pull_request.base.sha }}
+      HEAD: ${{ github.event.pull_request.head.sha }}
+      AUTHOR: ${{ github.event.pull_request.user.login }}
+      PR: ${{ github.event.pull_request.number }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        if: github.event_name != 'merge_group' && github.event_name != 'workflow_dispatch'
+        with:
+          fetch-depth: 0
+          ref: ${{ env.BASE }}
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@07a047e608db84b3d8c06cd9a7c7dcc9c355c18e # v10.3.2
+        if: github.event_name != 'merge_group' && github.event_name != 'workflow_dispatch'
+      - name: Verify sensitive changes against the latest owner review
+        env:
+          GH_TOKEN: ${{ github.token }}
+        if: github.event_name != 'merge_group' && github.event_name != 'workflow_dispatch'
+        run: |
+          uv sync --project tools --locked
+          LABELS="$(gh pr view "$PR" --json labels -q '[.labels[].name]|join(",")')"
+          uv run --project tools --locked homalg pr-check --owner-only \
+            --pr-base "$BASE" --pr-head "$HEAD" --pr-number "$PR" --pr-author "$AUTHOR" --pr-labels "$LABELS"
+      - name: Approvals already checked on individual PRs
+        if: github.event_name == 'merge_group' || github.event_name == 'workflow_dispatch'
+        run: echo 'No pull-request approval decision is required for this event.'

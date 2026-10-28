@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://homalg-db.org/schema/review-policy.schema.json",
+  "title": "Repository review policy",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "allow_independent_agent_reviews"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": 1
+    },
+    "allow_independent_agent_reviews": {
+      "type": "boolean"
+    }
+  }
+}

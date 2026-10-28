@@ -1,0 +1,961 @@
+{
+  "external_constants": {
+    "AddCommGroup": {
+      "exists": true,
+      "module": "Mathlib.Algebra.Group.Defs"
+    },
+    "Function.comp": {
+      "exists": true,
+      "module": "Init.Prelude"
+    },
+    "Nat": {
+      "exists": true,
+      "module": "Init.Prelude"
+    },
+    "Nat.add_zero": {
+      "exists": true,
+      "module": "Init.Core"
+    },
+    "Nat.mul_one": {
+      "exists": true,
+      "module": "Init.Data.Nat.Basic"
+    }
+  },
+  "generator": {
+    "name": "homalg-export",
+    "version": "2"
+  },
+  "mathlib_rev": "v4.35.0",
+  "modules": [
+    {
+      "decls": [],
+      "module": "HomAlg.Fixture2000",
+      "node_id": null
+    },
+    {
+      "decls": [
+        {
+          "axioms": [],
+          "direct_sorry": false,
+          "docstring": "**Auxiliary to Theorem 1** (Fixture2000). Addition by zero is an elementary identity. ",
+          "hollow": false,
+          "is_prop": true,
+          "kind": "theorem",
+          "line": 60,
+          "meaning_hash": "000000002aea8c3d",
+          "name": "Fixture2000.aux_add_zero",
+          "packaged_fields": [],
+          "transitive_sorry": false,
+          "type": "∀ (n : ℕ), n + 0 = n",
+          "type_hash": "000000002aea8c3d",
+          "type_uses_external": [
+            "Eq",
+            "HAdd.hAdd",
+            "Nat",
+            "OfNat.ofNat",
+            "instAddNat",
+            "instHAdd",
+            "instOfNatNat"
+          ],
+          "type_uses_external_truncated": false,
+          "type_uses_nodes": [],
+          "value_uses_external": [
+            "Nat",
+            "Nat.add_zero"
+          ],
+          "value_uses_external_truncated": false,
+          "value_uses_nodes": []
+        }
+      ],
+      "module": "HomAlg.Fixture2000.Aux_Thm_1_step",
+      "node_id": "Fixture2000.Aux_Thm_1_step"
+    },
+    {
+      "decls": [
+        {
+          "axioms": [
+            "Quot.sound"
+          ],
+          "direct_sorry": false,
+          "docstring": "**Bridge for Definition 1** (Fixture2000). Function extensionality converts the pointwise square-zero law into an equality of functions. ",
+          "hollow": false,
+          "is_prop": true,
+          "kind": "theorem",
+          "line": 64,
+          "meaning_hash": "8e63e3a108b82a98",
+          "name": "Fixture2000.differential_comp_zero",
+          "packaged_fields": [],
+          "transitive_sorry": false,
+          "type": "∀ (c : Fixture2000.ChainComplexToy) (n : ℕ), c.differential n ∘ c.differential (n + 1) = fun x ↦ 0",
+          "type_hash": "00000000d461a9fb",
+          "type_uses_external": [
+            "Eq",
+            "Function.comp",
+            "HAdd.hAdd",
+            "Nat",
+            "OfNat.ofNat",
+            "instAddNat",
+            "instHAdd",
+            "instOfNatNat"
+          ],
+          "type_uses_external_truncated": false,
+          "type_uses_nodes": [
+            "Fixture2000.Def_1"
+          ],
+          "value_uses_external": [
+            "Function.comp",
+            "HAdd.hAdd",
+            "Nat",
+            "OfNat.ofNat",
+            "funext",
+            "instAddNat",
+            "instHAdd",
+            "instOfNatNat"
+          ],
+          "value_uses_external_truncated": false,
+          "value_uses_nodes": []
+        }
+      ],
+      "module": "HomAlg.Fixture2000.Bridge_Def_1_mathlib",
+      "node_id": "Fixture2000.Bridge_Def_1_mathlib"
+    },
+    {
+      "decls": [
+        {
+          "axioms": [
+            "sorryAx"
+          ],
+          "direct_sorry": true,
+          "docstring": "**Cited result (p. 4)** (Fixture2000). Not proved in the document. A standard proof\nuses induction on the first argument, distributivity in the successor case, and the zero case. ",
+          "hollow": false,
+          "is_prop": true,
+          "kind": "theorem",
+          "line": 66,
+          "meaning_hash": "00000000799bc5cd",
+          "name": "Fixture2000.cited_mul_comm",
+          "packaged_fields": [],
+          "transitive_sorry": true,
+          "type": "∀ (m n : ℕ), m * n = n * m",
+          "type_hash": "00000000799bc5cd",
+          "type_uses_external": [
+            "Eq",
+            "HMul.hMul",
+            "Nat",
+            "instHMul",
+            "instMulNat"
+          ],
+          "type_uses_external_truncated": false,
+          "type_uses_nodes": [],
+          "value_uses_external": [
+            "Bool.false",
+            "Eq",
+            "HMul.hMul",
+            "Lean.Name",
+            "Lean.Name.anonymous",
+            "Lean.Name.num",
+            "Lean.Name.str",
+            "Nat",
+            "OfNat.ofNat",
+            "instHMul",
+            "instMulNat",
+            "instOfNatNat",
+            "sorryAx"
+          ],
+          "value_uses_external_truncated": false,
+          "value_uses_nodes": []
+        }
+      ],
+      "module": "HomAlg.Fixture2000.Cited_mul_comm",
+      "node_id": "Fixture2000.Cited_mul_comm"
+    },
+    {
+      "decls": [
+        {
+          "axioms": [],
+          "direct_sorry": false,
+          "docstring": "**Definition 1** (Fixture2000). A natural-number-indexed toy chain complex. ",
+          "hollow": false,
+          "is_prop": false,
+          "kind": "structure",
+          "line": 58,
+          "meaning_hash": "00000000ea5019a6",
+          "name": "Fixture2000.ChainComplexToy",
+          "transitive_sorry": false,
+          "type": "Type",
+          "type_hash": "00000000ea5019a6",
+          "type_uses_external": [
+            "Eq",
+            "HAdd.hAdd",
+            "Nat",
+            "OfNat.ofNat",
+            "instAddNat",
+            "instHAdd",
+            "instOfNatNat"
+          ],
+          "type_uses_external_truncated": false,
+          "type_uses_nodes": [],
+          "value_uses_external": [],
+          "value_uses_external_truncated": false,
+          "value_uses_nodes": []
+        },
+        {
+          "axioms": [],
+          "direct_sorry": false,
+          "docstring": "The distinguished degree. ",
+          "hollow": false,
+          "is_prop": false,
+          "kind": "projection",
+          "line": 61,
+          "meaning_hash": "92c01a56001fedac",
+          "name": "Fixture2000.ChainComplexToy.degree",
+          "transitive_sorry": false,
+          "type": "Fixture2000.ChainComplexToy → ℕ",
+          "type_hash": "000000009a5e3843",
+          "type_uses_external": [
+            "Nat"
+          ],
+          "type_uses_external_truncated": false,
+          "type_uses_nodes": [],
+          "value_uses_external": [],
+          "value_uses_external_truncated": false,
+          "value_uses_nodes": []
+        },
+        {
+          "axioms": [],
+          "direct_sorry": false,
+          "docstring": "The differential at each degree. ",
+          "hollow": false,
+          "is_prop": false,
+          "kind": "projection",
+          "line": 63,
+          "meaning_hash": "1dad628aa996345c",
+          "name": "Fixture2000.ChainComplexToy.differential",
+          "transitive_sorry": false,
+          "type": "Fixture2000.ChainComplexToy → ℕ → ℕ → ℕ",
+          "type_hash": "000000008a1f3d93",
+          "type_uses_external": [
+            "Nat"
+          ],
+          "type_uses_external_truncated": false,
+          "type_uses_nodes": [],
+          "value_uses_external": [],
+          "value_uses_external_truncated": false,
+          "value_uses_nodes": []
+        },
+        {
+          "axioms": [],
+          "direct_sorry": false,
+          "docstring": "Each differential preserves zero. ",
+          "hollow": false,
+          "is_prop": true,
+          "kind": "theorem",
+          "line": 65,
+          "meaning_hash": "5e2b5248d36740a7",
+          "name": "Fixture2000.ChainComplexToy.differential_zero",
+          "packaged_fields": [],
+          "transitive_sorry": false,
+          "type": "∀ (self : Fixture2000.ChainComplexToy) (n : ℕ), self.differential n 0 = 0",
+          "type_hash": "00000000ed263158",
+          "type_uses_external": [
+            "Eq",
+            "Nat",
+            "OfNat.ofNat",
+            "instOfNatNat"
+          ],
+          "type_uses_external_truncated": false,
+          "type_uses_nodes": [],
+          "value_uses_external": [],
+          "value_uses_external_truncated": false,
+          "value_uses_nodes": []
+        },
+        {
+          "axioms": [],
+          "direct_sorry": false,
+          "docstring": "",
+          "hollow": false,
+          "is_prop": false,
+          "kind": "ctor",
+          "line": 59,
+          "meaning_hash": "7a023fc5b0a83058",
+          "name": "Fixture2000.ChainComplexToy.mk",
+          "transitive_sorry": false,
+          "type": "ℕ →\n  (differential : ℕ → ℕ → ℕ) →\n    (∀ (n : ℕ), differential n 0 = 0) →\n      (∀ (n x : ℕ), differential n (differential (n + 1) x) = 0) → Fixture2000.ChainComplexToy",
+          "type_hash": "0000000073aff057",
+          "type_uses_external": [
+            "Eq",
+            "HAdd.hAdd",
+            "Nat",
+            "OfNat.ofNat",
+            "instAddNat",
+            "instHAdd",
+            "instOfNatNat"
+          ],
+          "type_uses_external_truncated": false,
+          "type_uses_nodes": [],
+          "value_uses_external": [],
+          "value_uses_external_truncated": false,
+          "value_uses_nodes": []
+        },
+        {
+          "axioms": [],
+          "direct_sorry": false,
+          "docstring": "Consecutive differentials compose to zero. ",
+          "hollow": false,
+          "is_prop": true,
+          "kind": "theorem",
+          "line": 67,
+          "meaning_hash": "71f8369b95be9872",
+          "name": "Fixture2000.ChainComplexToy.square_zero",
+          "packaged_fields": [],
+          "transitive_sorry": false,
+          "type": "∀ (self : Fixture2000.ChainComplexToy) (n x : ℕ),\n  self.differential n (self.differential (n + 1) x) = 0",
+          "type_hash": "00000000c51474e9",
+          "type_uses_external": [
+            "Eq",
+            "HAdd.hAdd",
+            "Nat",
+            "OfNat.ofNat",
+            "instAddNat",
+            "instHAdd",
+            "instOfNatNat"
+          ],
+          "type_uses_external_truncated": false,
+          "type_uses_nodes": [],
+          "value_uses_external": [],
+          "value_uses_external_truncated": false,
+          "value_uses_nodes": []
+        }
+      ],
+      "module": "HomAlg.Fixture2000.Def_1",
+      "node_id": "Fixture2000.Def_1"
+    },
+    {
+      "decls": [
+        {
+          "axioms": [],
+          "direct_sorry": false,
+          "docstring": "**Definition 2** (Fixture2000). The usual additive abelian group structure. ",
+          "hollow": false,
+          "is_prop": false,
+          "kind": "abbrev",
+          "line": 60,
+          "meaning_hash": "000000008ae3e146",
+          "name": "Fixture2000.AbelianGroup",
+          "transitive_sorry": false,
+          "type": "Type → Type",
+          "type_hash": "000000008ae3e146",
+          "type_uses_external": [],
+          "type_uses_external_truncated": false,
+          "type_uses_nodes": [],
+          "value_uses_external": [
+            "AddCommGroup"
+          ],
+          "value_uses_external_truncated": false,
+          "value_uses_nodes": []
+        }
+      ],
+      "module": "HomAlg.Fixture2000.Def_2",
+      "node_id": "Fixture2000.Def_2"
+    },
+    {
+      "decls": [
+        {
+          "axioms": [],
+          "direct_sorry": false,
+          "docstring": "**Definition 3** (Fixture2000, corrected on p. 4). The zero toy complex. ",
+          "hollow": false,
+          "is_prop": false,
+          "kind": "def",
+          "line": 84,
+          "meaning_hash": "901bcc9f1aeedc91",
+          "name": "Fixture2000.zeroComplex",
+          "transitive_sorry": false,
+          "type": "Fixture2000.ChainComplexToy",
+          "type_hash": "000000000e1bd87e",
+          "type_uses_external": [],
+          "type_uses_external_truncated": false,
+          "type_uses_nodes": [
+            "Fixture2000.Def_1"
+          ],
+          "value_uses_external": [
+            "Eq",
+            "Nat",
+            "OfNat.ofNat",
+            "instOfNatNat",
+            "rfl"
+          ],
+          "value_uses_external_truncated": false,
+          "value_uses_nodes": []
+        }
+      ],
+      "module": "HomAlg.Fixture2000.Def_3",
+      "node_id": "Fixture2000.Def_3"
+    },
+    {
+      "decls": [
+        {
+          "axioms": [
+            "sorryAx"
+          ],
+          "direct_sorry": true,
+          "docstring": "**Lemma 1** (Fixture2000). Since multiplication by one fixes each natural number,\nreplace the right side by the degree and apply reflexivity of the order. ",
+          "hollow": false,
+          "is_prop": true,
+          "kind": "theorem",
+          "line": 59,
+          "meaning_hash": "3195cf234ec372fc",
+          "name": "Fixture2000.degree_le_mul_one",
+          "packaged_fields": [],
+          "transitive_sorry": true,
+          "type": "∀ (c : Fixture2000.ChainComplexToy), c.degree ≤ c.degree * 1",
+          "type_hash": "000000009752e415",
+          "type_uses_external": [
+            "HMul.hMul",
+            "LE.le",
+            "Nat",
+            "OfNat.ofNat",
+            "instHMul",
+            "instLENat",
+            "instMulNat",
+            "instOfNatNat"
+          ],
+          "type_uses_external_truncated": false,
+          "type_uses_nodes": [
+            "Fixture2000.Def_1"
+          ],
+          "value_uses_external": [
+            "Bool.false",
+            "HMul.hMul",
+            "LE.le",
+            "Lean.Name",
+            "Lean.Name.anonymous",
+            "Lean.Name.num",
+            "Lean.Name.str",
+            "Nat",
+            "OfNat.ofNat",
+            "instHMul",
+            "instLENat",
+            "instMulNat",
+            "instOfNatNat",
+            "sorryAx"
+          ],
+          "value_uses_external_truncated": false,
+          "value_uses_nodes": []
+        }
+      ],
+      "module": "HomAlg.Fixture2000.Lem_1",
+      "node_id": "Fixture2000.Lem_1"
+    },
+    {
+      "decls": [
+        {
+          "axioms": [],
+          "direct_sorry": false,
+          "docstring": "**Lemma 2** (Fixture2000). The defining identity for addition of zero. ",
+          "hollow": false,
+          "is_prop": true,
+          "kind": "theorem",
+          "line": 54,
+          "meaning_hash": "000000002aea8c3d",
+          "name": "Fixture2000.add_zero_natural",
+          "packaged_fields": [],
+          "transitive_sorry": false,
+          "type": "∀ (n : ℕ), n + 0 = n",
+          "type_hash": "000000002aea8c3d",
+          "type_uses_external": [
+            "Eq",
+            "HAdd.hAdd",
+            "Nat",
+            "OfNat.ofNat",
+            "instAddNat",
+            "instHAdd",
+            "instOfNatNat"
+          ],
+          "type_uses_external_truncated": false,
+          "type_uses_nodes": [],
+          "value_uses_external": [
+            "Nat",
+            "Nat.add_zero"
+          ],
+          "value_uses_external_truncated": false,
+          "value_uses_nodes": []
+        }
+      ],
+      "module": "HomAlg.Fixture2000.Lem_2",
+      "node_id": "Fixture2000.Lem_2"
+    },
+    {
+      "decls": [
+        {
+          "axioms": [
+            "sorryAx"
+          ],
+          "direct_sorry": true,
+          "docstring": "**Proposition 1** (Fixture2000). STATEMENT-DISPUTED: the zero complex has degree zero.\nThe source argument says that every natural number is positive and applies this to the degree;\nits first step is false, so the claimed proof is deliberately left open. ",
+          "hollow": false,
+          "is_prop": true,
+          "kind": "theorem",
+          "line": 68,
+          "meaning_hash": "d498d8337f3633ad",
+          "name": "Fixture2000.degree_positive",
+          "packaged_fields": [],
+          "transitive_sorry": true,
+          "type": "∀ (c : Fixture2000.ChainComplexToy), 0 < c.degree",
+          "type_hash": "00000000d0bf2ef0",
+          "type_uses_external": [
+            "LT.lt",
+            "Nat",
+            "OfNat.ofNat",
+            "instLTNat",
+            "instOfNatNat"
+          ],
+          "type_uses_external_truncated": false,
+          "type_uses_nodes": [
+            "Fixture2000.Def_1"
+          ],
+          "value_uses_external": [
+            "Bool.false",
+            "LT.lt",
+            "Lean.Name",
+            "Lean.Name.anonymous",
+            "Lean.Name.num",
+            "Lean.Name.str",
+            "Nat",
+            "OfNat.ofNat",
+            "instLTNat",
+            "instOfNatNat",
+            "sorryAx"
+          ],
+          "value_uses_external_truncated": false,
+          "value_uses_nodes": []
+        }
+      ],
+      "module": "HomAlg.Fixture2000.Prop_1",
+      "node_id": "Fixture2000.Prop_1"
+    },
+    {
+      "decls": [
+        {
+          "axioms": [
+            "sorryAx"
+          ],
+          "direct_sorry": true,
+          "docstring": "**Proposition 2** (Fixture2000). PROOF-DISPUTED: the source claims every number equals its successor.\nThe source proof asserts n + 1 = n for every natural number and infers reflexivity of the degree;\nthat argument is invalid and must not be silently replaced by the trivial alternative proof. ",
+          "hollow": false,
+          "is_prop": true,
+          "kind": "theorem",
+          "line": 69,
+          "meaning_hash": "b652b7834df82cac",
+          "name": "Fixture2000.degree_self_disputed",
+          "packaged_fields": [],
+          "transitive_sorry": true,
+          "type": "∀ (c : Fixture2000.ChainComplexToy), c.degree = c.degree",
+          "type_hash": "000000008b8031e5",
+          "type_uses_external": [
+            "Eq",
+            "Nat"
+          ],
+          "type_uses_external_truncated": false,
+          "type_uses_nodes": [
+            "Fixture2000.Def_1"
+          ],
+          "value_uses_external": [
+            "Bool.false",
+            "Eq",
+            "Lean.Name",
+            "Lean.Name.anonymous",
+            "Lean.Name.num",
+            "Lean.Name.str",
+            "Nat",
+            "OfNat.ofNat",
+            "instOfNatNat",
+            "sorryAx"
+          ],
+          "value_uses_external_truncated": false,
+          "value_uses_nodes": []
+        }
+      ],
+      "module": "HomAlg.Fixture2000.Prop_2",
+      "node_id": "Fixture2000.Prop_2"
+    },
+    {
+      "decls": [],
+      "module": "HomAlg.Fixture2000.Rem_1",
+      "node_id": "Fixture2000.Rem_1"
+    },
+    {
+      "decls": [
+        {
+          "axioms": [],
+          "direct_sorry": false,
+          "docstring": "**Theorem 1** (Fixture2000). Apply Lemma 2 to the distinguished degree. ",
+          "hollow": false,
+          "is_prop": true,
+          "kind": "theorem",
+          "line": 61,
+          "meaning_hash": "6ceca6803f931b7f",
+          "name": "Fixture2000.degree_add_zero",
+          "packaged_fields": [],
+          "transitive_sorry": false,
+          "type": "∀ (c : Fixture2000.ChainComplexToy), c.degree + 0 = c.degree",
+          "type_hash": "00000000dd7940ca",
+          "type_uses_external": [
+            "Eq",
+            "HAdd.hAdd",
+            "Nat",
+            "OfNat.ofNat",
+            "instAddNat",
+            "instHAdd",
+            "instOfNatNat"
+          ],
+          "type_uses_external_truncated": false,
+          "type_uses_nodes": [
+            "Fixture2000.Def_1"
+          ],
+          "value_uses_external": [],
+          "value_uses_external_truncated": false,
+          "value_uses_nodes": [
+            "Fixture2000.Lem_2"
+          ]
+        },
+        {
+          "axioms": [],
+          "direct_sorry": false,
+          "docstring": "**Theorem 1 (ii)** (Fixture2000). Substitute the assumed zero degree in part (i). ",
+          "hollow": false,
+          "is_prop": true,
+          "kind": "theorem",
+          "line": 65,
+          "meaning_hash": "67e4eba416edb807",
+          "name": "Fixture2000.eq_degree_zero",
+          "packaged_fields": [],
+          "transitive_sorry": false,
+          "type": "∀ (c : Fixture2000.ChainComplexToy), c.degree = 0 → c.degree + 0 = 0",
+          "type_hash": "000000001f2d76d2",
+          "type_uses_external": [
+            "Eq",
+            "HAdd.hAdd",
+            "Nat",
+            "OfNat.ofNat",
+            "instAddNat",
+            "instHAdd",
+            "instOfNatNat"
+          ],
+          "type_uses_external_truncated": false,
+          "type_uses_nodes": [
+            "Fixture2000.Def_1"
+          ],
+          "value_uses_external": [
+            "Eq",
+            "Eq.trans",
+            "HAdd.hAdd",
+            "Nat",
+            "OfNat.ofNat",
+            "instAddNat",
+            "instHAdd",
+            "instOfNatNat"
+          ],
+          "value_uses_external_truncated": false,
+          "value_uses_nodes": [
+            "Fixture2000.Lem_2"
+          ]
+        }
+      ],
+      "module": "HomAlg.Fixture2000.Thm_1",
+      "node_id": "Fixture2000.Thm_1"
+    },
+    {
+      "decls": [
+        {
+          "axioms": [
+            "Fixture2000.two_add_two._native.native_decide.ax_1_1"
+          ],
+          "direct_sorry": false,
+          "docstring": "**Theorem 2** (Fixture2000). Evaluate addition of the displayed natural numbers. ",
+          "hollow": false,
+          "is_prop": true,
+          "kind": "theorem",
+          "line": 56,
+          "meaning_hash": "00000000c8a69e1e",
+          "name": "Fixture2000.two_add_two",
+          "packaged_fields": [],
+          "transitive_sorry": false,
+          "type": "2 + 2 = 4",
+          "type_hash": "00000000c8a69e1e",
+          "type_uses_external": [
+            "Eq",
+            "HAdd.hAdd",
+            "Nat",
+            "OfNat.ofNat",
+            "instAddNat",
+            "instHAdd",
+            "instOfNatNat"
+          ],
+          "type_uses_external_truncated": false,
+          "type_uses_nodes": [],
+          "value_uses_external": [
+            "Bool",
+            "Bool.true",
+            "Decidable.decide",
+            "Eq",
+            "HAdd.hAdd",
+            "Nat",
+            "OfNat.ofNat",
+            "instAddNat",
+            "instDecidableEqNat",
+            "instHAdd",
+            "instOfNatNat",
+            "of_decide_eq_true"
+          ],
+          "value_uses_external_truncated": false,
+          "value_uses_nodes": []
+        }
+      ],
+      "module": "HomAlg.Fixture2000.Thm_2",
+      "node_id": "Fixture2000.Thm_2"
+    },
+    {
+      "decls": [
+        {
+          "axioms": [
+            "sorryAx"
+          ],
+          "direct_sorry": false,
+          "docstring": "**Theorem 3** (Fixture2000). Apply Lemma 1 and remove the final addition of zero. ",
+          "hollow": false,
+          "is_prop": true,
+          "kind": "theorem",
+          "line": 62,
+          "meaning_hash": "4135f00c8bf725b6",
+          "name": "Fixture2000.degree_le_mul_one_add_zero",
+          "packaged_fields": [],
+          "transitive_sorry": true,
+          "type": "∀ (c : Fixture2000.ChainComplexToy), c.degree ≤ c.degree * 1 + 0",
+          "type_hash": "000000007b68bd57",
+          "type_uses_external": [
+            "HAdd.hAdd",
+            "HMul.hMul",
+            "LE.le",
+            "Nat",
+            "OfNat.ofNat",
+            "instAddNat",
+            "instHAdd",
+            "instHMul",
+            "instLENat",
+            "instMulNat",
+            "instOfNatNat"
+          ],
+          "type_uses_external_truncated": false,
+          "type_uses_nodes": [
+            "Fixture2000.Def_1"
+          ],
+          "value_uses_external": [
+            "HAdd.hAdd",
+            "HMul.hMul",
+            "LE.le",
+            "Nat",
+            "OfNat.ofNat",
+            "id",
+            "instAddNat",
+            "instHAdd",
+            "instHMul",
+            "instLENat",
+            "instMulNat",
+            "instOfNatNat"
+          ],
+          "value_uses_external_truncated": false,
+          "value_uses_nodes": [
+            "Fixture2000.Lem_1"
+          ]
+        }
+      ],
+      "module": "HomAlg.Fixture2000.Thm_3",
+      "node_id": "Fixture2000.Thm_3"
+    },
+    {
+      "decls": [
+        {
+          "axioms": [
+            "sorryAx"
+          ],
+          "direct_sorry": false,
+          "docstring": "**Theorem 4** (Fixture2000). Specialize the cited commutativity law to the degree. ",
+          "hollow": false,
+          "is_prop": true,
+          "kind": "theorem",
+          "line": 62,
+          "meaning_hash": "f20842c61f5bc7d2",
+          "name": "Fixture2000.degree_mul_comm",
+          "packaged_fields": [],
+          "transitive_sorry": true,
+          "type": "∀ (c : Fixture2000.ChainComplexToy) (n : ℕ), c.degree * n = n * c.degree",
+          "type_hash": "00000000db923723",
+          "type_uses_external": [
+            "Eq",
+            "HMul.hMul",
+            "Nat",
+            "instHMul",
+            "instMulNat"
+          ],
+          "type_uses_external_truncated": false,
+          "type_uses_nodes": [
+            "Fixture2000.Def_1"
+          ],
+          "value_uses_external": [
+            "Nat"
+          ],
+          "value_uses_external_truncated": false,
+          "value_uses_nodes": [
+            "Fixture2000.Cited_mul_comm"
+          ]
+        }
+      ],
+      "module": "HomAlg.Fixture2000.Thm_4",
+      "node_id": "Fixture2000.Thm_4"
+    },
+    {
+      "decls": [],
+      "module": "HomAlg.Fixture2001",
+      "node_id": null
+    },
+    {
+      "decls": [
+        {
+          "axioms": [],
+          "direct_sorry": false,
+          "docstring": "**Definition 1** (Fixture2001). A toy complex equipped with a chosen natural number. ",
+          "hollow": false,
+          "is_prop": false,
+          "kind": "structure",
+          "line": 52,
+          "meaning_hash": "00000000ea5019a6",
+          "name": "Fixture2001.PointedToyComplex",
+          "transitive_sorry": false,
+          "type": "Type",
+          "type_hash": "00000000ea5019a6",
+          "type_uses_external": [
+            "Nat"
+          ],
+          "type_uses_external_truncated": false,
+          "type_uses_nodes": [
+            "Fixture2000.Def_1"
+          ],
+          "value_uses_external": [],
+          "value_uses_external_truncated": false,
+          "value_uses_nodes": []
+        },
+        {
+          "axioms": [],
+          "direct_sorry": false,
+          "docstring": "The underlying earlier toy complex. ",
+          "hollow": false,
+          "is_prop": false,
+          "kind": "projection",
+          "line": 55,
+          "meaning_hash": "1a02bbfb65516fb0",
+          "name": "Fixture2001.PointedToyComplex.complex",
+          "transitive_sorry": false,
+          "type": "Fixture2001.PointedToyComplex → Fixture2000.ChainComplexToy",
+          "type_hash": "00000000134d1f48",
+          "type_uses_external": [],
+          "type_uses_external_truncated": false,
+          "type_uses_nodes": [
+            "Fixture2000.Def_1"
+          ],
+          "value_uses_external": [],
+          "value_uses_external_truncated": false,
+          "value_uses_nodes": []
+        },
+        {
+          "axioms": [],
+          "direct_sorry": false,
+          "docstring": "",
+          "hollow": false,
+          "is_prop": false,
+          "kind": "ctor",
+          "line": 53,
+          "meaning_hash": "8c625919407b1e82",
+          "name": "Fixture2001.PointedToyComplex.mk",
+          "transitive_sorry": false,
+          "type": "Fixture2000.ChainComplexToy → ℕ → Fixture2001.PointedToyComplex",
+          "type_hash": "00000000cb1416aa",
+          "type_uses_external": [
+            "Nat"
+          ],
+          "type_uses_external_truncated": false,
+          "type_uses_nodes": [
+            "Fixture2000.Def_1"
+          ],
+          "value_uses_external": [],
+          "value_uses_external_truncated": false,
+          "value_uses_nodes": []
+        },
+        {
+          "axioms": [],
+          "direct_sorry": false,
+          "docstring": "The distinguished natural number. ",
+          "hollow": false,
+          "is_prop": false,
+          "kind": "projection",
+          "line": 57,
+          "meaning_hash": "7757c526bbab5bc2",
+          "name": "Fixture2001.PointedToyComplex.point",
+          "transitive_sorry": false,
+          "type": "Fixture2001.PointedToyComplex → ℕ",
+          "type_hash": "0000000069312f6a",
+          "type_uses_external": [
+            "Nat"
+          ],
+          "type_uses_external_truncated": false,
+          "type_uses_nodes": [],
+          "value_uses_external": [],
+          "value_uses_external_truncated": false,
+          "value_uses_nodes": []
+        }
+      ],
+      "module": "HomAlg.Fixture2001.Def_1",
+      "node_id": "Fixture2001.Def_1"
+    },
+    {
+      "decls": [
+        {
+          "axioms": [],
+          "direct_sorry": false,
+          "docstring": "**Theorem 1** (Fixture2001). Apply part (i) of Fixture2000 Theorem 1 to the underlying complex. ",
+          "hollow": false,
+          "is_prop": true,
+          "kind": "theorem",
+          "line": 64,
+          "meaning_hash": "a58cd93d46fc50ee",
+          "name": "Fixture2001.degree_add_zero",
+          "packaged_fields": [],
+          "transitive_sorry": false,
+          "type": "∀ (c : Fixture2001.PointedToyComplex), c.complex.degree + 0 = c.complex.degree",
+          "type_hash": "0000000040923ee7",
+          "type_uses_external": [
+            "Eq",
+            "HAdd.hAdd",
+            "Nat",
+            "OfNat.ofNat",
+            "instAddNat",
+            "instHAdd",
+            "instOfNatNat"
+          ],
+          "type_uses_external_truncated": false,
+          "type_uses_nodes": [
+            "Fixture2000.Def_1",
+            "Fixture2001.Def_1"
+          ],
+          "value_uses_external": [],
+          "value_uses_external_truncated": false,
+          "value_uses_nodes": [
+            "Fixture2000.Thm_1"
+          ]
+        }
+      ],
+      "module": "HomAlg.Fixture2001.Thm_1",
+      "node_id": "Fixture2001.Thm_1"
+    }
+  ],
+  "toolchain": "leanprover/lean4:v4.35.0"
+}

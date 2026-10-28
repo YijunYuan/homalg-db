@@ -1,0 +1,80 @@
+{
+  "$id": "https://homalg-db/schema/concepts.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "concepts": {
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "aliases": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "description": {
+            "type": "string"
+          },
+          "first_known": {
+            "additionalProperties": false,
+            "properties": {
+              "doc": {
+                "$ref": "common.schema.json#/$defs/DocKey"
+              },
+              "node": {
+                "$ref": "common.schema.json#/$defs/NodeId"
+              },
+              "note": {
+                "type": "string"
+              }
+            },
+            "type": "object"
+          },
+          "id": {
+            "$ref": "common.schema.json#/$defs/SlugId"
+          },
+          "merged_into": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "common.schema.json#/$defs/SlugId"
+              }
+            ]
+          },
+          "name": {
+            "type": "string"
+          },
+          "parents": {
+            "items": {
+              "$ref": "common.schema.json#/$defs/SlugId"
+            },
+            "type": "array"
+          },
+          "related_tags": {
+            "items": {
+              "$ref": "common.schema.json#/$defs/SlugId"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "id",
+          "name"
+        ],
+        "type": "object"
+      },
+      "type": "array"
+    },
+    "schema_version": {
+      "const": 1
+    }
+  },
+  "required": [
+    "schema_version",
+    "concepts"
+  ],
+  "type": "object"
+}

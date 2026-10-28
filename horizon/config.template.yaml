@@ -1,0 +1,24 @@
+workspace:
+  name: homalg-db
+  state_dir: .archon-horizon
+  rounds: 1
+  manage_gitignore: false
+  horizon_agent: {harness: primary}
+  scheduler: {max_parallel_sessions: 1}
+  hooks:
+    before_round:
+      - homalg blueprint-tex --active
+      - homalg private-snapshot
+    after_session:
+      - homalg after-session --task {task_id} --session {session_dir} --since {start_sha} --until {end_sha}
+  delegation: {allow_launch_tasks: false, allow_launch_runs: false}
+external_libraries:
+  - name: mathlib
+harnesses: {}
+github: {enabled: false}
+projects:
+  HomAlg:
+    path: .
+    type: lean
+    blueprint: {path: blueprint/src}
+    build: {command: homalg build-active}

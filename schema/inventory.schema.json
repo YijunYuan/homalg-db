@@ -1,0 +1,101 @@
+{
+  "$id": "https://homalg-db/schema/inventory.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "doc_key": {
+      "$ref": "common.schema.json#/$defs/DocKey"
+    },
+    "pages": {
+      "additionalProperties": {
+        "additionalProperties": false,
+        "properties": {
+          "complete": {
+            "type": "boolean"
+          },
+          "items": {
+            "items": {
+              "additionalProperties": false,
+              "allOf": [
+                {
+                  "if": {
+                    "properties": {
+                      "disposition": {
+                        "enum": [
+                          "node",
+                          "informal"
+                        ]
+                      }
+                    }
+                  },
+                  "then": {
+                    "required": [
+                      "node"
+                    ]
+                  }
+                },
+                {
+                  "if": {
+                    "properties": {
+                      "disposition": {
+                        "const": "not-an-item"
+                      }
+                    }
+                  },
+                  "then": {
+                    "required": [
+                      "reason"
+                    ]
+                  }
+                }
+              ],
+              "properties": {
+                "disposition": {
+                  "enum": [
+                    "node",
+                    "informal",
+                    "not-an-item"
+                  ]
+                },
+                "label": {
+                  "type": "string"
+                },
+                "node": {
+                  "$ref": "common.schema.json#/$defs/NodeId"
+                },
+                "reason": {
+                  "minLength": 1,
+                  "type": "string"
+                }
+              },
+              "required": [
+                "label",
+                "disposition"
+              ],
+              "type": "object"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "items",
+          "complete"
+        ],
+        "type": "object"
+      },
+      "propertyNames": {
+        "pattern": "^[0-9]{4}$"
+      },
+      "type": "object"
+    },
+    "schema_version": {
+      "const": 1
+    }
+  },
+  "required": [
+    "schema_version",
+    "doc_key",
+    "pages"
+  ],
+  "type": "object"
+}

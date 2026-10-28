@@ -1,0 +1,120 @@
+{
+  "concepts": [
+    {
+      "arcs": [],
+      "id": "chain-complex",
+      "lanes": [
+        {
+          "defines": [
+            {
+              "doc": "Fixture2000",
+              "headline": "in-progress",
+              "id": "Fixture2000.Def_1",
+              "label": "Definition 1",
+              "status": "proved",
+              "x": 240003,
+              "y": 24
+            }
+          ],
+          "doc": "Fixture2000",
+          "uses_count": 0,
+          "year": 2000
+        }
+      ]
+    },
+    {
+      "arcs": [],
+      "id": "homology",
+      "lanes": []
+    },
+    {
+      "arcs": [],
+      "id": "cohomology",
+      "lanes": []
+    },
+    {
+      "arcs": [],
+      "id": "exact-sequence",
+      "lanes": []
+    },
+    {
+      "arcs": [],
+      "id": "chain-homotopy",
+      "lanes": []
+    },
+    {
+      "arcs": [],
+      "id": "resolution",
+      "lanes": []
+    },
+    {
+      "arcs": [],
+      "id": "derived-functor",
+      "lanes": []
+    },
+    {
+      "arcs": [],
+      "id": "ext",
+      "lanes": []
+    },
+    {
+      "arcs": [],
+      "id": "abelian-category",
+      "lanes": []
+    },
+    {
+      "arcs": [],
+      "id": "spectral-sequence",
+      "lanes": []
+    }
+  ],
+  "document_edges": [
+    {
+      "from": "Fixture2001",
+      "imports": 3,
+      "relations": {
+        "accepted": 0,
+        "unreviewed": 0
+      },
+      "to": "Fixture2000"
+    }
+  ],
+  "documents": [
+    {
+      "counts": {
+        "cited": 1,
+        "disputed": 2,
+        "informal": 0,
+        "planned": 1,
+        "proved": 6,
+        "proved-modulo-citations": 1,
+        "proved-pending-deps": 1,
+        "proved-with-axioms": 1,
+        "pruned": 1,
+        "stated": 2
+      },
+      "doc_key": "Fixture2000",
+      "x": 240000,
+      "y": 0,
+      "year": 2000
+    },
+    {
+      "counts": {
+        "cited": 0,
+        "disputed": 0,
+        "informal": 0,
+        "planned": 0,
+        "proved": 2,
+        "proved-modulo-citations": 0,
+        "proved-pending-deps": 0,
+        "proved-with-axioms": 0,
+        "pruned": 0,
+        "stated": 0
+      },
+      "doc_key": "Fixture2001",
+      "x": 240120,
+      "y": 100,
+      "year": 2001
+    }
+  ]
+}

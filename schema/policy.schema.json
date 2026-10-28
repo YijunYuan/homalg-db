@@ -1,0 +1,39 @@
+{
+  "$id": "https://homalg-db/schema/policy.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "claim_activity_grace_days": {
+      "minimum": 1,
+      "type": "integer"
+    },
+    "claim_pr_max_age_days": {
+      "minimum": 1,
+      "type": "integer"
+    },
+    "claim_ttl_days": {
+      "minimum": 1,
+      "type": "integer"
+    },
+    "claimed_at_window_hours": {
+      "minimum": 1,
+      "type": "integer"
+    },
+    "max_active_claims_per_holder": {
+      "minimum": 1,
+      "type": "integer"
+    },
+    "schema_version": {
+      "const": 1
+    }
+  },
+  "required": [
+    "schema_version",
+    "claim_ttl_days",
+    "claim_activity_grace_days",
+    "max_active_claims_per_holder",
+    "claimed_at_window_hours",
+    "claim_pr_max_age_days"
+  ],
+  "type": "object"
+}

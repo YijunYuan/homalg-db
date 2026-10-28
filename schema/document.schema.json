@@ -1,0 +1,456 @@
+{
+  "$id": "https://homalg-db/schema/document.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "else": {
+    "required": [
+      "pdf"
+    ]
+  },
+  "if": {
+    "properties": {
+      "type": {
+        "const": "synthetic"
+      }
+    }
+  },
+  "properties": {
+    "authors": {
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "family": {
+            "type": "string"
+          },
+          "given": {
+            "type": "string"
+          },
+          "orcid": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "family"
+        ],
+        "type": "object"
+      },
+      "minItems": 1,
+      "type": "array"
+    },
+    "bibtex": {
+      "type": "string"
+    },
+    "doc_key": {
+      "$ref": "common.schema.json#/$defs/DocKey"
+    },
+    "early_review": {
+      "oneOf": [
+        {
+          "additionalProperties": false,
+          "properties": {
+            "by": {
+              "$ref": "common.schema.json#/$defs/Login"
+            },
+            "on": {
+              "$ref": "common.schema.json#/$defs/Date"
+            }
+          },
+          "required": [
+            "by",
+            "on"
+          ],
+          "type": "object"
+        },
+        {
+          "$ref": "common.schema.json#/$defs/AgentReview"
+        }
+      ]
+    },
+    "edition": {
+      "type": "string"
+    },
+    "first_published": {
+      "maximum": 2100,
+      "minimum": 1800,
+      "type": "integer"
+    },
+    "foundations": {
+      "items": {
+        "additionalProperties": false,
+        "allOf": [
+          {
+            "if": {
+              "properties": {
+                "status": {
+                  "enum": [
+                    "proposed",
+                    "confirmed"
+                  ]
+                }
+              }
+            },
+            "then": {
+              "required": [
+                "evidence"
+              ]
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "status": {
+                  "const": "confirmed"
+                }
+              }
+            },
+            "then": {
+              "oneOf": [
+                {
+                  "required": [
+                    "confirmed_by"
+                  ],
+                  "not": {
+                    "required": [
+                      "confirmation"
+                    ]
+                  }
+                },
+                {
+                  "required": [
+                    "confirmation"
+                  ],
+                  "not": {
+                    "required": [
+                      "confirmed_by"
+                    ]
+                  }
+                }
+              ]
+            }
+          }
+        ],
+        "properties": {
+          "confirmed_by": {
+            "$ref": "common.schema.json#/$defs/Login"
+          },
+          "evidence": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "justification": {
+            "type": "string"
+          },
+          "mathlib": {
+            "items": {
+              "$ref": "common.schema.json#/$defs/LeanName"
+            },
+            "type": "array"
+          },
+          "note": {
+            "type": "string"
+          },
+          "notion": {
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "draft",
+              "proposed",
+              "confirmed"
+            ]
+          },
+          "confirmation": {
+            "allOf": [
+              {
+                "$ref": "common.schema.json#/$defs/AgentReview"
+              },
+              {
+                "required": [
+                  "content_sha256"
+                ]
+              }
+            ]
+          }
+        },
+        "required": [
+          "notion",
+          "mathlib",
+          "justification",
+          "status"
+        ],
+        "type": "object"
+      },
+      "type": "array"
+    },
+    "identifiers": {
+      "additionalProperties": false,
+      "properties": {
+        "arxiv": {
+          "type": "string"
+        },
+        "doi": {
+          "type": "string"
+        },
+        "isbn": {
+          "type": "string"
+        },
+        "mr": {
+          "type": "string"
+        },
+        "url": {
+          "format": "uri",
+          "type": "string"
+        },
+        "zbl": {
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "item_kinds": {
+      "items": {
+        "$ref": "common.schema.json#/$defs/Kind"
+      },
+      "type": "array",
+      "uniqueItems": true
+    },
+    "journal": {
+      "additionalProperties": false,
+      "properties": {
+        "issue": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "pages": {
+          "type": "string"
+        },
+        "volume": {
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "language": {
+      "default": "en",
+      "type": "string"
+    },
+    "may_import": {
+      "items": {
+        "$ref": "common.schema.json#/$defs/DocKey"
+      },
+      "type": "array",
+      "uniqueItems": true
+    },
+    "notes": {
+      "type": "string"
+    },
+    "part_of": {
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "$ref": "common.schema.json#/$defs/DocKey"
+        }
+      ]
+    },
+    "pdf": {
+      "additionalProperties": false,
+      "properties": {
+        "file": {
+          "type": "string"
+        },
+        "license": {
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "url": {
+              "format": "uri",
+              "type": "string"
+            }
+          },
+          "required": [
+            "id"
+          ],
+          "type": "object"
+        },
+        "page_offset": {
+          "type": "integer"
+        },
+        "pages": {
+          "minimum": 1,
+          "type": "integer"
+        },
+        "sha256": {
+          "$ref": "common.schema.json#/$defs/Sha256"
+        },
+        "sources": {
+          "items": {
+            "additionalProperties": false,
+            "properties": {
+              "kind": {
+                "enum": [
+                  "publisher",
+                  "arxiv",
+                  "author",
+                  "library",
+                  "other"
+                ]
+              },
+              "url": {
+                "format": "uri",
+                "type": "string"
+              }
+            },
+            "required": [
+              "kind",
+              "url"
+            ],
+            "type": "object"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "file",
+        "sha256",
+        "license"
+      ],
+      "type": "object"
+    },
+    "previous_edition": {
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "$ref": "common.schema.json#/$defs/DocKey"
+        }
+      ]
+    },
+    "publisher": {
+      "type": "string"
+    },
+    "schema_version": {
+      "const": 1
+    },
+    "series": {
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "volume": {
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "structure": {
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "chapter": {
+            "type": "string"
+          },
+          "pages": {
+            "$ref": "common.schema.json#/$defs/PageRange"
+          },
+          "sections": {
+            "items": {
+              "oneOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "additionalProperties": false,
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "pages": {
+                      "$ref": "common.schema.json#/$defs/PageRange"
+                    },
+                    "title": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "id"
+                  ],
+                  "type": "object"
+                }
+              ]
+            },
+            "type": "array"
+          },
+          "title": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "chapter"
+        ],
+        "type": "object"
+      },
+      "type": "array"
+    },
+    "subtitle": {
+      "type": "string"
+    },
+    "title": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "transcription": {
+      "additionalProperties": false,
+      "properties": {
+        "conventions": {
+          "items": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "type": "array"
+        }
+      },
+      "type": "object"
+    },
+    "type": {
+      "enum": [
+        "book",
+        "article",
+        "thesis",
+        "lecture-notes",
+        "preprint",
+        "chapter",
+        "synthetic"
+      ]
+    },
+    "year": {
+      "maximum": 2100,
+      "minimum": 1800,
+      "type": "integer"
+    }
+  },
+  "required": [
+    "schema_version",
+    "doc_key",
+    "type",
+    "title",
+    "authors",
+    "year",
+    "foundations"
+  ],
+  "then": {
+    "not": {
+      "required": [
+        "pdf"
+      ]
+    }
+  },
+  "type": "object"
+}

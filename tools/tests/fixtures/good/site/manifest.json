@@ -1,0 +1,101 @@
+{
+  "budgets_ok": true,
+  "commit": "fixture",
+  "concepts_count": 1,
+  "documents": [
+    {
+      "authors": [
+        {
+          "family": "Fixture Maintainers"
+        }
+      ],
+      "aux_headline_counts": {
+        "error": 0,
+        "in-progress": 0,
+        "proof-complete": 0,
+        "statement-complete": 0
+      },
+      "aux_total": 0,
+      "cited_headline_counts": {
+        "error": 0,
+        "in-progress": 0,
+        "proof-complete": 0,
+        "statement-complete": 0
+      },
+      "claim": {
+        "state": "unclaimed"
+      },
+      "doc_key": "Fixture2000",
+      "fidelity_counts": {
+        "deviates": 0,
+        "faithful": 1,
+        "foundation": 0,
+        "reviewed": 0
+      },
+      "files": {
+        "document": "documents/Fixture2000.0000000000000000.json",
+        "search_shard": "search/Fixture2000.0000000000000000.json"
+      },
+      "graph_hash": "0000000000000000",
+      "headline_counts": {
+        "error": 0,
+        "in-progress": 1,
+        "proof-complete": 0,
+        "statement-complete": 0
+      },
+      "items_total": 1,
+      "language": "en",
+      "node_counts": {
+        "cited": 0,
+        "disputed": 0,
+        "informal": 0,
+        "planned": 1,
+        "proved": 0,
+        "proved-modulo-citations": 0,
+        "proved-pending-deps": 0,
+        "proved-with-axioms": 0,
+        "pruned": 0,
+        "stated": 0
+      },
+      "title": "Toy chain complexes",
+      "type": "synthetic",
+      "year": 2000
+    }
+  ],
+  "generator": {
+    "name": "homalg",
+    "version": "1"
+  },
+  "global_dag_files": [
+    {
+      "file": "global-dag/2000-2000.json",
+      "from": 2000,
+      "to": 2000
+    }
+  ],
+  "global_graph_file": "global-graph.json",
+  "health": {
+    "deps_mismatch": 0,
+    "disputed": 0,
+    "llm_relations_unreviewed": 0,
+    "markdown_findings": 0,
+    "needs_repair": 0,
+    "summaries_stale": 0
+  },
+  "index_file": "index.json",
+  "lean": {
+    "mathlib_rev": "v4.35.0",
+    "toolchain": "leanprover/lean4:v4.35.0"
+  },
+  "pages_base": "/homalg-db/",
+  "prerender": {
+    "layout": false,
+    "search_index": false,
+    "shiki": false
+  },
+  "relations_count": 0,
+  "repo_url": "https://github.com/example/homalg-db",
+  "schema_version": 1,
+  "search_hash": "0000000000000000",
+  "tags_count": 1
+}

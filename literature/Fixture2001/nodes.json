@@ -1,0 +1,234 @@
+{
+  "doc_key": "Fixture2001",
+  "generator": {
+    "name": "homalg",
+    "version": "2"
+  },
+  "lean": {
+    "mathlib_rev": "v4.35.0",
+    "toolchain": "leanprover/lean4:v4.35.0"
+  },
+  "nodes": [
+    {
+      "authored": {
+        "concepts": {
+          "defines": [],
+          "uses": []
+        },
+        "decls": [
+          "Fixture2001.PointedToyComplex"
+        ],
+        "deps": {
+          "proof": [],
+          "statement": [
+            "Fixture2000.Def_1"
+          ]
+        },
+        "description_md": "A later source extends the earlier definition while retaining an explicit cross-document dependency.",
+        "doc": "Fixture2001",
+        "fidelity": {
+          "status": "faithful"
+        },
+        "id": "Fixture2001.Def_1",
+        "kind": "definition",
+        "source": {
+          "chapter": "1",
+          "label": "Definition 1",
+          "pages": [
+            1
+          ],
+          "section": "1.1"
+        },
+        "statement_md": "A pointed toy chain complex is a toy chain complex in the sense of Fixture2000, together with a chosen natural number.",
+        "tags": [
+          "chain-complex",
+          "basic"
+        ],
+        "title": "Definition 1"
+      },
+      "derived": {
+        "decl_info": [
+          {
+            "direct_sorry": false,
+            "docstring": "**Definition 1** (Fixture2001). A toy complex equipped with a chosen natural number. ",
+            "hollow": false,
+            "is_prop": false,
+            "kind": "structure",
+            "line": 52,
+            "meaning_hash": "00000000ea5019a6",
+            "name": "Fixture2001.PointedToyComplex",
+            "type": "Type",
+            "type_hash": "00000000ea5019a6",
+            "type_sha256": "baaddf70fb5d432b8bd948ef91d6f910124a6d138edae4d5f000c4610ddc8eae",
+            "type_uses_external": [
+              "Nat"
+            ],
+            "type_uses_external_truncated": false,
+            "type_uses_nodes": [
+              "Fixture2000.Def_1"
+            ],
+            "value_uses_external": [],
+            "value_uses_external_truncated": false,
+            "value_uses_nodes": []
+          }
+        ],
+        "declared_deps": {
+          "proof": [],
+          "statement": [
+            "Fixture2000.Def_1"
+          ]
+        },
+        "deps_diff": {
+          "declared_not_verified": {
+            "proof": [],
+            "statement": []
+          },
+          "verified_not_declared": []
+        },
+        "file": {
+          "lines": 59,
+          "path": "HomAlg/Fixture2001/Def_1.lean",
+          "sha256": "bdc9e0a867c65d10bbe22d3bad887726e272daff83f651268c3e692b57097823"
+        },
+        "imports": {
+          "mathlib": [],
+          "nodes": [
+            "Fixture2000.Def_1"
+          ]
+        },
+        "local_status": "proved",
+        "sorry_count_text": 0,
+        "verified_deps": {
+          "proof": [],
+          "statement": [
+            "Fixture2000.Def_1"
+          ]
+        }
+      },
+      "id": "Fixture2001.Def_1"
+    },
+    {
+      "authored": {
+        "concepts": {
+          "defines": [],
+          "uses": []
+        },
+        "decls": [
+          "Fixture2001.degree_add_zero"
+        ],
+        "deps": {
+          "proof": [
+            "Fixture2000.Thm_1"
+          ],
+          "statement": [
+            "Fixture2001.Def_1",
+            "Fixture2000.Def_1"
+          ]
+        },
+        "description_md": "A later theorem cites the earlier two-part theorem through an explicit fully qualified name.",
+        "doc": "Fixture2001",
+        "fidelity": {
+          "status": "faithful"
+        },
+        "id": "Fixture2001.Thm_1",
+        "kind": "theorem",
+        "nl_proof_source": {
+          "follows": "document"
+        },
+        "proof_md": "Apply part (i) of Theorem 1 of Fixture2000 to the underlying complex. [uses `Fixture2000.Thm_1`]",
+        "source": {
+          "chapter": "1",
+          "label": "Theorem 1",
+          "pages": [
+            1
+          ],
+          "section": "1.1"
+        },
+        "statement_md": "If $C$ is a pointed toy chain complex, the degree of its underlying complex is unchanged by adding zero.",
+        "tags": [
+          "chain-complex",
+          "basic"
+        ],
+        "title": "Theorem 1"
+      },
+      "derived": {
+        "decl_info": [
+          {
+            "direct_sorry": false,
+            "docstring": "**Theorem 1** (Fixture2001). Apply part (i) of Fixture2000 Theorem 1 to the underlying complex. ",
+            "hollow": false,
+            "is_prop": true,
+            "kind": "theorem",
+            "line": 64,
+            "meaning_hash": "a58cd93d46fc50ee",
+            "name": "Fixture2001.degree_add_zero",
+            "type": "∀ (c : Fixture2001.PointedToyComplex), c.complex.degree + 0 = c.complex.degree",
+            "type_hash": "0000000040923ee7",
+            "type_sha256": "498a4581a20559d80938a60d629c6cc338accc2fd39f7932ec8f7ba04e5b5b26",
+            "type_uses_external": [
+              "Eq",
+              "HAdd.hAdd",
+              "Nat",
+              "OfNat.ofNat",
+              "instAddNat",
+              "instHAdd",
+              "instOfNatNat"
+            ],
+            "type_uses_external_truncated": false,
+            "type_uses_nodes": [
+              "Fixture2000.Def_1",
+              "Fixture2001.Def_1"
+            ],
+            "value_uses_external": [],
+            "value_uses_external_truncated": false,
+            "value_uses_nodes": [
+              "Fixture2000.Thm_1"
+            ]
+          }
+        ],
+        "declared_deps": {
+          "proof": [
+            "Fixture2000.Thm_1"
+          ],
+          "statement": [
+            "Fixture2000.Def_1",
+            "Fixture2001.Def_1"
+          ]
+        },
+        "deps_diff": {
+          "declared_not_verified": {
+            "proof": [],
+            "statement": []
+          },
+          "verified_not_declared": []
+        },
+        "file": {
+          "lines": 68,
+          "path": "HomAlg/Fixture2001/Thm_1.lean",
+          "sha256": "7ed15aa56788dc74686eaadc5ec525b937cf7112231501733841d5c2fc4b20f9"
+        },
+        "imports": {
+          "mathlib": [],
+          "nodes": [
+            "Fixture2000.Def_1",
+            "Fixture2000.Thm_1",
+            "Fixture2001.Def_1"
+          ]
+        },
+        "local_status": "proved",
+        "sorry_count_text": 0,
+        "verified_deps": {
+          "proof": [
+            "Fixture2000.Thm_1"
+          ],
+          "statement": [
+            "Fixture2000.Def_1",
+            "Fixture2001.Def_1"
+          ]
+        }
+      },
+      "id": "Fixture2001.Thm_1"
+    }
+  ],
+  "schema_version": 1
+}

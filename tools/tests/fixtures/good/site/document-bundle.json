@@ -1,0 +1,80 @@
+{
+  "chapters": [
+    {
+      "chapter": "1",
+      "node_ids": [
+        "Fixture2000.Rem_1"
+      ],
+      "sections": [
+        "1.1"
+      ],
+      "title": "Toy complexes"
+    }
+  ],
+  "document": {
+    "authors": [
+      {
+        "family": "Fixture Maintainers"
+      }
+    ],
+    "doc_key": "Fixture2000",
+    "foundations": [],
+    "language": "en",
+    "schema_version": 1,
+    "structure": [
+      {
+        "chapter": "1",
+        "pages": {
+          "first": 1,
+          "last": 3
+        },
+        "sections": [
+          "1.1"
+        ],
+        "title": "Toy complexes"
+      }
+    ],
+    "title": "Toy chain complexes",
+    "type": "synthetic",
+    "year": 2000
+  },
+  "edges": [],
+  "external_nodes": [],
+  "layout": null,
+  "nodes": [
+    {
+      "chapter": "1",
+      "concepts_defines": [],
+      "concepts_uses": [
+        "chain-complex"
+      ],
+      "decl_names": [],
+      "deps_mismatch": false,
+      "disputed": false,
+      "doc": "Fixture2000",
+      "fidelity_status": "faithful",
+      "has_mathlib": false,
+      "headline": "in-progress",
+      "id": "Fixture2000.Rem_1",
+      "is_aux": false,
+      "kind": "remark",
+      "label": "Remark 1",
+      "local_id": "Rem_1",
+      "local_status": "planned",
+      "needs_repair": false,
+      "pages": [
+        3
+      ],
+      "rank": 0,
+      "reopened": false,
+      "reviewed": false,
+      "section": "1.1",
+      "statement_first_line": "The toy complex is indexed by natural numbers.",
+      "status": "planned",
+      "tags": [
+        "chain-complex"
+      ]
+    }
+  ],
+  "schema_version": 1
+}

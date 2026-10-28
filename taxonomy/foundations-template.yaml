@@ -1,0 +1,35 @@
+schema_version: 1
+entries:
+- notion: Sets and functions
+  mathlib:
+  - Set
+  - Function.Injective
+  - Function.Surjective
+  justification: Candidate background only when the document treats sets and functions as known.
+- notion: Natural numbers and integers
+  mathlib:
+  - Nat
+  - Int
+  justification: Candidate background only when the document uses these number systems without defining
+    them.
+- notion: Groups and abelian groups
+  mathlib:
+  - Group
+  - AddCommGroup
+  justification: Candidate background only when the document assumes these algebraic structures.
+- notion: Fields
+  mathlib:
+  - Field
+  justification: Candidate background only when fields are assumed rather than introduced as an object
+    of study.
+- notion: Unital rings and their modules
+  mathlib:
+  - Ring
+  - Module
+  justification: Candidate background only after checking that the document assumes unital rings and unital
+    module actions.
+  note: "unital \u2014 check the document before keeping"
+- notion: Linear maps
+  mathlib:
+  - LinearMap
+  justification: Candidate background only when linear maps are used as an already known notion.

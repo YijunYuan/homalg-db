@@ -1,0 +1,404 @@
+{
+  "schema_version": 1,
+  "kind": "editorial-evidence-draft",
+  "concept": {
+    "id": "cohomology",
+    "name": "Cohomology",
+    "aliases": [],
+    "description": "Editorial history rehearsal from two primary papers; concept assignments and statements are unreviewed.",
+    "related_tags": [
+      "cohomology"
+    ],
+    "parents": [],
+    "merged_into": null
+  },
+  "documents": [
+    {
+      "schema_version": 1,
+      "doc_key": "Hochschild1942",
+      "type": "article",
+      "title": "Semi-Simple Algebras and Generalized Derivations",
+      "authors": [
+        {
+          "family": "Hochschild",
+          "given": "G."
+        }
+      ],
+      "year": 1942,
+      "language": "en",
+      "foundations": [],
+      "journal": {
+        "name": "American Journal of Mathematics",
+        "volume": "64",
+        "issue": "1",
+        "pages": "677-694"
+      },
+      "identifiers": {
+        "doi": "10.2307/2371713",
+        "url": "https://www.math.uci.edu/~brusso/hochschild1942.pdf"
+      },
+      "pdf": {
+        "file": "Hochschild1942.pdf",
+        "sha256": "50b9f72535e1b2050e00e2a1e05d5c8bfb3f64e85af16761a05932d5bfac8557",
+        "pages": 19,
+        "page_offset": -675,
+        "license": {
+          "id": "proprietary",
+          "url": "https://about.jstor.org/terms"
+        }
+      },
+      "notes": "Unregistered editorial rehearsal. The 1945 footnote prints 1941; publisher metadata gives 1942."
+    },
+    {
+      "schema_version": 1,
+      "doc_key": "Hochschild1945",
+      "type": "article",
+      "title": "On the cohomology groups of an associative algebra",
+      "authors": [
+        {
+          "family": "Hochschild",
+          "given": "G."
+        }
+      ],
+      "year": 1945,
+      "journal": {
+        "name": "Annals of Mathematics (2)",
+        "volume": "46",
+        "issue": "1",
+        "pages": "58-67"
+      },
+      "language": "en",
+      "transcription": {
+        "conventions": [
+          "Fraktur capitals are written with \\mathfrak (e.g. \\mathfrak{A}, \\mathfrak{P}); Greek letters are kept.",
+          "Brace evaluation f\\{a_1, \\dots, a_m\\} and the operations a * f, f * a are kept as printed.",
+          "The module action is written a \\cdot u and u \\cdot a; the Kronecker product is written \\times.",
+          "Footnotes are appended after the paragraph that cites them, prefixed [Footnote n]."
+        ]
+      },
+      "pdf": {
+        "file": "Hochschild1945.pdf",
+        "sha256": "f2ac1d8408922a2445f27b358113de71db769609482da3626c5eddfe64277b19",
+        "pages": 11,
+        "page_offset": -56,
+        "license": {
+          "id": "proprietary",
+          "url": "https://about.jstor.org/terms"
+        }
+      },
+      "structure": [
+        {
+          "chapter": "1",
+          "title": "\\mathfrak{A}-modules and Cochains of \\mathfrak{A}",
+          "pages": {
+            "first": 59,
+            "last": 59
+          }
+        },
+        {
+          "chapter": "2",
+          "title": "Coboundary, Cocycle, Cohomology Group",
+          "pages": {
+            "first": 59,
+            "last": 60
+          }
+        },
+        {
+          "chapter": "3",
+          "title": "A Fundamental Isomorphism",
+          "pages": {
+            "first": 60,
+            "last": 60
+          }
+        },
+        {
+          "chapter": "4",
+          "title": "Separability and the 1-dimensional Cohomology Groups",
+          "pages": {
+            "first": 60,
+            "last": 63
+          }
+        },
+        {
+          "chapter": "5",
+          "title": "A Natural Homomorphism",
+          "pages": {
+            "first": 63,
+            "last": 64
+          }
+        },
+        {
+          "chapter": "6",
+          "title": "Two-dimensional Cohomology and Extensions",
+          "pages": {
+            "first": 64,
+            "last": 67
+          }
+        }
+      ],
+      "foundations": [
+        {
+          "notion": "Sets and functions",
+          "mathlib": [
+            "Set",
+            "Function.Injective",
+            "Function.Surjective"
+          ],
+          "justification": "The article uses sets, mappings, injectivity and surjectivity as elementary background.",
+          "evidence": "Printed p. 59 (PDF p. 3) introduces linear mappings and their spaces without defining the underlying set/function notions; p. 64 (PDF p. 8) uses homomorphisms onto an algebra.",
+          "status": "proposed"
+        },
+        {
+          "notion": "Natural-number degrees and integer signs",
+          "mathlib": [
+            "Nat",
+            "Int"
+          ],
+          "justification": "Degrees, finite indices and alternating signs are ordinary arithmetic, not replacements for the cohomology construction.",
+          "evidence": "Definition 2.1, printed p. 59 (PDF p. 3), indexes the displayed coboundary formula by m and i and uses powers of -1.",
+          "status": "proposed"
+        },
+        {
+          "notion": "Ground fields",
+          "mathlib": [
+            "Field"
+          ],
+          "justification": "The ground field is arbitrary; do not assume characteristic zero, perfection or algebraic closure.",
+          "evidence": "Section 1 first sentence, printed p. 59 (PDF p. 3), places the associative algebra over an arbitrary field Phi.",
+          "status": "proposed"
+        },
+        {
+          "notion": "Additive groups and vector spaces",
+          "mathlib": [
+            "AddCommGroup",
+            "Module"
+          ],
+          "justification": "Module K P and Module K A encode vector spaces over the ground field K. They do not impose a unit action by A.",
+          "evidence": "Printed p. 59 (PDF p. 3) calls P a linear space over Phi and treats the space underlying A as known. Footnote 4 refers ordinary one-sided modules to Jacobson, The Theory of Rings (1943), pp. 14–16.",
+          "status": "proposed"
+        },
+        {
+          "notion": "Associative algebras without an assumed identity",
+          "mathlib": [
+            "NonUnitalRing",
+            "IsScalarTower",
+            "SMulCommClass"
+          ],
+          "justification": "Use NonUnitalRing A with Module K A and compatible scalar multiplication. IsScalarTower K A A and SMulCommClass K A A express K-bilinearity of multiplication; no Ring A or Algebra K A assumption is introduced.",
+          "evidence": "Section 1, printed p. 59 (PDF p. 3), assumes an associative algebra and does not specify an identity. Printed p. 61 (PDF p. 5) derives an identity only after assuming separability.",
+          "status": "proposed"
+        },
+        {
+          "notion": "Finite bases of the algebra",
+          "mathlib": [
+            "Basis",
+            "FiniteDimensional"
+          ],
+          "justification": "FiniteDimensional K A reflects the finite basis used for the algebra. Do not impose finite dimensionality on every coefficient space P without separate source evidence.",
+          "evidence": "Printed p. 59 (PDF p. 3) explicitly chooses a basis a_1,...,a_n of A and describes the Kronecker power as n^m-dimensional. The pilot requirements identify the algebra setting as finite-dimensional.",
+          "status": "proposed"
+        },
+        {
+          "notion": "Linear maps and linear isomorphisms",
+          "mathlib": [
+            "LinearMap",
+            "LinearEquiv"
+          ],
+          "justification": "Use these elementary linear-algebra notions while retaining the separately authored cochain and twisted-module constructions.",
+          "evidence": "Printed p. 59 (PDF p. 3) uses Phi-endomorphisms, citing Jacobson in footnote 5 (pp. 4–5), and defines cochains as linear mappings. Printed p. 60 (PDF p. 4) uses a linear isomorphism between cochain spaces.",
+          "status": "proposed"
+        },
+        {
+          "notion": "Tensor products of vector spaces",
+          "mathlib": [
+            "TensorProduct"
+          ],
+          "justification": "The Kronecker product is elementary background. The source-specific degree-zero convention and positive-degree cochain spaces remain explicit definitions.",
+          "evidence": "The second paragraph of section 1, printed p. 59 (PDF p. 3), invokes the Kronecker product of m vector spaces and describes its basis.",
+          "status": "proposed"
+        },
+        {
+          "notion": "Subspaces, additive subgroups and their quotients",
+          "mathlib": [
+            "Submodule",
+            "AddSubgroup",
+            "Submodule.Quotient",
+            "LinearMap.ker",
+            "LinearMap.range"
+          ],
+          "justification": "Use ordinary subspace, subgroup, quotient and kernel machinery. Cocycle, coboundary and cohomology definitions remain source nodes, not imported cohomology objects.",
+          "evidence": "Printed p. 60 (PDF p. 4), immediately before and in Definition 2.3, uses subgroups and a quotient group; printed pp. 62–64 (PDF pp. 6–8) uses subspaces, direct sums and kernels.",
+          "status": "proposed"
+        },
+        {
+          "notion": "Linear algebra homomorphisms and subalgebras",
+          "mathlib": [
+            "NonUnitalAlgHom",
+            "NonUnitalSubalgebra"
+          ],
+          "justification": "Ordinary multiplicative linear maps and subalgebras are background; singularity, segregation and extension equivalence remain authored definitions.",
+          "evidence": "Section 6 first paragraph, printed p. 64 (PDF p. 8), assumes algebra homomorphisms and subalgebras while defining extensions, singularity and segregation.",
+          "status": "proposed"
+        }
+      ],
+      "item_kinds": [
+        "definition",
+        "theorem",
+        "lemma",
+        "proposition",
+        "corollary",
+        "construction",
+        "notation",
+        "remark"
+      ],
+      "notes": "Registered from the approved requirements. PDF identity verified locally; transcription and mathematical review are pending."
+    }
+  ],
+  "nodes": [
+    {
+      "id": "Hochschild1942.Def_3_3",
+      "authored": {
+        "id": "Hochschild1942.Def_3_3",
+        "doc": "Hochschild1942",
+        "kind": "definition",
+        "source": {
+          "label": "Definition 3.3",
+          "pages": {
+            "first": 689,
+            "last": 689
+          }
+        },
+        "statement_md": "[Editorial] Reflexivity requires derivations into every containing algebra to extend to inner derivations there.",
+        "description_md": "Printed page 689; editorial paraphrase, no Lean declaration or review.",
+        "concepts": {
+          "defines": [],
+          "uses": [
+            "cohomology"
+          ]
+        },
+        "fidelity": {
+          "status": "faithful"
+        }
+      },
+      "derived": {
+        "decl_info": []
+      }
+    },
+    {
+      "id": "Hochschild1942.Thm_2_2",
+      "authored": {
+        "id": "Hochschild1942.Thm_2_2",
+        "doc": "Hochschild1942",
+        "kind": "theorem",
+        "source": {
+          "label": "Theorem 2.2",
+          "pages": {
+            "first": 684,
+            "last": 684
+          }
+        },
+        "statement_md": "[Editorial] In the characteristic-zero semisimple associative setting, every bimodule-valued derivation has form $d(a)=a\\cdot p-p\\cdot a$.",
+        "description_md": "Printed page 684; editorial paraphrase, no Lean declaration or review.",
+        "concepts": {
+          "defines": [],
+          "uses": [
+            "cohomology"
+          ]
+        },
+        "fidelity": {
+          "status": "faithful"
+        }
+      },
+      "derived": {
+        "decl_info": []
+      }
+    },
+    {
+      "id": "Hochschild1942.Thm_3_2",
+      "authored": {
+        "id": "Hochschild1942.Thm_3_2",
+        "doc": "Hochschild1942",
+        "kind": "theorem",
+        "source": {
+          "label": "Theorem 3.2",
+          "pages": {
+            "first": 690,
+            "last": 690
+          }
+        },
+        "statement_md": "[Editorial] For associative algebras, reflexivity is characterized by the criterion in `Hochschild1942.Thm_2_2`.",
+        "description_md": "Printed page 690; editorial paraphrase, no Lean declaration or review.",
+        "concepts": {
+          "defines": [],
+          "uses": [
+            "cohomology"
+          ]
+        },
+        "fidelity": {
+          "status": "faithful"
+        }
+      },
+      "derived": {
+        "decl_info": []
+      }
+    },
+    {
+      "id": "Hochschild1942.Thm_3_4",
+      "authored": {
+        "id": "Hochschild1942.Thm_3_4",
+        "doc": "Hochschild1942",
+        "kind": "theorem",
+        "source": {
+          "label": "Theorem 3.4",
+          "pages": {
+            "first": 690,
+            "last": 690
+          }
+        },
+        "statement_md": "[Editorial] In characteristic zero, semisimple and reflexive algebras coincide.",
+        "description_md": "Printed page 690; editorial paraphrase, no Lean declaration or review.",
+        "concepts": {
+          "defines": [],
+          "uses": [
+            "cohomology"
+          ]
+        },
+        "fidelity": {
+          "status": "faithful"
+        }
+      },
+      "derived": {
+        "decl_info": []
+      }
+    },
+    {
+      "id": "Hochschild1945.Thm_4_1",
+      "authored": {
+        "id": "Hochschild1945.Thm_4_1",
+        "doc": "Hochschild1945",
+        "kind": "theorem",
+        "source": {
+          "label": "Theorem 4.1",
+          "pages": {
+            "first": 63,
+            "last": 63
+          }
+        },
+        "statement_md": "[Editorial] Separability is equivalent to $H^1(A,P)=0$ for every two-sided $A$-module $P$.",
+        "description_md": "Printed page 63; editorial paraphrase, no Lean declaration or review. The introduction (p.58, footnote3) identifies earlier Theorems3.4 and3.2 as the predecessor result; this is source-reported context, not an accepted semantic edge.",
+        "concepts": {
+          "defines": [],
+          "uses": [
+            "cohomology"
+          ]
+        },
+        "fidelity": {
+          "status": "faithful"
+        }
+      },
+      "derived": {
+        "decl_info": []
+      }
+    }
+  ]
+}

@@ -1,0 +1,296 @@
+{
+  "$defs": {
+    "Decl": {
+      "additionalProperties": false,
+      "properties": {
+        "axioms": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "direct_sorry": {
+          "type": "boolean"
+        },
+        "docstring": {
+          "type": "string"
+        },
+        "hollow": {
+          "type": "boolean"
+        },
+        "instance_type_uses_own_doc": {
+          "type": "boolean"
+        },
+        "is_global_instance": {
+          "type": "boolean"
+        },
+        "is_prop": {
+          "type": "boolean"
+        },
+        "kind": {
+          "$ref": "common.schema.json#/$defs/DeclKind"
+        },
+        "line": {
+          "minimum": 1,
+          "type": "integer"
+        },
+        "meaning_hash": {
+          "$ref": "common.schema.json#/$defs/Hash64"
+        },
+        "name": {
+          "$ref": "common.schema.json#/$defs/LeanName"
+        },
+        "packaged_fields": {
+          "items": {
+            "additionalProperties": false,
+            "properties": {
+              "binder": {
+                "minimum": 0,
+                "type": "integer"
+              },
+              "field": {
+                "$ref": "common.schema.json#/$defs/LeanName"
+              },
+              "structure": {
+                "$ref": "common.schema.json#/$defs/LeanName"
+              }
+            },
+            "required": [
+              "binder",
+              "structure",
+              "field"
+            ],
+            "type": "object"
+          },
+          "type": "array"
+        },
+        "transitive_sorry": {
+          "type": "boolean"
+        },
+        "type": {
+          "type": "string"
+        },
+        "type_hash": {
+          "$ref": "common.schema.json#/$defs/Hash64"
+        },
+        "type_sha256": {
+          "$ref": "common.schema.json#/$defs/Sha256"
+        },
+        "type_uses_external": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "type_uses_external_truncated": {
+          "type": "boolean"
+        },
+        "type_uses_nodes": {
+          "items": {
+            "$ref": "common.schema.json#/$defs/NodeId"
+          },
+          "type": "array"
+        },
+        "value_uses_external": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "value_uses_external_truncated": {
+          "type": "boolean"
+        },
+        "value_uses_nodes": {
+          "items": {
+            "$ref": "common.schema.json#/$defs/NodeId"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "name",
+        "kind",
+        "type",
+        "type_hash",
+        "meaning_hash",
+        "is_prop",
+        "hollow",
+        "axioms",
+        "direct_sorry",
+        "transitive_sorry",
+        "type_uses_nodes",
+        "value_uses_nodes",
+        "type_uses_external",
+        "value_uses_external",
+        "type_uses_external_truncated",
+        "value_uses_external_truncated"
+      ],
+      "type": "object"
+    },
+    "LocalDecl": {
+      "additionalProperties": false,
+      "description": "The per-declaration record committed in nodes.json: Decl minus the transitive fields (axioms, transitive_sorry), plus type_sha256 computed by homalg.",
+      "properties": {
+        "direct_sorry": {
+          "type": "boolean"
+        },
+        "docstring": {
+          "type": "string"
+        },
+        "hollow": {
+          "type": "boolean"
+        },
+        "is_prop": {
+          "type": "boolean"
+        },
+        "kind": {
+          "$ref": "common.schema.json#/$defs/DeclKind"
+        },
+        "line": {
+          "minimum": 1,
+          "type": "integer"
+        },
+        "meaning_hash": {
+          "$ref": "common.schema.json#/$defs/Hash64"
+        },
+        "name": {
+          "$ref": "common.schema.json#/$defs/LeanName"
+        },
+        "type": {
+          "type": "string"
+        },
+        "type_hash": {
+          "$ref": "common.schema.json#/$defs/Hash64"
+        },
+        "type_sha256": {
+          "$ref": "common.schema.json#/$defs/Sha256"
+        },
+        "type_uses_external": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "type_uses_external_truncated": {
+          "type": "boolean"
+        },
+        "type_uses_nodes": {
+          "items": {
+            "$ref": "common.schema.json#/$defs/NodeId"
+          },
+          "type": "array"
+        },
+        "value_uses_external": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "value_uses_external_truncated": {
+          "type": "boolean"
+        },
+        "value_uses_nodes": {
+          "items": {
+            "$ref": "common.schema.json#/$defs/NodeId"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "name",
+        "kind",
+        "type",
+        "type_sha256",
+        "type_hash",
+        "meaning_hash",
+        "is_prop",
+        "hollow",
+        "direct_sorry",
+        "type_uses_nodes",
+        "value_uses_nodes",
+        "type_uses_external",
+        "value_uses_external",
+        "type_uses_external_truncated",
+        "value_uses_external_truncated"
+      ],
+      "type": "object"
+    }
+  },
+  "$id": "https://homalg-db/schema/lean-export.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "external_constants": {
+      "additionalProperties": {
+        "additionalProperties": false,
+        "properties": {
+          "exists": {
+            "type": "boolean"
+          },
+          "module": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        "required": [
+          "exists",
+          "module"
+        ],
+        "type": "object"
+      },
+      "description": "Compiled environment lookup for declared Mathlib counterparts and foundations, including names not used by a declaration.",
+      "type": "object"
+    },
+    "generator": {
+      "$ref": "common.schema.json#/$defs/Generator"
+    },
+    "mathlib_rev": {
+      "type": "string"
+    },
+    "modules": {
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "decls": {
+            "items": {
+              "$ref": "#/$defs/Decl"
+            },
+            "type": "array"
+          },
+          "module": {
+            "type": "string"
+          },
+          "node_id": {
+            "oneOf": [
+              {
+                "$ref": "common.schema.json#/$defs/NodeId"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "module",
+          "node_id",
+          "decls"
+        ],
+        "type": "object"
+      },
+      "type": "array"
+    },
+    "toolchain": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "generator",
+    "toolchain",
+    "mathlib_rev",
+    "modules"
+  ],
+  "type": "object"
+}

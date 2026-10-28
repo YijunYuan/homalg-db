@@ -1,0 +1,237 @@
+{
+  "$defs": {
+    "Authored": {
+      "allOf": [
+        {
+          "$ref": "common.schema.json#/$defs/NodeHeaderFields"
+        }
+      ],
+      "properties": {
+        "description_md": {
+          "type": "string"
+        },
+        "history_md": {
+          "type": "string"
+        },
+        "notes_md": {
+          "type": "string"
+        },
+        "proof_md": {
+          "type": "string"
+        },
+        "statement_corrected_md": {
+          "type": "string"
+        },
+        "statement_md": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "statement_original_md": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "statement_md"
+      ],
+      "unevaluatedProperties": false
+    },
+    "DepsPair": {
+      "additionalProperties": false,
+      "properties": {
+        "proof": {
+          "items": {
+            "$ref": "common.schema.json#/$defs/NodeId"
+          },
+          "type": "array"
+        },
+        "statement": {
+          "items": {
+            "$ref": "common.schema.json#/$defs/NodeId"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "statement",
+        "proof"
+      ],
+      "type": "object"
+    },
+    "LocalDerived": {
+      "additionalProperties": false,
+      "properties": {
+        "decl_info": {
+          "items": {
+            "$ref": "lean-export.schema.json#/$defs/LocalDecl"
+          },
+          "type": "array"
+        },
+        "declared_deps": {
+          "$ref": "#/$defs/DepsPair"
+        },
+        "deps_diff": {
+          "additionalProperties": false,
+          "properties": {
+            "declared_not_verified": {
+              "$ref": "#/$defs/DepsPair"
+            },
+            "verified_not_declared": {
+              "items": {
+                "$ref": "common.schema.json#/$defs/NodeId"
+              },
+              "type": "array"
+            }
+          },
+          "required": [
+            "declared_not_verified",
+            "verified_not_declared"
+          ],
+          "type": "object"
+        },
+        "file": {
+          "additionalProperties": false,
+          "properties": {
+            "lines": {
+              "minimum": 1,
+              "type": "integer"
+            },
+            "path": {
+              "type": "string"
+            },
+            "sha256": {
+              "$ref": "common.schema.json#/$defs/Sha256"
+            }
+          },
+          "required": [
+            "path",
+            "lines",
+            "sha256"
+          ],
+          "type": "object"
+        },
+        "imports": {
+          "additionalProperties": false,
+          "properties": {
+            "mathlib": {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            "nodes": {
+              "items": {
+                "$ref": "common.schema.json#/$defs/NodeId"
+              },
+              "type": "array"
+            }
+          },
+          "required": [
+            "nodes",
+            "mathlib"
+          ],
+          "type": "object"
+        },
+        "local_status": {
+          "$ref": "common.schema.json#/$defs/LocalStatus"
+        },
+        "sorry_count_text": {
+          "minimum": 0,
+          "type": "integer"
+        },
+        "verified_deps": {
+          "$ref": "#/$defs/DepsPair"
+        }
+      },
+      "required": [
+        "local_status",
+        "decl_info",
+        "verified_deps",
+        "declared_deps",
+        "deps_diff",
+        "imports",
+        "sorry_count_text",
+        "file"
+      ],
+      "type": "object"
+    },
+    "Node": {
+      "additionalProperties": false,
+      "properties": {
+        "authored": {
+          "$ref": "#/$defs/Authored"
+        },
+        "derived": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "$ref": "#/$defs/LocalDerived"
+            }
+          ]
+        },
+        "id": {
+          "$ref": "common.schema.json#/$defs/NodeId"
+        }
+      },
+      "required": [
+        "id",
+        "authored",
+        "derived"
+      ],
+      "type": "object"
+    }
+  },
+  "$id": "https://homalg-db/schema/nodes-file.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "doc_key": {
+      "$ref": "common.schema.json#/$defs/DocKey"
+    },
+    "generator": {
+      "allOf": [
+        {
+          "$ref": "common.schema.json#/$defs/Generator"
+        }
+      ],
+      "properties": {
+        "commit": false,
+        "generated_at": false
+      }
+    },
+    "lean": {
+      "additionalProperties": false,
+      "properties": {
+        "mathlib_rev": {
+          "type": "string"
+        },
+        "toolchain": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "toolchain",
+        "mathlib_rev"
+      ],
+      "type": "object"
+    },
+    "nodes": {
+      "items": {
+        "$ref": "#/$defs/Node"
+      },
+      "type": "array"
+    },
+    "schema_version": {
+      "const": 1
+    }
+  },
+  "required": [
+    "schema_version",
+    "generator",
+    "doc_key",
+    "lean",
+    "nodes"
+  ],
+  "type": "object"
+}

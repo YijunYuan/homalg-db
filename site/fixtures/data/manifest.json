@@ -1,0 +1,162 @@
+{
+  "budgets_ok": true,
+  "commit": "fixture",
+  "concepts_count": 10,
+  "documents": [
+    {
+      "authors": [
+        {
+          "family": "HomAlgDB fixture authors"
+        }
+      ],
+      "aux_headline_counts": {
+        "error": 0,
+        "in-progress": 0,
+        "proof-complete": 1,
+        "statement-complete": 0
+      },
+      "aux_total": 2,
+      "cited_headline_counts": {
+        "error": 0,
+        "in-progress": 1,
+        "proof-complete": 0,
+        "statement-complete": 0
+      },
+      "claim": {
+        "state": "unclaimed"
+      },
+      "doc_key": "Fixture2000",
+      "fidelity_counts": {
+        "deviates": 1,
+        "faithful": 14,
+        "foundation": 0,
+        "reviewed": 0
+      },
+      "files": {
+        "document": "documents/Fixture2000.acc413a79c3d25db.json",
+        "search_shard": "search/Fixture2000.3a5ba24ccd5bf7bf.json"
+      },
+      "graph_hash": "acc413a79c3d25db",
+      "headline_counts": {
+        "error": 1,
+        "in-progress": 11,
+        "proof-complete": 0,
+        "statement-complete": 0
+      },
+      "items_total": 12,
+      "language": "en",
+      "node_counts": {
+        "cited": 1,
+        "disputed": 2,
+        "informal": 0,
+        "planned": 1,
+        "proved": 6,
+        "proved-modulo-citations": 1,
+        "proved-pending-deps": 1,
+        "proved-with-axioms": 1,
+        "pruned": 1,
+        "stated": 2
+      },
+      "title": "Toy chain complexes",
+      "type": "synthetic",
+      "year": 2000
+    },
+    {
+      "authors": [
+        {
+          "family": "HomAlgDB fixture authors"
+        }
+      ],
+      "aux_headline_counts": {
+        "error": 0,
+        "in-progress": 0,
+        "proof-complete": 0,
+        "statement-complete": 0
+      },
+      "aux_total": 0,
+      "cited_headline_counts": {
+        "error": 0,
+        "in-progress": 0,
+        "proof-complete": 0,
+        "statement-complete": 0
+      },
+      "claim": {
+        "state": "unclaimed"
+      },
+      "doc_key": "Fixture2001",
+      "fidelity_counts": {
+        "deviates": 0,
+        "faithful": 2,
+        "foundation": 0,
+        "reviewed": 0
+      },
+      "files": {
+        "document": "documents/Fixture2001.4c47e38780a39d18.json",
+        "search_shard": "search/Fixture2001.5a197d956c9b91d7.json"
+      },
+      "graph_hash": "4c47e38780a39d18",
+      "headline_counts": {
+        "error": 0,
+        "in-progress": 2,
+        "proof-complete": 0,
+        "statement-complete": 0
+      },
+      "items_total": 2,
+      "language": "en",
+      "node_counts": {
+        "cited": 0,
+        "disputed": 0,
+        "informal": 0,
+        "planned": 0,
+        "proved": 2,
+        "proved-modulo-citations": 0,
+        "proved-pending-deps": 0,
+        "proved-with-axioms": 0,
+        "pruned": 0,
+        "stated": 0
+      },
+      "title": "Pointed toy chain complexes",
+      "type": "synthetic",
+      "year": 2001
+    }
+  ],
+  "generator": {
+    "commit": "fixture",
+    "name": "homalg",
+    "version": "0.1.0"
+  },
+  "global_dag_files": [
+    {
+      "file": "global-dag/2000-2009.json",
+      "from": 2000,
+      "to": 2009
+    }
+  ],
+  "global_graph_file": "global-graph.json",
+  "health": {
+    "deps_mismatch": 0,
+    "disputed": 2,
+    "llm_relations_unreviewed": 0,
+    "markdown_findings": 0,
+    "needs_repair": 0,
+    "summaries_stale": 0
+  },
+  "index_file": "index.json",
+  "lean": {
+    "mathlib_rev": "v4.35.0",
+    "toolchain": "leanprover/lean4:v4.35.0"
+  },
+  "pages_base": "/",
+  "prerender": {
+    "layout": true,
+    "search_index": true,
+    "search_options_hash": "d4498249e0d99f8ecae007694be0d043d026a9b0c92d51c665b96283d0f3e863",
+    "shiki": true
+  },
+  "relations_count": 0,
+  "repo_url": "https://github.com/example/homalg-db",
+  "schema_version": 1,
+  "search_hash": "00af71e3fb11038d",
+  "search_index_file": "search-index.00af71e3fb11038d.json",
+  "tags_count": 109
+}

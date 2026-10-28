@@ -1,0 +1,28 @@
+{
+  "concepts": [
+    {
+      "arcs": [],
+      "id": "chain-complex",
+      "lanes": [
+        {
+          "defines": [],
+          "doc": "Fixture2000",
+          "uses_count": 1,
+          "year": 2000
+        }
+      ]
+    }
+  ],
+  "document_edges": [],
+  "documents": [
+    {
+      "counts": {
+        "items": 1
+      },
+      "doc_key": "Fixture2000",
+      "x": 2000,
+      "y": 0,
+      "year": 2000
+    }
+  ]
+}

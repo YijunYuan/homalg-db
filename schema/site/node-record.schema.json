@@ -1,0 +1,101 @@
+{
+  "$id": "https://homalg-db/schema/site/node-record.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "authored": {
+      "$ref": "../nodes-file.schema.json#/$defs/Authored"
+    },
+    "dependencies": {
+      "additionalProperties": false,
+      "properties": {
+        "proof": {
+          "items": {
+            "$ref": "common.schema.json#/$defs/NodeRef"
+          },
+          "type": "array"
+        },
+        "statement": {
+          "items": {
+            "$ref": "common.schema.json#/$defs/NodeRef"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "statement",
+        "proof"
+      ],
+      "type": "object"
+    },
+    "dependents": {
+      "items": {
+        "$ref": "common.schema.json#/$defs/NodeRef"
+      },
+      "type": "array"
+    },
+    "derived": {
+      "$ref": "../nodes-file.schema.json#/$defs/LocalDerived"
+    },
+    "global": {
+      "$ref": "../index.schema.json#/$defs/GlobalDerived"
+    },
+    "lean": {
+      "additionalProperties": false,
+      "properties": {
+        "signature_html": {
+          "type": "string"
+        },
+        "source_html": {
+          "type": "string"
+        },
+        "source_text": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "source_text"
+      ],
+      "type": "object"
+    },
+    "links": {
+      "additionalProperties": false,
+      "properties": {
+        "github_blame": {
+          "format": "uri",
+          "type": "string"
+        },
+        "github_blob": {
+          "format": "uri",
+          "type": "string"
+        }
+      },
+      "required": [
+        "github_blob",
+        "github_blame"
+      ],
+      "type": "object"
+    },
+    "relations": {
+      "items": {
+        "$ref": "../common.schema.json#/$defs/Relation"
+      },
+      "type": "array"
+    },
+    "summary": {
+      "$ref": "common.schema.json#/$defs/NodeSummary"
+    }
+  },
+  "required": [
+    "summary",
+    "authored",
+    "derived",
+    "global",
+    "dependencies",
+    "dependents",
+    "relations",
+    "lean",
+    "links"
+  ],
+  "type": "object"
+}

@@ -1,0 +1,275 @@
+{
+  "$id": "https://homalg-db/schema/site/manifest.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "budgets_ok": {
+      "type": "boolean"
+    },
+    "commit": {
+      "type": "string"
+    },
+    "concepts_count": {
+      "minimum": 0,
+      "type": "integer"
+    },
+    "documents": {
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "authors": {
+            "items": {
+              "additionalProperties": false,
+              "properties": {
+                "family": {
+                  "type": "string"
+                },
+                "given": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "family"
+              ],
+              "type": "object"
+            },
+            "type": "array"
+          },
+          "aux_headline_counts": {
+            "$ref": "common.schema.json#/$defs/HeadlineCounts"
+          },
+          "aux_total": {
+            "minimum": 0,
+            "type": "integer"
+          },
+          "cited_headline_counts": {
+            "$ref": "common.schema.json#/$defs/HeadlineCounts"
+          },
+          "claim": {
+            "$ref": "common.schema.json#/$defs/ClaimView"
+          },
+          "doc_key": {
+            "$ref": "../common.schema.json#/$defs/DocKey"
+          },
+          "fidelity_counts": {
+            "$ref": "common.schema.json#/$defs/FidelityCounts"
+          },
+          "files": {
+            "additionalProperties": false,
+            "properties": {
+              "document": {
+                "type": "string"
+              },
+              "search_shard": {
+                "type": "string"
+              },
+              "search_index": {
+                "type": "string",
+                "description": "Optional per-document MiniSearch index used when the global index exceeds scale thresholds."
+              }
+            },
+            "required": [
+              "document",
+              "search_shard"
+            ],
+            "type": "object"
+          },
+          "graph_hash": {
+            "$ref": "../common.schema.json#/$defs/Hash64"
+          },
+          "headline_counts": {
+            "$ref": "common.schema.json#/$defs/HeadlineCounts"
+          },
+          "items_total": {
+            "minimum": 0,
+            "type": "integer"
+          },
+          "language": {
+            "type": "string"
+          },
+          "node_counts": {
+            "$ref": "common.schema.json#/$defs/NodeCounts"
+          },
+          "title": {
+            "type": "string"
+          },
+          "type": {
+            "$ref": "../document.schema.json#/properties/type"
+          },
+          "year": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "doc_key",
+          "title",
+          "year",
+          "authors",
+          "type",
+          "language",
+          "headline_counts",
+          "aux_headline_counts",
+          "cited_headline_counts",
+          "node_counts",
+          "items_total",
+          "aux_total",
+          "fidelity_counts",
+          "claim",
+          "graph_hash",
+          "files"
+        ],
+        "type": "object"
+      },
+      "type": "array"
+    },
+    "generator": {
+      "$ref": "../common.schema.json#/$defs/Generator"
+    },
+    "global_dag_files": {
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "file": {
+            "type": "string"
+          },
+          "from": {
+            "type": "integer"
+          },
+          "to": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "from",
+          "to",
+          "file"
+        ],
+        "type": "object"
+      },
+      "type": "array"
+    },
+    "global_graph_file": {
+      "type": "string"
+    },
+    "health": {
+      "additionalProperties": false,
+      "properties": {
+        "deps_mismatch": {
+          "minimum": 0,
+          "type": "integer"
+        },
+        "disputed": {
+          "minimum": 0,
+          "type": "integer"
+        },
+        "llm_relations_unreviewed": {
+          "minimum": 0,
+          "type": "integer"
+        },
+        "markdown_findings": {
+          "minimum": 0,
+          "type": "integer"
+        },
+        "needs_repair": {
+          "minimum": 0,
+          "type": "integer"
+        },
+        "summaries_stale": {
+          "minimum": 0,
+          "type": "integer"
+        }
+      },
+      "required": [
+        "summaries_stale",
+        "llm_relations_unreviewed",
+        "deps_mismatch",
+        "needs_repair",
+        "disputed",
+        "markdown_findings"
+      ],
+      "type": "object"
+    },
+    "index_file": {
+      "type": "string"
+    },
+    "lean": {
+      "$ref": "../index.schema.json#/properties/lean"
+    },
+    "pages_base": {
+      "type": "string"
+    },
+    "prerender": {
+      "additionalProperties": false,
+      "properties": {
+        "layout": {
+          "type": "boolean"
+        },
+        "layout_failed": {
+          "items": {
+            "$ref": "../common.schema.json#/$defs/DocKey"
+          },
+          "type": "array"
+        },
+        "search_index": {
+          "type": "boolean"
+        },
+        "search_options_hash": {
+          "$ref": "../common.schema.json#/$defs/Sha256"
+        },
+        "shiki": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "shiki",
+        "search_index",
+        "layout"
+      ],
+      "type": "object"
+    },
+    "relations_count": {
+      "minimum": 0,
+      "type": "integer"
+    },
+    "repo_url": {
+      "format": "uri",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": 1
+    },
+    "search_hash": {
+      "$ref": "../common.schema.json#/$defs/Hash64"
+    },
+    "search_index_file": {
+      "type": "string"
+    },
+    "tags_count": {
+      "minimum": 0,
+      "type": "integer"
+    },
+    "retired": {
+      "$ref": "../retired.schema.json#/properties/retired"
+    }
+  },
+  "required": [
+    "schema_version",
+    "generator",
+    "commit",
+    "repo_url",
+    "pages_base",
+    "lean",
+    "documents",
+    "tags_count",
+    "concepts_count",
+    "relations_count",
+    "index_file",
+    "global_graph_file",
+    "global_dag_files",
+    "search_hash",
+    "prerender",
+    "budgets_ok",
+    "health"
+  ],
+  "type": "object"
+}

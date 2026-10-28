@@ -1,0 +1,772 @@
+{
+  "chapters": [
+    {
+      "chapter": "1",
+      "node_ids": [
+        "Fixture2000.Aux_Thm_1_step",
+        "Fixture2000.Bridge_Def_1_mathlib",
+        "Fixture2000.Cited_mul_comm",
+        "Fixture2000.Def_1",
+        "Fixture2000.Def_2",
+        "Fixture2000.Def_3",
+        "Fixture2000.Lem_1",
+        "Fixture2000.Lem_2",
+        "Fixture2000.Prop_1",
+        "Fixture2000.Prop_2",
+        "Fixture2000.Rem_1",
+        "Fixture2000.Thm_1",
+        "Fixture2000.Thm_2",
+        "Fixture2000.Thm_3",
+        "Fixture2000.Thm_4"
+      ],
+      "sections": [
+        {
+          "id": "1.1",
+          "pages": {
+            "first": 1,
+            "last": 4
+          },
+          "title": "Toy chain complexes"
+        }
+      ],
+      "title": "Toy chain complexes"
+    }
+  ],
+  "document": {
+    "authors": [
+      {
+        "family": "HomAlgDB fixture authors"
+      }
+    ],
+    "doc_key": "Fixture2000",
+    "foundations": [
+      {
+        "confirmed_by": "fixture-reviewer",
+        "evidence": "docs/fixtures/Fixture2000.md, p. 1: We use ordinary natural numbers and elementary arithmetic as background.",
+        "justification": "The synthetic source assumes ordinary natural-number arithmetic.",
+        "mathlib": [
+          "Nat",
+          "Nat.add_zero",
+          "Nat.mul_one"
+        ],
+        "notion": "Natural numbers and elementary arithmetic",
+        "status": "confirmed"
+      },
+      {
+        "confirmed_by": "fixture-reviewer",
+        "evidence": "docs/fixtures/Fixture2000.md, p. 1, Definition 2 recalls the usual additive abelian group.",
+        "justification": "Definition 2 recalls the usual background group structure.",
+        "mathlib": [
+          "AddCommGroup"
+        ],
+        "notion": "Additive abelian groups",
+        "status": "confirmed"
+      }
+    ],
+    "item_kinds": [
+      "definition",
+      "theorem",
+      "lemma",
+      "proposition",
+      "remark"
+    ],
+    "language": "en",
+    "notes": "Project-authored synthetic regression document: docs/fixtures/Fixture2000.md. All dates and fixture-reviewer adjudications are fictitious test data, not evidence of an actual human review.",
+    "schema_version": 1,
+    "structure": [
+      {
+        "chapter": "1",
+        "pages": {
+          "first": 1,
+          "last": 4
+        },
+        "sections": [
+          {
+            "id": "1.1",
+            "pages": {
+              "first": 1,
+              "last": 4
+            },
+            "title": "Toy chain complexes"
+          }
+        ],
+        "title": "Toy chain complexes"
+      }
+    ],
+    "title": "Toy chain complexes",
+    "type": "synthetic",
+    "year": 2000
+  },
+  "edges": [
+    {
+      "declared": true,
+      "from": "Fixture2000.Bridge_Def_1_mathlib",
+      "kind": "statement",
+      "to": "Fixture2000.Def_1",
+      "verified": true
+    },
+    {
+      "declared": true,
+      "from": "Fixture2000.Def_3",
+      "kind": "statement",
+      "to": "Fixture2000.Def_1",
+      "verified": true
+    },
+    {
+      "declared": true,
+      "from": "Fixture2000.Lem_1",
+      "kind": "statement",
+      "to": "Fixture2000.Def_1",
+      "verified": true
+    },
+    {
+      "declared": true,
+      "from": "Fixture2000.Prop_1",
+      "kind": "statement",
+      "to": "Fixture2000.Def_1",
+      "verified": true
+    },
+    {
+      "declared": true,
+      "from": "Fixture2000.Prop_2",
+      "kind": "statement",
+      "to": "Fixture2000.Def_1",
+      "verified": true
+    },
+    {
+      "declared": true,
+      "from": "Fixture2000.Thm_1",
+      "kind": "statement",
+      "to": "Fixture2000.Def_1",
+      "verified": true
+    },
+    {
+      "declared": true,
+      "from": "Fixture2000.Thm_1",
+      "kind": "proof",
+      "to": "Fixture2000.Lem_2",
+      "verified": true
+    },
+    {
+      "declared": true,
+      "from": "Fixture2000.Thm_3",
+      "kind": "statement",
+      "to": "Fixture2000.Def_1",
+      "verified": true
+    },
+    {
+      "declared": true,
+      "from": "Fixture2000.Thm_3",
+      "kind": "proof",
+      "to": "Fixture2000.Lem_1",
+      "verified": true
+    },
+    {
+      "declared": true,
+      "from": "Fixture2000.Thm_4",
+      "kind": "proof",
+      "to": "Fixture2000.Cited_mul_comm",
+      "verified": true
+    },
+    {
+      "declared": true,
+      "from": "Fixture2000.Thm_4",
+      "kind": "statement",
+      "to": "Fixture2000.Def_1",
+      "verified": true
+    }
+  ],
+  "external_nodes": [],
+  "layout": {
+    "nodes": {
+      "Fixture2000.Bridge_Def_1_mathlib": {
+        "x": 388,
+        "y": 277
+      },
+      "Fixture2000.Cited_mul_comm": {
+        "x": 1607,
+        "y": 137
+      },
+      "Fixture2000.Def_1": {
+        "x": 444.6666666666667,
+        "y": 137
+      },
+      "Fixture2000.Def_2": {
+        "x": 114,
+        "y": 47
+      },
+      "Fixture2000.Def_3": {
+        "x": 868,
+        "y": 277
+      },
+      "Fixture2000.Lem_1": {
+        "x": 1348,
+        "y": 277
+      },
+      "Fixture2000.Lem_2": {
+        "x": 114,
+        "y": 137
+      },
+      "Fixture2000.Prop_1": {
+        "x": 628,
+        "y": 277
+      },
+      "Fixture2000.Prop_2": {
+        "x": 1108,
+        "y": 277
+      },
+      "Fixture2000.Rem_1": {
+        "x": 338,
+        "y": 47
+      },
+      "Fixture2000.Thm_1": {
+        "x": 148,
+        "y": 277
+      },
+      "Fixture2000.Thm_2": {
+        "x": 562,
+        "y": 47
+      },
+      "Fixture2000.Thm_3": {
+        "x": 1382,
+        "y": 415
+      },
+      "Fixture2000.Thm_4": {
+        "x": 1573,
+        "y": 277
+      }
+    },
+    "options_hash": "63e9e24822a9829d",
+    "view": "aux-collapsed"
+  },
+  "nodes": [
+    {
+      "aux_kind": "lemma",
+      "aux_parent": "Fixture2000.Thm_1",
+      "chapter": "1",
+      "concepts_defines": [],
+      "concepts_uses": [],
+      "decl_names": [
+        "Fixture2000.aux_add_zero"
+      ],
+      "deps_mismatch": false,
+      "disputed": false,
+      "doc": "Fixture2000",
+      "fidelity_status": "faithful",
+      "has_mathlib": false,
+      "headline": null,
+      "id": "Fixture2000.Aux_Thm_1_step",
+      "is_aux": true,
+      "kind": "lemma",
+      "label": "Auxiliary to Theorem 1",
+      "local_id": "Aux_Thm_1_step",
+      "local_status": "proved",
+      "needs_repair": false,
+      "pages": [
+        2
+      ],
+      "rank": 0,
+      "reopened": false,
+      "reviewed": false,
+      "section": "1.1",
+      "statement_first_line": "For every natural number n, n+0=n.",
+      "status": "pruned",
+      "tags": [
+        "technical"
+      ],
+      "title": "Auxiliary to Theorem 1"
+    },
+    {
+      "aux_kind": "bridge",
+      "aux_parent": "Fixture2000.Def_1",
+      "chapter": "1",
+      "concepts_defines": [],
+      "concepts_uses": [],
+      "decl_names": [
+        "Fixture2000.differential_comp_zero"
+      ],
+      "deps_mismatch": false,
+      "disputed": false,
+      "doc": "Fixture2000",
+      "fidelity_status": "faithful",
+      "has_mathlib": false,
+      "headline": "proof-complete",
+      "id": "Fixture2000.Bridge_Def_1_mathlib",
+      "is_aux": true,
+      "kind": "lemma",
+      "label": "Bridge for Definition 1",
+      "local_id": "Bridge_Def_1_mathlib",
+      "local_status": "proved",
+      "needs_repair": false,
+      "pages": [
+        1
+      ],
+      "rank": 1,
+      "reopened": false,
+      "reviewed": false,
+      "section": "1.1",
+      "statement_first_line": "The composite of consecutive differentials of a toy chain complex is the constant zero function.",
+      "status": "proved",
+      "tags": [
+        "bridge",
+        "chain-complex"
+      ],
+      "title": "Bridge for Definition 1"
+    },
+    {
+      "chapter": "1",
+      "concepts_defines": [],
+      "concepts_uses": [],
+      "decl_names": [
+        "Fixture2000.cited_mul_comm"
+      ],
+      "deps_mismatch": false,
+      "disputed": false,
+      "doc": "Fixture2000",
+      "fidelity_status": "faithful",
+      "has_mathlib": false,
+      "headline": "in-progress",
+      "id": "Fixture2000.Cited_mul_comm",
+      "is_aux": false,
+      "kind": "theorem",
+      "label": "Cited result (p. 4)",
+      "local_id": "Cited_mul_comm",
+      "local_status": "stated",
+      "needs_repair": false,
+      "pages": [
+        4
+      ],
+      "rank": 0,
+      "reopened": false,
+      "reviewed": false,
+      "section": "1.1",
+      "statement_first_line": "Multiplication of natural numbers is commutative: mn=nm.",
+      "status": "stated",
+      "tags": [
+        "basic"
+      ],
+      "title": "Cited result (p. 4)"
+    },
+    {
+      "chapter": "1",
+      "concepts_defines": [
+        "chain-complex"
+      ],
+      "concepts_uses": [],
+      "decl_names": [
+        "Fixture2000.ChainComplexToy"
+      ],
+      "deps_mismatch": false,
+      "disputed": false,
+      "doc": "Fixture2000",
+      "fidelity_status": "faithful",
+      "has_mathlib": true,
+      "headline": "in-progress",
+      "id": "Fixture2000.Def_1",
+      "is_aux": false,
+      "kind": "definition",
+      "label": "Definition 1",
+      "local_id": "Def_1",
+      "local_status": "proved",
+      "mathlib_relation": "variant",
+      "needs_repair": false,
+      "pages": [
+        1
+      ],
+      "rank": 0,
+      "reopened": false,
+      "reviewed": false,
+      "section": "1.1",
+      "statement_first_line": "A toy chain complex consists of a natural number called its degree and a family of functions dn : \\mathbb{N} \\to \\mathbb{N} such that dn(0)=0 and dn(d{n+1}(x))=",
+      "status": "proved",
+      "tags": [
+        "basic",
+        "chain-complex"
+      ],
+      "title": "Definition 1"
+    },
+    {
+      "chapter": "1",
+      "concepts_defines": [],
+      "concepts_uses": [],
+      "decl_names": [
+        "Fixture2000.AbelianGroup"
+      ],
+      "deps_mismatch": false,
+      "disputed": false,
+      "doc": "Fixture2000",
+      "fidelity_status": "faithful",
+      "has_mathlib": true,
+      "headline": "in-progress",
+      "id": "Fixture2000.Def_2",
+      "is_aux": false,
+      "kind": "definition",
+      "label": "Definition 2",
+      "local_id": "Def_2",
+      "local_status": "proved",
+      "mathlib_relation": "same",
+      "needs_repair": false,
+      "pages": [
+        1
+      ],
+      "rank": 0,
+      "reopened": false,
+      "reviewed": false,
+      "section": "1.1",
+      "statement_first_line": "We recall the usual notion of an abelian group, written additively. In this text AbelianGroup means that background structure.",
+      "status": "proved",
+      "tags": [
+        "basic"
+      ],
+      "title": "Definition 2"
+    },
+    {
+      "chapter": "1",
+      "concepts_defines": [],
+      "concepts_uses": [],
+      "decl_names": [
+        "Fixture2000.zeroComplex"
+      ],
+      "deps_mismatch": false,
+      "disputed": false,
+      "doc": "Fixture2000",
+      "fidelity_status": "deviates",
+      "has_mathlib": false,
+      "headline": "in-progress",
+      "id": "Fixture2000.Def_3",
+      "is_aux": false,
+      "kind": "definition",
+      "label": "Definition 3",
+      "local_id": "Def_3",
+      "local_status": "proved",
+      "needs_repair": false,
+      "pages": [
+        2
+      ],
+      "rank": 1,
+      "reopened": false,
+      "reviewed": false,
+      "section": "1.1",
+      "statement_first_line": "The zero complex has degree one and every differential is the constant zero function.",
+      "status": "proved",
+      "tags": [
+        "chain-complex",
+        "erratum"
+      ],
+      "title": "Definition 3"
+    },
+    {
+      "chapter": "1",
+      "concepts_defines": [],
+      "concepts_uses": [],
+      "decl_names": [
+        "Fixture2000.degree_le_mul_one"
+      ],
+      "deps_mismatch": false,
+      "disputed": false,
+      "doc": "Fixture2000",
+      "fidelity_status": "faithful",
+      "has_mathlib": false,
+      "headline": "in-progress",
+      "id": "Fixture2000.Lem_1",
+      "is_aux": false,
+      "kind": "lemma",
+      "label": "Lemma 1",
+      "local_id": "Lem_1",
+      "local_status": "stated",
+      "needs_repair": false,
+      "pages": [
+        2
+      ],
+      "rank": 1,
+      "reopened": false,
+      "reviewed": false,
+      "section": "1.1",
+      "statement_first_line": "For every toy chain complex C, its degree satisfies \\deg C \\leq (\\deg C)\\cdot 1.",
+      "status": "stated",
+      "tags": [
+        "basic",
+        "chain-complex"
+      ],
+      "title": "Lemma 1"
+    },
+    {
+      "chapter": "1",
+      "concepts_defines": [],
+      "concepts_uses": [],
+      "decl_names": [
+        "Fixture2000.add_zero_natural"
+      ],
+      "deps_mismatch": false,
+      "disputed": false,
+      "doc": "Fixture2000",
+      "fidelity_status": "faithful",
+      "has_mathlib": false,
+      "headline": "in-progress",
+      "id": "Fixture2000.Lem_2",
+      "is_aux": false,
+      "kind": "lemma",
+      "label": "Lemma 2",
+      "local_id": "Lem_2",
+      "local_status": "proved",
+      "needs_repair": false,
+      "pages": [
+        2
+      ],
+      "rank": 0,
+      "reopened": false,
+      "reviewed": false,
+      "section": "1.1",
+      "statement_first_line": "For every natural number n, n+0=n.",
+      "status": "proved",
+      "tags": [
+        "basic"
+      ],
+      "title": "Addition of zero"
+    },
+    {
+      "chapter": "1",
+      "concepts_defines": [],
+      "concepts_uses": [],
+      "decl_names": [
+        "Fixture2000.degree_positive"
+      ],
+      "deps_mismatch": false,
+      "disputed": true,
+      "doc": "Fixture2000",
+      "fidelity_status": "faithful",
+      "has_mathlib": false,
+      "headline": "in-progress",
+      "id": "Fixture2000.Prop_1",
+      "is_aux": false,
+      "kind": "proposition",
+      "label": "Proposition 1",
+      "local_id": "Prop_1",
+      "local_status": "stated",
+      "needs_repair": false,
+      "pages": [
+        3
+      ],
+      "rank": 1,
+      "reopened": false,
+      "reviewed": false,
+      "section": "1.1",
+      "statement_first_line": "Every toy chain complex has strictly positive degree.",
+      "status": "disputed",
+      "tags": [
+        "basic",
+        "chain-complex"
+      ],
+      "title": "Proposition 1"
+    },
+    {
+      "chapter": "1",
+      "concepts_defines": [],
+      "concepts_uses": [],
+      "decl_names": [
+        "Fixture2000.degree_self_disputed"
+      ],
+      "deps_mismatch": false,
+      "disputed": true,
+      "doc": "Fixture2000",
+      "fidelity_status": "faithful",
+      "has_mathlib": false,
+      "headline": "error",
+      "id": "Fixture2000.Prop_2",
+      "is_aux": false,
+      "kind": "proposition",
+      "label": "Proposition 2",
+      "local_id": "Prop_2",
+      "local_status": "stated",
+      "needs_repair": false,
+      "pages": [
+        3
+      ],
+      "rank": 1,
+      "reopened": false,
+      "reviewed": false,
+      "section": "1.1",
+      "statement_first_line": "For every toy chain complex C, \\deg C=\\deg C.",
+      "status": "disputed",
+      "tags": [
+        "basic",
+        "chain-complex"
+      ],
+      "title": "Proposition 2"
+    },
+    {
+      "chapter": "1",
+      "concepts_defines": [],
+      "concepts_uses": [],
+      "decl_names": [],
+      "deps_mismatch": false,
+      "disputed": false,
+      "doc": "Fixture2000",
+      "fidelity_status": "faithful",
+      "has_mathlib": false,
+      "headline": "in-progress",
+      "id": "Fixture2000.Rem_1",
+      "is_aux": false,
+      "kind": "remark",
+      "label": "Remark 1",
+      "local_id": "Rem_1",
+      "local_status": "planned",
+      "needs_repair": false,
+      "pages": [
+        3
+      ],
+      "rank": 0,
+      "reopened": false,
+      "reviewed": false,
+      "section": "1.1",
+      "statement_first_line": "The distinguished degree of the zero complex is zero.",
+      "status": "planned",
+      "tags": [
+        "basic",
+        "chain-complex"
+      ],
+      "title": "Remark 1"
+    },
+    {
+      "chapter": "1",
+      "concepts_defines": [],
+      "concepts_uses": [],
+      "decl_names": [
+        "Fixture2000.degree_add_zero",
+        "Fixture2000.eq_degree_zero"
+      ],
+      "deps_mismatch": false,
+      "disputed": false,
+      "doc": "Fixture2000",
+      "fidelity_status": "faithful",
+      "has_mathlib": false,
+      "headline": "in-progress",
+      "id": "Fixture2000.Thm_1",
+      "is_aux": false,
+      "kind": "theorem",
+      "label": "Theorem 1",
+      "local_id": "Thm_1",
+      "local_status": "proved",
+      "needs_repair": false,
+      "pages": [
+        2
+      ],
+      "rank": 1,
+      "reopened": false,
+      "reviewed": false,
+      "section": "1.1",
+      "statement_first_line": "For every toy chain complex C, \\deg C+0=\\deg C. If \\deg C=0, then \\deg C+0=0.",
+      "status": "proved",
+      "tags": [
+        "basic",
+        "chain-complex"
+      ],
+      "title": "Theorem 1"
+    },
+    {
+      "chapter": "1",
+      "concepts_defines": [],
+      "concepts_uses": [],
+      "decl_names": [
+        "Fixture2000.two_add_two"
+      ],
+      "deps_mismatch": false,
+      "disputed": false,
+      "doc": "Fixture2000",
+      "fidelity_status": "faithful",
+      "has_mathlib": false,
+      "headline": "in-progress",
+      "id": "Fixture2000.Thm_2",
+      "is_aux": false,
+      "kind": "theorem",
+      "label": "Theorem 2",
+      "local_id": "Thm_2",
+      "local_status": "proved",
+      "needs_repair": false,
+      "pages": [
+        2
+      ],
+      "rank": 0,
+      "reopened": false,
+      "reviewed": false,
+      "section": "1.1",
+      "statement_first_line": "The sum 2+2 is 4.",
+      "status": "proved-with-axioms",
+      "tags": [
+        "basic"
+      ],
+      "title": "Theorem 2"
+    },
+    {
+      "chapter": "1",
+      "concepts_defines": [],
+      "concepts_uses": [],
+      "decl_names": [
+        "Fixture2000.degree_le_mul_one_add_zero"
+      ],
+      "deps_mismatch": false,
+      "disputed": false,
+      "doc": "Fixture2000",
+      "fidelity_status": "faithful",
+      "has_mathlib": false,
+      "headline": "in-progress",
+      "id": "Fixture2000.Thm_3",
+      "is_aux": false,
+      "kind": "theorem",
+      "label": "Theorem 3",
+      "local_id": "Thm_3",
+      "local_status": "proved",
+      "needs_repair": false,
+      "pages": [
+        3
+      ],
+      "rank": 2,
+      "reopened": false,
+      "reviewed": false,
+      "section": "1.1",
+      "statement_first_line": "For every toy chain complex C, \\deg C \\leq (\\deg C)\\cdot 1+0.",
+      "status": "proved-pending-deps",
+      "tags": [
+        "basic",
+        "chain-complex"
+      ],
+      "title": "Theorem 3"
+    },
+    {
+      "chapter": "1",
+      "concepts_defines": [],
+      "concepts_uses": [],
+      "decl_names": [
+        "Fixture2000.degree_mul_comm"
+      ],
+      "deps_mismatch": false,
+      "disputed": false,
+      "doc": "Fixture2000",
+      "fidelity_status": "faithful",
+      "has_mathlib": false,
+      "headline": "in-progress",
+      "id": "Fixture2000.Thm_4",
+      "is_aux": false,
+      "kind": "theorem",
+      "label": "Theorem 4",
+      "local_id": "Thm_4",
+      "local_status": "proved",
+      "needs_repair": false,
+      "pages": [
+        4
+      ],
+      "rank": 1,
+      "reopened": false,
+      "reviewed": false,
+      "section": "1.1",
+      "statement_first_line": "For every toy chain complex C and natural number n, (\\deg C)n=n(\\deg C).",
+      "status": "proved-modulo-citations",
+      "tags": [
+        "basic",
+        "chain-complex"
+      ],
+      "title": "Theorem 4"
+    }
+  ],
+  "schema_version": 1
+}

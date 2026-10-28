@@ -1,0 +1,30 @@
+[
+  {
+    "authors": [
+      "Fixture Maintainers"
+    ],
+    "chapter": "1",
+    "concepts": [
+      "chain-complex"
+    ],
+    "decl_names": [],
+    "description_text": "A planned remark used to exercise the data contract.",
+    "doc": "Fixture2000",
+    "doc_title": "Toy chain complexes",
+    "fidelity": "faithful",
+    "has_mathlib": false,
+    "headline": "in-progress",
+    "id": "Fixture2000.Rem_1",
+    "is_aux": false,
+    "kind": "remark",
+    "label": "Remark 1",
+    "local_id": "Rem_1",
+    "statement_text": "The toy complex is indexed by natural numbers.",
+    "status": "planned",
+    "tags": [
+      "chain-complex"
+    ],
+    "title": "",
+    "year": 2000
+  }
+]

@@ -1,0 +1,80 @@
+{
+  "$id": "https://homalg-db/schema/site/health.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "markdown_findings": {
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "field": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          },
+          "rule": {
+            "type": "string"
+          },
+          "where": {
+            "oneOf": [
+              {
+                "$ref": "../common.schema.json#/$defs/NodeId"
+              },
+              {
+                "$ref": "../common.schema.json#/$defs/SlugId"
+              }
+            ]
+          }
+        },
+        "required": [
+          "where",
+          "field",
+          "rule",
+          "message"
+        ],
+        "type": "object"
+      },
+      "type": "array"
+    },
+    "per_doc": {
+      "additionalProperties": {
+        "additionalProperties": false,
+        "properties": {
+          "deps_mismatch": {
+            "minimum": 0,
+            "type": "integer"
+          },
+          "disputed": {
+            "minimum": 0,
+            "type": "integer"
+          },
+          "markdown_findings": {
+            "minimum": 0,
+            "type": "integer"
+          },
+          "needs_repair": {
+            "minimum": 0,
+            "type": "integer"
+          }
+        },
+        "required": [
+          "markdown_findings",
+          "deps_mismatch",
+          "needs_repair",
+          "disputed"
+        ],
+        "type": "object"
+      },
+      "propertyNames": {
+        "$ref": "../common.schema.json#/$defs/DocKey"
+      },
+      "type": "object"
+    }
+  },
+  "required": [
+    "markdown_findings",
+    "per_doc"
+  ],
+  "type": "object"
+}

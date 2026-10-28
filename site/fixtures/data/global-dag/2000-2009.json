@@ -1,0 +1,255 @@
+{
+  "edges": [
+    {
+      "from": "Fixture2000.Bridge_Def_1_mathlib",
+      "to": "Fixture2000.Def_1",
+      "verified": true
+    },
+    {
+      "from": "Fixture2000.Def_3",
+      "to": "Fixture2000.Def_1",
+      "verified": true
+    },
+    {
+      "from": "Fixture2000.Lem_1",
+      "to": "Fixture2000.Def_1",
+      "verified": true
+    },
+    {
+      "from": "Fixture2000.Prop_1",
+      "to": "Fixture2000.Def_1",
+      "verified": true
+    },
+    {
+      "from": "Fixture2000.Prop_2",
+      "to": "Fixture2000.Def_1",
+      "verified": true
+    },
+    {
+      "from": "Fixture2000.Thm_1",
+      "to": "Fixture2000.Def_1",
+      "verified": true
+    },
+    {
+      "from": "Fixture2000.Thm_1",
+      "to": "Fixture2000.Lem_2",
+      "verified": true
+    },
+    {
+      "from": "Fixture2000.Thm_3",
+      "to": "Fixture2000.Def_1",
+      "verified": true
+    },
+    {
+      "from": "Fixture2000.Thm_3",
+      "to": "Fixture2000.Lem_1",
+      "verified": true
+    },
+    {
+      "from": "Fixture2000.Thm_4",
+      "to": "Fixture2000.Cited_mul_comm",
+      "verified": true
+    },
+    {
+      "from": "Fixture2000.Thm_4",
+      "to": "Fixture2000.Def_1",
+      "verified": true
+    },
+    {
+      "from": "Fixture2001.Def_1",
+      "to": "Fixture2000.Def_1",
+      "verified": true
+    },
+    {
+      "from": "Fixture2001.Thm_1",
+      "to": "Fixture2000.Def_1",
+      "verified": true
+    },
+    {
+      "from": "Fixture2001.Thm_1",
+      "to": "Fixture2000.Thm_1",
+      "verified": true
+    },
+    {
+      "from": "Fixture2001.Thm_1",
+      "to": "Fixture2001.Def_1",
+      "verified": true
+    }
+  ],
+  "nodes": [
+    {
+      "doc": "Fixture2000",
+      "headline": null,
+      "id": "Fixture2000.Aux_Thm_1_step",
+      "kind": "lemma",
+      "status": "pruned",
+      "x": 240000,
+      "y": 0,
+      "year": 2000
+    },
+    {
+      "doc": "Fixture2000",
+      "headline": "proof-complete",
+      "id": "Fixture2000.Bridge_Def_1_mathlib",
+      "kind": "lemma",
+      "status": "proved",
+      "x": 240001,
+      "y": 128,
+      "year": 2000
+    },
+    {
+      "doc": "Fixture2000",
+      "headline": "in-progress",
+      "id": "Fixture2000.Cited_mul_comm",
+      "kind": "theorem",
+      "status": "stated",
+      "x": 240002,
+      "y": 16,
+      "year": 2000
+    },
+    {
+      "doc": "Fixture2000",
+      "headline": "in-progress",
+      "id": "Fixture2000.Def_1",
+      "kind": "definition",
+      "status": "proved",
+      "x": 240003,
+      "y": 24,
+      "year": 2000
+    },
+    {
+      "doc": "Fixture2000",
+      "headline": "in-progress",
+      "id": "Fixture2000.Def_2",
+      "kind": "definition",
+      "status": "proved",
+      "x": 240004,
+      "y": 32,
+      "year": 2000
+    },
+    {
+      "doc": "Fixture2000",
+      "headline": "in-progress",
+      "id": "Fixture2000.Def_3",
+      "kind": "definition",
+      "status": "proved",
+      "x": 240000,
+      "y": 160,
+      "year": 2000
+    },
+    {
+      "doc": "Fixture2000",
+      "headline": "in-progress",
+      "id": "Fixture2000.Lem_1",
+      "kind": "lemma",
+      "status": "stated",
+      "x": 240001,
+      "y": 168,
+      "year": 2000
+    },
+    {
+      "doc": "Fixture2000",
+      "headline": "in-progress",
+      "id": "Fixture2000.Lem_2",
+      "kind": "lemma",
+      "status": "proved",
+      "x": 240002,
+      "y": 0,
+      "year": 2000
+    },
+    {
+      "doc": "Fixture2000",
+      "headline": "in-progress",
+      "id": "Fixture2000.Prop_1",
+      "kind": "proposition",
+      "status": "disputed",
+      "x": 240003,
+      "y": 128,
+      "year": 2000
+    },
+    {
+      "doc": "Fixture2000",
+      "headline": "error",
+      "id": "Fixture2000.Prop_2",
+      "kind": "proposition",
+      "status": "disputed",
+      "x": 240004,
+      "y": 136,
+      "year": 2000
+    },
+    {
+      "doc": "Fixture2000",
+      "headline": "in-progress",
+      "id": "Fixture2000.Rem_1",
+      "kind": "remark",
+      "status": "planned",
+      "x": 240000,
+      "y": 24,
+      "year": 2000
+    },
+    {
+      "doc": "Fixture2000",
+      "headline": "in-progress",
+      "id": "Fixture2000.Thm_1",
+      "kind": "theorem",
+      "status": "proved",
+      "x": 240001,
+      "y": 152,
+      "year": 2000
+    },
+    {
+      "doc": "Fixture2000",
+      "headline": "in-progress",
+      "id": "Fixture2000.Thm_2",
+      "kind": "theorem",
+      "status": "proved-with-axioms",
+      "x": 240002,
+      "y": 40,
+      "year": 2000
+    },
+    {
+      "doc": "Fixture2000",
+      "headline": "in-progress",
+      "id": "Fixture2000.Thm_3",
+      "kind": "theorem",
+      "status": "proved-pending-deps",
+      "x": 240003,
+      "y": 288,
+      "year": 2000
+    },
+    {
+      "doc": "Fixture2000",
+      "headline": "in-progress",
+      "id": "Fixture2000.Thm_4",
+      "kind": "theorem",
+      "status": "proved-modulo-citations",
+      "x": 240004,
+      "y": 120,
+      "year": 2000
+    },
+    {
+      "doc": "Fixture2001",
+      "headline": "in-progress",
+      "id": "Fixture2001.Def_1",
+      "kind": "definition",
+      "status": "proved",
+      "x": 240132,
+      "y": 8,
+      "year": 2001
+    },
+    {
+      "doc": "Fixture2001",
+      "headline": "in-progress",
+      "id": "Fixture2001.Thm_1",
+      "kind": "theorem",
+      "status": "proved",
+      "x": 240133,
+      "y": 136,
+      "year": 2001
+    }
+  ],
+  "range": [
+    2000,
+    2009
+  ]
+}

@@ -1,0 +1,75 @@
+{
+  "$id": "https://homalg-db/schema/claim.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "claims": {
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "agent": {
+            "type": "string"
+          },
+          "claimed_at": {
+            "$ref": "common.schema.json#/$defs/DateTime"
+          },
+          "expires_at": {
+            "$ref": "common.schema.json#/$defs/DateTime"
+          },
+          "holder": {
+            "$ref": "common.schema.json#/$defs/Login"
+          },
+          "pr": {
+            "type": "integer"
+          },
+          "scope": {
+            "additionalProperties": false,
+            "properties": {
+              "chapters": {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              "note": {
+                "type": "string"
+              },
+              "sections": {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              }
+            },
+            "required": [
+              "chapters",
+              "sections"
+            ],
+            "type": "object"
+          }
+        },
+        "required": [
+          "holder",
+          "claimed_at",
+          "expires_at",
+          "scope"
+        ],
+        "type": "object"
+      },
+      "maxItems": 1,
+      "type": "array"
+    },
+    "doc_key": {
+      "$ref": "common.schema.json#/$defs/DocKey"
+    },
+    "schema_version": {
+      "const": 1
+    }
+  },
+  "required": [
+    "schema_version",
+    "doc_key",
+    "claims"
+  ],
+  "type": "object"
+}

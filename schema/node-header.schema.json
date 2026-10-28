@@ -1,0 +1,5 @@
+{
+  "$id": "https://homalg-db/schema/node-header.schema.json",
+  "$ref": "common.schema.json#/$defs/NodeHeaderFields",
+  "$schema": "https://json-schema.org/draft/2020-12/schema"
+}

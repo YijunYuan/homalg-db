@@ -1,0 +1,276 @@
+{
+  "$id": "https://homalg-db/schema/run-status.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "counts": {
+      "additionalProperties": false,
+      "properties": {
+        "aux_headline": {
+          "additionalProperties": false,
+          "properties": {
+            "error": {
+              "minimum": 0,
+              "type": "integer"
+            },
+            "in_progress": {
+              "minimum": 0,
+              "type": "integer"
+            },
+            "proof_complete": {
+              "minimum": 0,
+              "type": "integer"
+            },
+            "statement_complete": {
+              "minimum": 0,
+              "type": "integer"
+            }
+          },
+          "required": [
+            "in_progress",
+            "statement_complete",
+            "proof_complete",
+            "error"
+          ],
+          "type": "object"
+        },
+        "aux_proved": {
+          "minimum": 0,
+          "type": "integer"
+        },
+        "aux_total": {
+          "minimum": 0,
+          "type": "integer"
+        },
+        "cited_headline": {
+          "additionalProperties": false,
+          "properties": {
+            "error": {
+              "minimum": 0,
+              "type": "integer"
+            },
+            "in_progress": {
+              "minimum": 0,
+              "type": "integer"
+            },
+            "proof_complete": {
+              "minimum": 0,
+              "type": "integer"
+            },
+            "statement_complete": {
+              "minimum": 0,
+              "type": "integer"
+            }
+          },
+          "required": [
+            "in_progress",
+            "statement_complete",
+            "proof_complete",
+            "error"
+          ],
+          "type": "object"
+        },
+        "cited_total": {
+          "minimum": 0,
+          "type": "integer"
+        },
+        "disputed": {
+          "minimum": 0,
+          "type": "integer"
+        },
+        "headline": {
+          "additionalProperties": false,
+          "properties": {
+            "error": {
+              "minimum": 0,
+              "type": "integer"
+            },
+            "in_progress": {
+              "minimum": 0,
+              "type": "integer"
+            },
+            "proof_complete": {
+              "minimum": 0,
+              "type": "integer"
+            },
+            "statement_complete": {
+              "minimum": 0,
+              "type": "integer"
+            }
+          },
+          "required": [
+            "in_progress",
+            "statement_complete",
+            "proof_complete",
+            "error"
+          ],
+          "type": "object"
+        },
+        "informal": {
+          "minimum": 0,
+          "type": "integer"
+        },
+        "items_total": {
+          "minimum": 0,
+          "type": "integer"
+        },
+        "locked": {
+          "minimum": 0,
+          "type": "integer"
+        },
+        "pages_reviewed": {
+          "minimum": 0,
+          "type": "integer"
+        },
+        "pages_total": {
+          "minimum": 0,
+          "type": "integer"
+        },
+        "planned": {
+          "minimum": 0,
+          "type": "integer"
+        },
+        "proved": {
+          "minimum": 0,
+          "type": "integer"
+        },
+        "proved_modulo_citations": {
+          "minimum": 0,
+          "type": "integer"
+        },
+        "proved_pending_deps": {
+          "minimum": 0,
+          "type": "integer"
+        },
+        "proved_with_axioms": {
+          "minimum": 0,
+          "type": "integer"
+        },
+        "pruned": {
+          "minimum": 0,
+          "type": "integer"
+        },
+        "stated": {
+          "minimum": 0,
+          "type": "integer"
+        }
+      },
+      "required": [
+        "items_total",
+        "planned",
+        "stated",
+        "locked",
+        "proved",
+        "proved_modulo_citations",
+        "proved_pending_deps",
+        "proved_with_axioms",
+        "disputed",
+        "informal",
+        "aux_total",
+        "aux_proved",
+        "pruned",
+        "cited_total",
+        "pages_total",
+        "pages_reviewed",
+        "headline",
+        "aux_headline",
+        "cited_headline"
+      ],
+      "type": "object"
+    },
+    "doc_key": {
+      "$ref": "common.schema.json#/$defs/DocKey"
+    },
+    "generated_at": {
+      "$ref": "common.schema.json#/$defs/DateTime"
+    },
+    "holder": {
+      "$ref": "common.schema.json#/$defs/Login"
+    },
+    "last_check": {
+      "additionalProperties": false,
+      "properties": {
+        "at": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "$ref": "common.schema.json#/$defs/DateTime"
+            }
+          ]
+        },
+        "result": {
+          "enum": [
+            "green",
+            "red",
+            "none"
+          ]
+        }
+      },
+      "required": [
+        "result",
+        "at"
+      ],
+      "type": "object"
+    },
+    "open_for_human": {
+      "minimum": 0,
+      "type": "integer"
+    },
+    "schema_version": {
+      "const": 1
+    },
+    "scope_chapters": {
+      "items": {
+        "pattern": "^[A-Za-z0-9.]{1,16}$",
+        "type": "string"
+      },
+      "type": "array"
+    },
+    "stages": {
+      "additionalProperties": {
+        "additionalProperties": false,
+        "properties": {
+          "done": {
+            "minimum": 0,
+            "type": "integer"
+          },
+          "total": {
+            "minimum": 0,
+            "type": "integer"
+          }
+        },
+        "required": [
+          "done",
+          "total"
+        ],
+        "type": "object"
+      },
+      "propertyNames": {
+        "enum": [
+          "T",
+          "INV",
+          "DAG",
+          "CITED",
+          "STMT",
+          "E",
+          "PROOF"
+        ]
+      },
+      "type": "object"
+    }
+  },
+  "required": [
+    "schema_version",
+    "doc_key",
+    "holder",
+    "generated_at",
+    "scope_chapters",
+    "counts",
+    "stages",
+    "last_check",
+    "open_for_human"
+  ],
+  "type": "object"
+}

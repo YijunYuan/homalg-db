@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+cd "$(git rev-parse --show-toplevel)"
+while IFS= read -r -d '' path; do
+  if [[ "${path,,}" == *.pdf ]]; then
+    printf 'Refusing staged PDF: %s\n' "$path" >&2
+    exit 1
+  fi
+done < <(git diff --cached --name-only --diff-filter=ACMR -z)
+
+uv run --project tools --locked ruff check tools
+uv run --project tools --locked ruff format --check tools
+# M0 checks the whole repository; --changed is introduced with M1 validation.
+uv run --project tools --locked homalg validate --fast
+npm run format:check --prefix site

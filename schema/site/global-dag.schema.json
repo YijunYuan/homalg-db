@@ -1,0 +1,112 @@
+{
+  "$id": "https://homalg-db/schema/site/global-dag.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "edges": {
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "from": {
+            "$ref": "../common.schema.json#/$defs/NodeId"
+          },
+          "relation": {
+            "$ref": "../common.schema.json#/$defs/RelationType"
+          },
+          "review_status": {
+            "enum": [
+              "accepted",
+              "unreviewed"
+            ]
+          },
+          "to": {
+            "$ref": "../common.schema.json#/$defs/NodeId"
+          },
+          "verified": {
+            "type": "boolean"
+          },
+          "via_aux": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "from",
+          "to",
+          "verified"
+        ],
+        "type": "object"
+      },
+      "type": "array"
+    },
+    "nodes": {
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "doc": {
+            "$ref": "../common.schema.json#/$defs/DocKey"
+          },
+          "headline": {
+            "oneOf": [
+              {
+                "$ref": "../common.schema.json#/$defs/HeadlineStatus"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "id": {
+            "$ref": "../common.schema.json#/$defs/NodeId"
+          },
+          "kind": {
+            "$ref": "../common.schema.json#/$defs/Kind"
+          },
+          "status": {
+            "$ref": "../common.schema.json#/$defs/Status"
+          },
+          "x": {
+            "type": "number"
+          },
+          "y": {
+            "type": "number"
+          },
+          "year": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "id",
+          "doc",
+          "year",
+          "kind",
+          "headline",
+          "status",
+          "x",
+          "y"
+        ],
+        "type": "object"
+      },
+      "type": "array"
+    },
+    "range": {
+      "items": false,
+      "maxItems": 2,
+      "minItems": 2,
+      "prefixItems": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "integer"
+        }
+      ],
+      "type": "array"
+    }
+  },
+  "required": [
+    "range",
+    "nodes",
+    "edges"
+  ],
+  "type": "object"
+}

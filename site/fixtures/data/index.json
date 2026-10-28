@@ -1,0 +1,3438 @@
+{
+  "concepts": [
+    {
+      "aliases": [],
+      "current_bundle_sha256": "3201f9ade8fd61b5a4ceecbffef4f29b94ccab7133f775da3b5ff42a3fba7189",
+      "description": "Graded objects with differentials whose successive composites vanish.",
+      "id": "chain-complex",
+      "merged_into": null,
+      "name": "Chain complex",
+      "parents": [],
+      "related_tags": [
+        "chain-complex"
+      ]
+    },
+    {
+      "aliases": [],
+      "current_bundle_sha256": "4d2fe71274128107f9346e17c8174f8c7103e62edaf7b7ffd784adb8365c1dd3",
+      "description": "Cycles modulo boundaries associated with a complex.",
+      "id": "homology",
+      "merged_into": null,
+      "name": "Homology",
+      "parents": [],
+      "related_tags": [
+        "homology"
+      ]
+    },
+    {
+      "aliases": [],
+      "current_bundle_sha256": "26b5537134d4038a5866f5d62b66bbc59c9760b06ef16d63e59671a4aae03abc",
+      "description": "Cohomology objects associated with a cochain complex.",
+      "id": "cohomology",
+      "merged_into": null,
+      "name": "Cohomology",
+      "parents": [],
+      "related_tags": [
+        "cohomology"
+      ]
+    },
+    {
+      "aliases": [],
+      "current_bundle_sha256": "adee40782a1ca36835c0d1ad975c46da322e4a9827bd8246cb26d1a33893193e",
+      "description": "A sequence whose consecutive image and kernel agree.",
+      "id": "exact-sequence",
+      "merged_into": null,
+      "name": "Exact sequence",
+      "parents": [],
+      "related_tags": [
+        "exact-sequence"
+      ]
+    },
+    {
+      "aliases": [],
+      "current_bundle_sha256": "71fc5341d1dcaad86597547e7e7871df2fa1b2dce0f1640c669951b7b4d3c76c",
+      "description": "A homotopy between morphisms of complexes.",
+      "id": "chain-homotopy",
+      "merged_into": null,
+      "name": "Chain homotopy",
+      "parents": [
+        "chain-complex"
+      ],
+      "related_tags": [
+        "chain-homotopy"
+      ]
+    },
+    {
+      "aliases": [],
+      "current_bundle_sha256": "013ad383219cb11cc616da2f0960400a07420effc1d30fb208717e52e5cf9277",
+      "description": "An exact complex used to study an object through simpler objects.",
+      "id": "resolution",
+      "merged_into": null,
+      "name": "Resolution",
+      "parents": [],
+      "related_tags": [
+        "resolution"
+      ]
+    },
+    {
+      "aliases": [
+        "satellite"
+      ],
+      "current_bundle_sha256": "f38468d859e7de5f50831fa915ce1dcba9eb1e09679a25e7c3e63cae7491e53a",
+      "description": "Left and right derived functors and their constructions from resolutions.",
+      "id": "derived-functor",
+      "merged_into": null,
+      "name": "Derived functor",
+      "parents": [],
+      "related_tags": [
+        "derived-functor"
+      ]
+    },
+    {
+      "aliases": [],
+      "current_bundle_sha256": "b4d6b082454afc5bb02604a444e16a1fc66d4df52c32bc195ac272ec4bc946ef",
+      "description": "Extension groups viewed through derived functors or extensions.",
+      "id": "ext",
+      "merged_into": null,
+      "name": "Ext",
+      "parents": [
+        "derived-functor"
+      ],
+      "related_tags": [
+        "ext"
+      ]
+    },
+    {
+      "aliases": [],
+      "current_bundle_sha256": "83073e576b73d2eeb74c10553e616f517d680cf6219e9846d40f6281181e99ad",
+      "description": "An additive category with kernels, cokernels and the abelian exactness axioms.",
+      "id": "abelian-category",
+      "merged_into": null,
+      "name": "Abelian category",
+      "parents": [],
+      "related_tags": [
+        "abelian-category"
+      ]
+    },
+    {
+      "aliases": [],
+      "current_bundle_sha256": "3d07e00e0ff26c634749a664af78666499f09ebcc0b82d6f5f03e210f6603d7a",
+      "description": "Successive pages of differential objects converging to filtered information.",
+      "id": "spectral-sequence",
+      "merged_into": null,
+      "name": "Spectral sequence",
+      "parents": [],
+      "related_tags": [
+        "spectral-sequence"
+      ]
+    }
+  ],
+  "document_graph": [
+    {
+      "from": "Fixture2001",
+      "imports": 3,
+      "relations": {
+        "accepted": 0,
+        "unreviewed": 0
+      },
+      "to": "Fixture2000"
+    }
+  ],
+  "documents": [
+    {
+      "claim": {
+        "state": "unclaimed"
+      },
+      "document": {
+        "authors": [
+          {
+            "family": "HomAlgDB fixture authors"
+          }
+        ],
+        "doc_key": "Fixture2000",
+        "foundations": [
+          {
+            "confirmed_by": "fixture-reviewer",
+            "evidence": "docs/fixtures/Fixture2000.md, p. 1: We use ordinary natural numbers and elementary arithmetic as background.",
+            "justification": "The synthetic source assumes ordinary natural-number arithmetic.",
+            "mathlib": [
+              "Nat",
+              "Nat.add_zero",
+              "Nat.mul_one"
+            ],
+            "notion": "Natural numbers and elementary arithmetic",
+            "status": "confirmed"
+          },
+          {
+            "confirmed_by": "fixture-reviewer",
+            "evidence": "docs/fixtures/Fixture2000.md, p. 1, Definition 2 recalls the usual additive abelian group.",
+            "justification": "Definition 2 recalls the usual background group structure.",
+            "mathlib": [
+              "AddCommGroup"
+            ],
+            "notion": "Additive abelian groups",
+            "status": "confirmed"
+          }
+        ],
+        "item_kinds": [
+          "definition",
+          "theorem",
+          "lemma",
+          "proposition",
+          "remark"
+        ],
+        "language": "en",
+        "notes": "Project-authored synthetic regression document: docs/fixtures/Fixture2000.md. All dates and fixture-reviewer adjudications are fictitious test data, not evidence of an actual human review.",
+        "schema_version": 1,
+        "structure": [
+          {
+            "chapter": "1",
+            "pages": {
+              "first": 1,
+              "last": 4
+            },
+            "sections": [
+              {
+                "id": "1.1",
+                "pages": {
+                  "first": 1,
+                  "last": 4
+                },
+                "title": "Toy chain complexes"
+              }
+            ],
+            "title": "Toy chain complexes"
+          }
+        ],
+        "title": "Toy chain complexes",
+        "type": "synthetic",
+        "year": 2000
+      }
+    },
+    {
+      "claim": {
+        "state": "unclaimed"
+      },
+      "document": {
+        "authors": [
+          {
+            "family": "HomAlgDB fixture authors"
+          }
+        ],
+        "doc_key": "Fixture2001",
+        "foundations": [
+          {
+            "confirmed_by": "fixture-reviewer",
+            "evidence": "docs/fixtures/Fixture2001.md, p. 1: We use ordinary natural numbers and elementary arithmetic as background.",
+            "justification": "The synthetic source assumes ordinary natural-number arithmetic.",
+            "mathlib": [
+              "Nat",
+              "Nat.add_zero",
+              "Nat.mul_one"
+            ],
+            "notion": "Natural numbers and elementary arithmetic",
+            "status": "confirmed"
+          }
+        ],
+        "item_kinds": [
+          "definition",
+          "theorem",
+          "lemma",
+          "proposition",
+          "remark"
+        ],
+        "language": "en",
+        "notes": "Project-authored synthetic regression document: docs/fixtures/Fixture2001.md. All dates and fixture-reviewer adjudications are fictitious test data, not evidence of an actual human review.",
+        "schema_version": 1,
+        "structure": [
+          {
+            "chapter": "1",
+            "pages": {
+              "first": 1,
+              "last": 1
+            },
+            "sections": [
+              {
+                "id": "1.1",
+                "pages": {
+                  "first": 1,
+                  "last": 1
+                },
+                "title": "Pointed toy chain complexes"
+              }
+            ],
+            "title": "Pointed toy chain complexes"
+          }
+        ],
+        "title": "Pointed toy chain complexes",
+        "type": "synthetic",
+        "year": 2001
+      }
+    }
+  ],
+  "edges": [
+    {
+      "declared": true,
+      "from": "Fixture2000.Bridge_Def_1_mathlib",
+      "kind": "statement",
+      "to": "Fixture2000.Def_1",
+      "verified": true
+    },
+    {
+      "declared": true,
+      "from": "Fixture2000.Def_3",
+      "kind": "statement",
+      "to": "Fixture2000.Def_1",
+      "verified": true
+    },
+    {
+      "declared": true,
+      "from": "Fixture2000.Lem_1",
+      "kind": "statement",
+      "to": "Fixture2000.Def_1",
+      "verified": true
+    },
+    {
+      "declared": true,
+      "from": "Fixture2000.Prop_1",
+      "kind": "statement",
+      "to": "Fixture2000.Def_1",
+      "verified": true
+    },
+    {
+      "declared": true,
+      "from": "Fixture2000.Prop_2",
+      "kind": "statement",
+      "to": "Fixture2000.Def_1",
+      "verified": true
+    },
+    {
+      "declared": true,
+      "from": "Fixture2000.Thm_1",
+      "kind": "statement",
+      "to": "Fixture2000.Def_1",
+      "verified": true
+    },
+    {
+      "declared": true,
+      "from": "Fixture2000.Thm_1",
+      "kind": "proof",
+      "to": "Fixture2000.Lem_2",
+      "verified": true
+    },
+    {
+      "declared": true,
+      "from": "Fixture2000.Thm_3",
+      "kind": "statement",
+      "to": "Fixture2000.Def_1",
+      "verified": true
+    },
+    {
+      "declared": true,
+      "from": "Fixture2000.Thm_3",
+      "kind": "proof",
+      "to": "Fixture2000.Lem_1",
+      "verified": true
+    },
+    {
+      "declared": true,
+      "from": "Fixture2000.Thm_4",
+      "kind": "proof",
+      "to": "Fixture2000.Cited_mul_comm",
+      "verified": true
+    },
+    {
+      "declared": true,
+      "from": "Fixture2000.Thm_4",
+      "kind": "statement",
+      "to": "Fixture2000.Def_1",
+      "verified": true
+    },
+    {
+      "declared": true,
+      "from": "Fixture2001.Def_1",
+      "kind": "statement",
+      "to": "Fixture2000.Def_1",
+      "verified": true
+    },
+    {
+      "declared": true,
+      "from": "Fixture2001.Thm_1",
+      "kind": "statement",
+      "to": "Fixture2000.Def_1",
+      "verified": true
+    },
+    {
+      "declared": true,
+      "from": "Fixture2001.Thm_1",
+      "kind": "proof",
+      "to": "Fixture2000.Thm_1",
+      "verified": true
+    },
+    {
+      "declared": true,
+      "from": "Fixture2001.Thm_1",
+      "kind": "statement",
+      "to": "Fixture2001.Def_1",
+      "verified": true
+    }
+  ],
+  "evolution": [],
+  "generator": {
+    "commit": "fixture",
+    "name": "homalg",
+    "version": "0.1.0"
+  },
+  "lean": {
+    "mathlib_rev": "v4.35.0",
+    "toolchain": "leanprover/lean4:v4.35.0"
+  },
+  "nodes": [
+    {
+      "authored": {
+        "aux": {
+          "kind": "lemma",
+          "parent": "Fixture2000.Thm_1",
+          "pruned": true,
+          "reason": "An initial separate arithmetic step, now supplied directly by the foundation library."
+        },
+        "concepts": {
+          "defines": [],
+          "uses": []
+        },
+        "decls": [
+          "Fixture2000.aux_add_zero"
+        ],
+        "deps": {
+          "proof": [],
+          "statement": []
+        },
+        "description_md": "An unused auxiliary proof step marked as a pruning candidate.",
+        "doc": "Fixture2000",
+        "fidelity": {
+          "status": "faithful"
+        },
+        "id": "Fixture2000.Aux_Thm_1_step",
+        "kind": "lemma",
+        "nl_proof_source": {
+          "follows": "agent"
+        },
+        "proof_md": "Apply the defining identity for addition by zero.",
+        "source": {
+          "chapter": "1",
+          "label": "Auxiliary to Theorem 1",
+          "pages": [
+            2
+          ],
+          "section": "1.1"
+        },
+        "statement_md": "For every natural number $n$, $n+0=n$.",
+        "tags": [
+          "technical"
+        ],
+        "title": "Auxiliary to Theorem 1"
+      },
+      "derived": {
+        "decl_info": [
+          {
+            "direct_sorry": false,
+            "docstring": "**Auxiliary to Theorem 1** (Fixture2000). Addition by zero is an elementary identity. ",
+            "hollow": false,
+            "is_prop": true,
+            "kind": "theorem",
+            "line": 60,
+            "meaning_hash": "000000002aea8c3d",
+            "name": "Fixture2000.aux_add_zero",
+            "type": "∀ (n : ℕ), n + 0 = n",
+            "type_hash": "000000002aea8c3d",
+            "type_sha256": "78ef0d98e57b34a7e3c531d52a3dd1bd80b4a97709f2c6d84c68a92e49094b3d",
+            "type_uses_external": [
+              "Eq",
+              "HAdd.hAdd",
+              "Nat",
+              "OfNat.ofNat",
+              "instAddNat",
+              "instHAdd",
+              "instOfNatNat"
+            ],
+            "type_uses_external_truncated": false,
+            "type_uses_nodes": [],
+            "value_uses_external": [
+              "Nat",
+              "Nat.add_zero"
+            ],
+            "value_uses_external_truncated": false,
+            "value_uses_nodes": []
+          }
+        ],
+        "declared_deps": {
+          "proof": [],
+          "statement": []
+        },
+        "deps_diff": {
+          "declared_not_verified": {
+            "proof": [],
+            "statement": []
+          },
+          "verified_not_declared": []
+        },
+        "file": {
+          "lines": 63,
+          "path": "HomAlg/Fixture2000/Aux_Thm_1_step.lean",
+          "sha256": "cd8caabe170d691664d83263b1c617cd47a8bafb6559e1e12fff601cbe6f03fe"
+        },
+        "imports": {
+          "mathlib": [],
+          "nodes": []
+        },
+        "local_status": "proved",
+        "sorry_count_text": 0,
+        "verified_deps": {
+          "proof": [],
+          "statement": []
+        }
+      },
+      "global": {
+        "blob_url": "https://github.com/example/homalg-db/blob/fixture/HomAlg/Fixture2000/Aux_Thm_1_step.lean#L60",
+        "chapter_title": "Toy chain complexes",
+        "closure": {
+          "blocked_by": []
+        },
+        "commit": "fixture",
+        "decl_axioms": {
+          "Fixture2000.aux_add_zero": {
+            "axioms": [],
+            "transitive_sorry": false
+          }
+        },
+        "dependents": [],
+        "doc_authors": [
+          "HomAlgDB fixture authors"
+        ],
+        "doc_title": "Toy chain complexes",
+        "doc_year": 2000,
+        "headline": null,
+        "rank": 0,
+        "reopened": false,
+        "status": "pruned"
+      },
+      "id": "Fixture2000.Aux_Thm_1_step"
+    },
+    {
+      "authored": {
+        "aux": {
+          "kind": "bridge",
+          "parent": "Fixture2000.Def_1",
+          "reason": "Relate the pointwise source formulation to library function composition."
+        },
+        "concepts": {
+          "defines": [],
+          "uses": []
+        },
+        "decls": [
+          "Fixture2000.differential_comp_zero"
+        ],
+        "deps": {
+          "proof": [],
+          "statement": [
+            "Fixture2000.Def_1"
+          ]
+        },
+        "description_md": "An extensional reformulation of the square-zero law using library function composition.",
+        "doc": "Fixture2000",
+        "fidelity": {
+          "status": "faithful"
+        },
+        "id": "Fixture2000.Bridge_Def_1_mathlib",
+        "kind": "lemma",
+        "nl_proof_source": {
+          "follows": "agent"
+        },
+        "proof_md": "Apply function extensionality and the square-zero law of Definition 1.",
+        "source": {
+          "chapter": "1",
+          "label": "Bridge for Definition 1",
+          "pages": [
+            1
+          ],
+          "section": "1.1"
+        },
+        "statement_md": "The composite of consecutive differentials of a toy chain complex is the constant zero function.",
+        "tags": [
+          "chain-complex",
+          "bridge"
+        ],
+        "title": "Bridge for Definition 1"
+      },
+      "derived": {
+        "decl_info": [
+          {
+            "direct_sorry": false,
+            "docstring": "**Bridge for Definition 1** (Fixture2000). Function extensionality converts the pointwise square-zero law into an equality of functions. ",
+            "hollow": false,
+            "is_prop": true,
+            "kind": "theorem",
+            "line": 64,
+            "meaning_hash": "8e63e3a108b82a98",
+            "name": "Fixture2000.differential_comp_zero",
+            "type": "∀ (c : Fixture2000.ChainComplexToy) (n : ℕ), c.differential n ∘ c.differential (n + 1) = fun x ↦ 0",
+            "type_hash": "00000000d461a9fb",
+            "type_sha256": "d32b7e397520df44c658f40e1e64ef13f75c614d581f68c6c5eeaa1165f987e2",
+            "type_uses_external": [
+              "Eq",
+              "Function.comp",
+              "HAdd.hAdd",
+              "Nat",
+              "OfNat.ofNat",
+              "instAddNat",
+              "instHAdd",
+              "instOfNatNat"
+            ],
+            "type_uses_external_truncated": false,
+            "type_uses_nodes": [
+              "Fixture2000.Def_1"
+            ],
+            "value_uses_external": [
+              "Function.comp",
+              "HAdd.hAdd",
+              "Nat",
+              "OfNat.ofNat",
+              "funext",
+              "instAddNat",
+              "instHAdd",
+              "instOfNatNat"
+            ],
+            "value_uses_external_truncated": false,
+            "value_uses_nodes": []
+          }
+        ],
+        "declared_deps": {
+          "proof": [],
+          "statement": [
+            "Fixture2000.Def_1"
+          ]
+        },
+        "deps_diff": {
+          "declared_not_verified": {
+            "proof": [],
+            "statement": []
+          },
+          "verified_not_declared": []
+        },
+        "file": {
+          "lines": 70,
+          "path": "HomAlg/Fixture2000/Bridge_Def_1_mathlib.lean",
+          "sha256": "93917fb8dd4884822fc5d7b5dc92456142373d091ce008da51ac3bbf1a75cf3a"
+        },
+        "imports": {
+          "mathlib": [],
+          "nodes": [
+            "Fixture2000.Def_1"
+          ]
+        },
+        "local_status": "proved",
+        "sorry_count_text": 0,
+        "verified_deps": {
+          "proof": [],
+          "statement": [
+            "Fixture2000.Def_1"
+          ]
+        }
+      },
+      "global": {
+        "blob_url": "https://github.com/example/homalg-db/blob/fixture/HomAlg/Fixture2000/Bridge_Def_1_mathlib.lean#L64",
+        "chapter_title": "Toy chain complexes",
+        "closure": {
+          "blocked_by": []
+        },
+        "commit": "fixture",
+        "decl_axioms": {
+          "Fixture2000.differential_comp_zero": {
+            "axioms": [
+              "Quot.sound"
+            ],
+            "transitive_sorry": false
+          }
+        },
+        "dependents": [],
+        "doc_authors": [
+          "HomAlgDB fixture authors"
+        ],
+        "doc_title": "Toy chain complexes",
+        "doc_year": 2000,
+        "headline": "proof-complete",
+        "rank": 1,
+        "reopened": false,
+        "status": "proved"
+      },
+      "id": "Fixture2000.Bridge_Def_1_mathlib"
+    },
+    {
+      "authored": {
+        "cited": {
+          "formulation": "verbatim",
+          "source": {
+            "kind": "folklore",
+            "locator": "Commutativity of multiplication",
+            "ref": "Elementary arithmetic of natural numbers"
+          },
+          "used_at": [
+            4
+          ]
+        },
+        "concepts": {
+          "defines": [],
+          "uses": []
+        },
+        "decls": [
+          "Fixture2000.cited_mul_comm"
+        ],
+        "deps": {
+          "proof": [],
+          "statement": []
+        },
+        "description_md": "A background result cited without proof and intentionally left as an external proof obligation.",
+        "doc": "Fixture2000",
+        "fidelity": {
+          "status": "faithful"
+        },
+        "id": "Fixture2000.Cited_mul_comm",
+        "kind": "theorem",
+        "nl_proof_source": {
+          "follows": "other",
+          "ref": "Elementary arithmetic of natural numbers"
+        },
+        "proof_md": "Not proved in the document; see cited.source.",
+        "source": {
+          "chapter": "1",
+          "label": "Cited result (p. 4)",
+          "pages": [
+            4
+          ],
+          "section": "1.1"
+        },
+        "statement_md": "Multiplication of natural numbers is commutative: $mn=nm$.",
+        "tags": [
+          "basic"
+        ],
+        "title": "Cited result (p. 4)"
+      },
+      "derived": {
+        "decl_info": [
+          {
+            "direct_sorry": true,
+            "docstring": "**Cited result (p. 4)** (Fixture2000). Not proved in the document. A standard proof\nuses induction on the first argument, distributivity in the successor case, and the zero case. ",
+            "hollow": false,
+            "is_prop": true,
+            "kind": "theorem",
+            "line": 66,
+            "meaning_hash": "00000000799bc5cd",
+            "name": "Fixture2000.cited_mul_comm",
+            "type": "∀ (m n : ℕ), m * n = n * m",
+            "type_hash": "00000000799bc5cd",
+            "type_sha256": "b155fcc3ee632d1cb4d90ba3f2f7998decc848a0be4a2e52929cacd621e58de0",
+            "type_uses_external": [
+              "Eq",
+              "HMul.hMul",
+              "Nat",
+              "instHMul",
+              "instMulNat"
+            ],
+            "type_uses_external_truncated": false,
+            "type_uses_nodes": [],
+            "value_uses_external": [
+              "Bool.false",
+              "Eq",
+              "HMul.hMul",
+              "Lean.Name",
+              "Lean.Name.anonymous",
+              "Lean.Name.num",
+              "Lean.Name.str",
+              "Nat",
+              "OfNat.ofNat",
+              "instHMul",
+              "instMulNat",
+              "instOfNatNat",
+              "sorryAx"
+            ],
+            "value_uses_external_truncated": false,
+            "value_uses_nodes": []
+          }
+        ],
+        "declared_deps": {
+          "proof": [],
+          "statement": []
+        },
+        "deps_diff": {
+          "declared_not_verified": {
+            "proof": [],
+            "statement": []
+          },
+          "verified_not_declared": []
+        },
+        "file": {
+          "lines": 71,
+          "path": "HomAlg/Fixture2000/Cited_mul_comm.lean",
+          "sha256": "bf53e94e3ef1c8063d487035a5a2847f211ab6e82e6ad878d1d47387f1869337"
+        },
+        "imports": {
+          "mathlib": [],
+          "nodes": []
+        },
+        "local_status": "stated",
+        "sorry_count_text": 1,
+        "verified_deps": {
+          "proof": [],
+          "statement": []
+        }
+      },
+      "global": {
+        "blob_url": "https://github.com/example/homalg-db/blob/fixture/HomAlg/Fixture2000/Cited_mul_comm.lean#L66",
+        "chapter_title": "Toy chain complexes",
+        "closure": {
+          "blocked_by": []
+        },
+        "commit": "fixture",
+        "decl_axioms": {
+          "Fixture2000.cited_mul_comm": {
+            "axioms": [
+              "sorryAx"
+            ],
+            "transitive_sorry": true
+          }
+        },
+        "dependents": [
+          "Fixture2000.Thm_4"
+        ],
+        "doc_authors": [
+          "HomAlgDB fixture authors"
+        ],
+        "doc_title": "Toy chain complexes",
+        "doc_year": 2000,
+        "headline": "in-progress",
+        "rank": 0,
+        "reopened": false,
+        "status": "stated"
+      },
+      "id": "Fixture2000.Cited_mul_comm"
+    },
+    {
+      "authored": {
+        "concepts": {
+          "defines": [
+            "chain-complex"
+          ],
+          "uses": []
+        },
+        "decls": [
+          "Fixture2000.ChainComplexToy"
+        ],
+        "deps": {
+          "proof": [],
+          "statement": []
+        },
+        "description_md": "A deliberately elementary model of a square-zero differential, indexed by natural numbers.",
+        "doc": "Fixture2000",
+        "fidelity": {
+          "status": "faithful"
+        },
+        "id": "Fixture2000.Def_1",
+        "kind": "definition",
+        "mathlib": {
+          "bridge": "Fixture2000.Bridge_Def_1_mathlib",
+          "decls": [
+            "Function.comp"
+          ],
+          "note": "The square-zero law can equivalently be expressed using function composition; this toy complex is not an alias for a Mathlib complex.",
+          "relation": "variant"
+        },
+        "source": {
+          "chapter": "1",
+          "label": "Definition 1",
+          "pages": [
+            1
+          ],
+          "section": "1.1"
+        },
+        "statement_md": "A toy chain complex consists of a natural number called its degree and a family of functions $d_n : \\mathbb{N} \\to \\mathbb{N}$ such that $d_n(0)=0$ and $d_n(d_{n+1}(x))=0$ for every $n,x \\in \\mathbb{N}$.",
+        "tags": [
+          "chain-complex",
+          "basic"
+        ],
+        "title": "Definition 1"
+      },
+      "derived": {
+        "decl_info": [
+          {
+            "direct_sorry": false,
+            "docstring": "**Definition 1** (Fixture2000). A natural-number-indexed toy chain complex. ",
+            "hollow": false,
+            "is_prop": false,
+            "kind": "structure",
+            "line": 58,
+            "meaning_hash": "00000000ea5019a6",
+            "name": "Fixture2000.ChainComplexToy",
+            "type": "Type",
+            "type_hash": "00000000ea5019a6",
+            "type_sha256": "baaddf70fb5d432b8bd948ef91d6f910124a6d138edae4d5f000c4610ddc8eae",
+            "type_uses_external": [
+              "Eq",
+              "HAdd.hAdd",
+              "Nat",
+              "OfNat.ofNat",
+              "instAddNat",
+              "instHAdd",
+              "instOfNatNat"
+            ],
+            "type_uses_external_truncated": false,
+            "type_uses_nodes": [],
+            "value_uses_external": [],
+            "value_uses_external_truncated": false,
+            "value_uses_nodes": []
+          }
+        ],
+        "declared_deps": {
+          "proof": [],
+          "statement": []
+        },
+        "deps_diff": {
+          "declared_not_verified": {
+            "proof": [],
+            "statement": []
+          },
+          "verified_not_declared": []
+        },
+        "file": {
+          "lines": 69,
+          "path": "HomAlg/Fixture2000/Def_1.lean",
+          "sha256": "47b48c804d02de39fd0333466daeb16b557fb640e141ec34b3c9ed5216fb1468"
+        },
+        "imports": {
+          "mathlib": [],
+          "nodes": []
+        },
+        "local_status": "proved",
+        "sorry_count_text": 0,
+        "verified_deps": {
+          "proof": [],
+          "statement": []
+        }
+      },
+      "global": {
+        "blob_url": "https://github.com/example/homalg-db/blob/fixture/HomAlg/Fixture2000/Def_1.lean#L58",
+        "chapter_title": "Toy chain complexes",
+        "closure": {
+          "blocked_by": []
+        },
+        "commit": "fixture",
+        "decl_axioms": {
+          "Fixture2000.ChainComplexToy": {
+            "axioms": [],
+            "transitive_sorry": false
+          }
+        },
+        "dependents": [
+          "Fixture2000.Bridge_Def_1_mathlib",
+          "Fixture2000.Def_3",
+          "Fixture2000.Lem_1",
+          "Fixture2000.Prop_1",
+          "Fixture2000.Prop_2",
+          "Fixture2000.Thm_1",
+          "Fixture2000.Thm_3",
+          "Fixture2000.Thm_4",
+          "Fixture2001.Def_1",
+          "Fixture2001.Thm_1"
+        ],
+        "doc_authors": [
+          "HomAlgDB fixture authors"
+        ],
+        "doc_title": "Toy chain complexes",
+        "doc_year": 2000,
+        "headline": "in-progress",
+        "rank": 0,
+        "reopened": false,
+        "status": "proved"
+      },
+      "id": "Fixture2000.Def_1"
+    },
+    {
+      "authored": {
+        "concepts": {
+          "defines": [],
+          "uses": []
+        },
+        "decls": [
+          "Fixture2000.AbelianGroup"
+        ],
+        "deps": {
+          "proof": [],
+          "statement": []
+        },
+        "description_md": "A recall entry for the foundational additive abelian group structure.",
+        "doc": "Fixture2000",
+        "fidelity": {
+          "status": "faithful"
+        },
+        "id": "Fixture2000.Def_2",
+        "kind": "definition",
+        "mathlib": {
+          "decls": [
+            "AddCommGroup"
+          ],
+          "note": "A recall of the background notion, awaiting the foundation review workflow in M1-T8.",
+          "relation": "same"
+        },
+        "notes_md": "M0 keeps this recall entry faithful until M1-T8 can create a human-reviewed foundation lock.",
+        "source": {
+          "chapter": "1",
+          "label": "Definition 2",
+          "pages": [
+            1
+          ],
+          "section": "1.1"
+        },
+        "statement_md": "We recall the usual notion of an abelian group, written additively. In this text AbelianGroup means that background structure.",
+        "tags": [
+          "basic"
+        ],
+        "title": "Definition 2"
+      },
+      "derived": {
+        "decl_info": [
+          {
+            "direct_sorry": false,
+            "docstring": "**Definition 2** (Fixture2000). The usual additive abelian group structure. ",
+            "hollow": false,
+            "is_prop": false,
+            "kind": "abbrev",
+            "line": 60,
+            "meaning_hash": "000000008ae3e146",
+            "name": "Fixture2000.AbelianGroup",
+            "type": "Type → Type",
+            "type_hash": "000000008ae3e146",
+            "type_sha256": "7cf8d36c76ac24493ffe3f92d8872c355937102fbf112c018da708ecb1c349b1",
+            "type_uses_external": [],
+            "type_uses_external_truncated": false,
+            "type_uses_nodes": [],
+            "value_uses_external": [
+              "AddCommGroup"
+            ],
+            "value_uses_external_truncated": false,
+            "value_uses_nodes": []
+          }
+        ],
+        "declared_deps": {
+          "proof": [],
+          "statement": []
+        },
+        "deps_diff": {
+          "declared_not_verified": {
+            "proof": [],
+            "statement": []
+          },
+          "verified_not_declared": []
+        },
+        "file": {
+          "lines": 63,
+          "path": "HomAlg/Fixture2000/Def_2.lean",
+          "sha256": "84d464e238fe072f8fd02ea203c5651d2bd5638a7f281ea3133e6e86c8d1fc4f"
+        },
+        "imports": {
+          "mathlib": [
+            "Mathlib.Algebra.Group.Defs"
+          ],
+          "nodes": []
+        },
+        "local_status": "proved",
+        "sorry_count_text": 0,
+        "verified_deps": {
+          "proof": [],
+          "statement": []
+        }
+      },
+      "global": {
+        "blob_url": "https://github.com/example/homalg-db/blob/fixture/HomAlg/Fixture2000/Def_2.lean#L60",
+        "chapter_title": "Toy chain complexes",
+        "closure": {
+          "blocked_by": []
+        },
+        "commit": "fixture",
+        "decl_axioms": {
+          "Fixture2000.AbelianGroup": {
+            "axioms": [],
+            "transitive_sorry": false
+          }
+        },
+        "dependents": [],
+        "doc_authors": [
+          "HomAlgDB fixture authors"
+        ],
+        "doc_title": "Toy chain complexes",
+        "doc_year": 2000,
+        "headline": "in-progress",
+        "rank": 0,
+        "reopened": false,
+        "status": "proved"
+      },
+      "id": "Fixture2000.Def_2"
+    },
+    {
+      "authored": {
+        "concepts": {
+          "defines": [],
+          "uses": []
+        },
+        "decls": [
+          "Fixture2000.zeroComplex"
+        ],
+        "deps": {
+          "proof": [],
+          "statement": [
+            "Fixture2000.Def_1"
+          ]
+        },
+        "description_md": "The constant zero toy complex, with its published degree correction recorded explicitly.",
+        "dispute_history": [
+          {
+            "confirmed_by": "fixture-reviewer",
+            "confirmed_on": "2000-01-02",
+            "kind": "statement",
+            "on": "2000-01-01",
+            "opened_by": "fixture-author",
+            "reason": "The printed degree one conflicts with the zero complex convention.",
+            "resolution": {
+              "by": "fixture-reviewer",
+              "note": "Synthetic test adjudication: the source document contains the erratum on p. 4.",
+              "on": "2000-01-03",
+              "via": "erratum"
+            },
+            "status": "resolved"
+          }
+        ],
+        "doc": "Fixture2000",
+        "fidelity": {
+          "deviations": [
+            {
+              "kind": "erratum",
+              "what": "The distinguished degree is zero instead of one.",
+              "why": "The project-authored erratum on Fixture2000 p. 4 corrects Definition 3."
+            }
+          ],
+          "status": "deviates"
+        },
+        "id": "Fixture2000.Def_3",
+        "kind": "definition",
+        "notes_md": "The source erratum corrects the degree from one to zero. The dispute history is synthetic test data.",
+        "source": {
+          "chapter": "1",
+          "label": "Definition 3",
+          "pages": [
+            2
+          ],
+          "section": "1.1"
+        },
+        "statement_corrected_md": "The zero complex has degree zero and every differential is the constant zero function. [Erratum: Fixture2000, p. 4.]",
+        "statement_md": "The zero complex has degree one and every differential is the constant zero function.",
+        "tags": [
+          "chain-complex",
+          "erratum"
+        ],
+        "title": "Definition 3"
+      },
+      "derived": {
+        "decl_info": [
+          {
+            "direct_sorry": false,
+            "docstring": "**Definition 3** (Fixture2000, corrected on p. 4). The zero toy complex. ",
+            "hollow": false,
+            "is_prop": false,
+            "kind": "def",
+            "line": 84,
+            "meaning_hash": "901bcc9f1aeedc91",
+            "name": "Fixture2000.zeroComplex",
+            "type": "Fixture2000.ChainComplexToy",
+            "type_hash": "000000000e1bd87e",
+            "type_sha256": "ba5ce9597ed29bf21aad05999680b590843ecf0eb30b5e4e9da13ac4761f7b48",
+            "type_uses_external": [],
+            "type_uses_external_truncated": false,
+            "type_uses_nodes": [
+              "Fixture2000.Def_1"
+            ],
+            "value_uses_external": [
+              "Eq",
+              "Nat",
+              "OfNat.ofNat",
+              "instOfNatNat",
+              "rfl"
+            ],
+            "value_uses_external_truncated": false,
+            "value_uses_nodes": []
+          }
+        ],
+        "declared_deps": {
+          "proof": [],
+          "statement": [
+            "Fixture2000.Def_1"
+          ]
+        },
+        "deps_diff": {
+          "declared_not_verified": {
+            "proof": [],
+            "statement": []
+          },
+          "verified_not_declared": []
+        },
+        "file": {
+          "lines": 91,
+          "path": "HomAlg/Fixture2000/Def_3.lean",
+          "sha256": "d125047d7745890044fc585e4c1c14c55d185bcbcac1d9057e0073f5c0088026"
+        },
+        "imports": {
+          "mathlib": [],
+          "nodes": [
+            "Fixture2000.Def_1"
+          ]
+        },
+        "local_status": "proved",
+        "sorry_count_text": 0,
+        "verified_deps": {
+          "proof": [],
+          "statement": [
+            "Fixture2000.Def_1"
+          ]
+        }
+      },
+      "global": {
+        "blob_url": "https://github.com/example/homalg-db/blob/fixture/HomAlg/Fixture2000/Def_3.lean#L84",
+        "chapter_title": "Toy chain complexes",
+        "closure": {
+          "blocked_by": []
+        },
+        "commit": "fixture",
+        "decl_axioms": {
+          "Fixture2000.zeroComplex": {
+            "axioms": [],
+            "transitive_sorry": false
+          }
+        },
+        "dependents": [],
+        "doc_authors": [
+          "HomAlgDB fixture authors"
+        ],
+        "doc_title": "Toy chain complexes",
+        "doc_year": 2000,
+        "headline": "in-progress",
+        "rank": 1,
+        "reopened": false,
+        "status": "proved"
+      },
+      "id": "Fixture2000.Def_3"
+    },
+    {
+      "authored": {
+        "concepts": {
+          "defines": [],
+          "uses": []
+        },
+        "decls": [
+          "Fixture2000.degree_le_mul_one"
+        ],
+        "deps": {
+          "proof": [],
+          "statement": [
+            "Fixture2000.Def_1"
+          ]
+        },
+        "description_md": "An elementary bound whose deliberately deferred proof tests direct sorry detection.",
+        "doc": "Fixture2000",
+        "fidelity": {
+          "status": "faithful"
+        },
+        "id": "Fixture2000.Lem_1",
+        "kind": "lemma",
+        "nl_proof_source": {
+          "follows": "document"
+        },
+        "proof_md": "Multiplication by one fixes every natural number. The assertion therefore follows from reflexivity of the order.",
+        "source": {
+          "chapter": "1",
+          "label": "Lemma 1",
+          "pages": [
+            2
+          ],
+          "section": "1.1"
+        },
+        "statement_md": "For every toy chain complex $C$, its degree satisfies $\\deg C \\leq (\\deg C)\\cdot 1$.",
+        "tags": [
+          "chain-complex",
+          "basic"
+        ],
+        "title": "Lemma 1"
+      },
+      "derived": {
+        "decl_info": [
+          {
+            "direct_sorry": true,
+            "docstring": "**Lemma 1** (Fixture2000). Since multiplication by one fixes each natural number,\nreplace the right side by the degree and apply reflexivity of the order. ",
+            "hollow": false,
+            "is_prop": true,
+            "kind": "theorem",
+            "line": 59,
+            "meaning_hash": "3195cf234ec372fc",
+            "name": "Fixture2000.degree_le_mul_one",
+            "type": "∀ (c : Fixture2000.ChainComplexToy), c.degree ≤ c.degree * 1",
+            "type_hash": "000000009752e415",
+            "type_sha256": "8b592a619e73f444a5dfa1e83b0198501dd0ef0c1ded5ec326f1d5132da1cd5f",
+            "type_uses_external": [
+              "HMul.hMul",
+              "LE.le",
+              "Nat",
+              "OfNat.ofNat",
+              "instHMul",
+              "instLENat",
+              "instMulNat",
+              "instOfNatNat"
+            ],
+            "type_uses_external_truncated": false,
+            "type_uses_nodes": [
+              "Fixture2000.Def_1"
+            ],
+            "value_uses_external": [
+              "Bool.false",
+              "HMul.hMul",
+              "LE.le",
+              "Lean.Name",
+              "Lean.Name.anonymous",
+              "Lean.Name.num",
+              "Lean.Name.str",
+              "Nat",
+              "OfNat.ofNat",
+              "instHMul",
+              "instLENat",
+              "instMulNat",
+              "instOfNatNat",
+              "sorryAx"
+            ],
+            "value_uses_external_truncated": false,
+            "value_uses_nodes": []
+          }
+        ],
+        "declared_deps": {
+          "proof": [],
+          "statement": [
+            "Fixture2000.Def_1"
+          ]
+        },
+        "deps_diff": {
+          "declared_not_verified": {
+            "proof": [],
+            "statement": []
+          },
+          "verified_not_declared": []
+        },
+        "file": {
+          "lines": 64,
+          "path": "HomAlg/Fixture2000/Lem_1.lean",
+          "sha256": "64377944f89824299d1c245f62b273229c79e36c8a0f66a327ac5aa8ba6c5beb"
+        },
+        "imports": {
+          "mathlib": [],
+          "nodes": [
+            "Fixture2000.Def_1"
+          ]
+        },
+        "local_status": "stated",
+        "sorry_count_text": 1,
+        "verified_deps": {
+          "proof": [],
+          "statement": [
+            "Fixture2000.Def_1"
+          ]
+        }
+      },
+      "global": {
+        "blob_url": "https://github.com/example/homalg-db/blob/fixture/HomAlg/Fixture2000/Lem_1.lean#L59",
+        "chapter_title": "Toy chain complexes",
+        "closure": {
+          "blocked_by": []
+        },
+        "commit": "fixture",
+        "decl_axioms": {
+          "Fixture2000.degree_le_mul_one": {
+            "axioms": [
+              "sorryAx"
+            ],
+            "transitive_sorry": true
+          }
+        },
+        "dependents": [
+          "Fixture2000.Thm_3"
+        ],
+        "doc_authors": [
+          "HomAlgDB fixture authors"
+        ],
+        "doc_title": "Toy chain complexes",
+        "doc_year": 2000,
+        "headline": "in-progress",
+        "rank": 1,
+        "reopened": false,
+        "status": "stated"
+      },
+      "id": "Fixture2000.Lem_1"
+    },
+    {
+      "authored": {
+        "concepts": {
+          "defines": [],
+          "uses": []
+        },
+        "decls": [
+          "Fixture2000.add_zero_natural"
+        ],
+        "deps": {
+          "proof": [],
+          "statement": []
+        },
+        "description_md": "A proved lemma used explicitly by the two-part theorem, testing exported proof dependencies.",
+        "doc": "Fixture2000",
+        "fidelity": {
+          "status": "faithful"
+        },
+        "id": "Fixture2000.Lem_2",
+        "kind": "lemma",
+        "nl_proof_source": {
+          "follows": "document"
+        },
+        "proof_md": "This is the defining identity for addition of zero.",
+        "source": {
+          "chapter": "1",
+          "label": "Lemma 2",
+          "pages": [
+            2
+          ],
+          "section": "1.1"
+        },
+        "statement_md": "For every natural number $n$, $n+0=n$.",
+        "tags": [
+          "basic"
+        ],
+        "title": "Addition of zero"
+      },
+      "derived": {
+        "decl_info": [
+          {
+            "direct_sorry": false,
+            "docstring": "**Lemma 2** (Fixture2000). The defining identity for addition of zero. ",
+            "hollow": false,
+            "is_prop": true,
+            "kind": "theorem",
+            "line": 54,
+            "meaning_hash": "000000002aea8c3d",
+            "name": "Fixture2000.add_zero_natural",
+            "type": "∀ (n : ℕ), n + 0 = n",
+            "type_hash": "000000002aea8c3d",
+            "type_sha256": "78ef0d98e57b34a7e3c531d52a3dd1bd80b4a97709f2c6d84c68a92e49094b3d",
+            "type_uses_external": [
+              "Eq",
+              "HAdd.hAdd",
+              "Nat",
+              "OfNat.ofNat",
+              "instAddNat",
+              "instHAdd",
+              "instOfNatNat"
+            ],
+            "type_uses_external_truncated": false,
+            "type_uses_nodes": [],
+            "value_uses_external": [
+              "Nat",
+              "Nat.add_zero"
+            ],
+            "value_uses_external_truncated": false,
+            "value_uses_nodes": []
+          }
+        ],
+        "declared_deps": {
+          "proof": [],
+          "statement": []
+        },
+        "deps_diff": {
+          "declared_not_verified": {
+            "proof": [],
+            "statement": []
+          },
+          "verified_not_declared": []
+        },
+        "file": {
+          "lines": 57,
+          "path": "HomAlg/Fixture2000/Lem_2.lean",
+          "sha256": "2e7de7a83ed38cfd0af65a60cecbc027e0fbe3f427899f8134f74ddc26548707"
+        },
+        "imports": {
+          "mathlib": [],
+          "nodes": []
+        },
+        "local_status": "proved",
+        "sorry_count_text": 0,
+        "verified_deps": {
+          "proof": [],
+          "statement": []
+        }
+      },
+      "global": {
+        "blob_url": "https://github.com/example/homalg-db/blob/fixture/HomAlg/Fixture2000/Lem_2.lean#L54",
+        "chapter_title": "Toy chain complexes",
+        "closure": {
+          "blocked_by": []
+        },
+        "commit": "fixture",
+        "decl_axioms": {
+          "Fixture2000.add_zero_natural": {
+            "axioms": [],
+            "transitive_sorry": false
+          }
+        },
+        "dependents": [
+          "Fixture2000.Thm_1"
+        ],
+        "doc_authors": [
+          "HomAlgDB fixture authors"
+        ],
+        "doc_title": "Toy chain complexes",
+        "doc_year": 2000,
+        "headline": "in-progress",
+        "rank": 0,
+        "reopened": false,
+        "status": "proved"
+      },
+      "id": "Fixture2000.Lem_2"
+    },
+    {
+      "authored": {
+        "concepts": {
+          "defines": [],
+          "uses": []
+        },
+        "decls": [
+          "Fixture2000.degree_positive"
+        ],
+        "deps": {
+          "proof": [],
+          "statement": [
+            "Fixture2000.Def_1"
+          ]
+        },
+        "description_md": "An unconfirmed statement dispute; the zero complex supplies a counterexample.",
+        "dispute": {
+          "counterexample": "Fixture2000.zeroComplex",
+          "inbox": "I-0001",
+          "kind": "statement",
+          "on": "2000-01-01",
+          "opened_by": "fixture-author",
+          "reason": "Zero is a natural number; the zero complex is a counterexample.",
+          "status": "open"
+        },
+        "doc": "Fixture2000",
+        "fidelity": {
+          "status": "faithful"
+        },
+        "id": "Fixture2000.Prop_1",
+        "kind": "proposition",
+        "nl_proof_source": {
+          "follows": "document"
+        },
+        "proof_md": "Every natural number is strictly positive. Apply this observation to the degree.",
+        "source": {
+          "chapter": "1",
+          "label": "Proposition 1",
+          "pages": [
+            3
+          ],
+          "section": "1.1"
+        },
+        "statement_md": "Every toy chain complex has strictly positive degree.",
+        "tags": [
+          "chain-complex",
+          "basic"
+        ],
+        "title": "Proposition 1"
+      },
+      "derived": {
+        "decl_info": [
+          {
+            "direct_sorry": true,
+            "docstring": "**Proposition 1** (Fixture2000). STATEMENT-DISPUTED: the zero complex has degree zero.\nThe source argument says that every natural number is positive and applies this to the degree;\nits first step is false, so the claimed proof is deliberately left open. ",
+            "hollow": false,
+            "is_prop": true,
+            "kind": "theorem",
+            "line": 68,
+            "meaning_hash": "d498d8337f3633ad",
+            "name": "Fixture2000.degree_positive",
+            "type": "∀ (c : Fixture2000.ChainComplexToy), 0 < c.degree",
+            "type_hash": "00000000d0bf2ef0",
+            "type_sha256": "063f24328f4b9faf02fe2d0d389838e3e29ad3cde3df58c0a27abe7e31b35fb5",
+            "type_uses_external": [
+              "LT.lt",
+              "Nat",
+              "OfNat.ofNat",
+              "instLTNat",
+              "instOfNatNat"
+            ],
+            "type_uses_external_truncated": false,
+            "type_uses_nodes": [
+              "Fixture2000.Def_1"
+            ],
+            "value_uses_external": [
+              "Bool.false",
+              "LT.lt",
+              "Lean.Name",
+              "Lean.Name.anonymous",
+              "Lean.Name.num",
+              "Lean.Name.str",
+              "Nat",
+              "OfNat.ofNat",
+              "instLTNat",
+              "instOfNatNat",
+              "sorryAx"
+            ],
+            "value_uses_external_truncated": false,
+            "value_uses_nodes": []
+          }
+        ],
+        "declared_deps": {
+          "proof": [],
+          "statement": [
+            "Fixture2000.Def_1"
+          ]
+        },
+        "deps_diff": {
+          "declared_not_verified": {
+            "proof": [],
+            "statement": []
+          },
+          "verified_not_declared": []
+        },
+        "file": {
+          "lines": 74,
+          "path": "HomAlg/Fixture2000/Prop_1.lean",
+          "sha256": "2a53bb1472b1b9cca565b23fdb44f83032d0ae559ced98ed9708ea95ace183eb"
+        },
+        "imports": {
+          "mathlib": [],
+          "nodes": [
+            "Fixture2000.Def_1"
+          ]
+        },
+        "local_status": "stated",
+        "sorry_count_text": 1,
+        "verified_deps": {
+          "proof": [],
+          "statement": [
+            "Fixture2000.Def_1"
+          ]
+        }
+      },
+      "global": {
+        "blob_url": "https://github.com/example/homalg-db/blob/fixture/HomAlg/Fixture2000/Prop_1.lean#L68",
+        "chapter_title": "Toy chain complexes",
+        "closure": {
+          "blocked_by": []
+        },
+        "commit": "fixture",
+        "decl_axioms": {
+          "Fixture2000.degree_positive": {
+            "axioms": [
+              "sorryAx"
+            ],
+            "transitive_sorry": true
+          }
+        },
+        "dependents": [],
+        "doc_authors": [
+          "HomAlgDB fixture authors"
+        ],
+        "doc_title": "Toy chain complexes",
+        "doc_year": 2000,
+        "headline": "in-progress",
+        "rank": 1,
+        "reopened": false,
+        "status": "disputed"
+      },
+      "id": "Fixture2000.Prop_1"
+    },
+    {
+      "authored": {
+        "concepts": {
+          "defines": [],
+          "uses": []
+        },
+        "decls": [
+          "Fixture2000.degree_self_disputed"
+        ],
+        "deps": {
+          "proof": [],
+          "statement": [
+            "Fixture2000.Def_1"
+          ]
+        },
+        "description_md": "A true assertion with an explicitly invalid source proof and a synthetic confirmed proof dispute.",
+        "dispute": {
+          "confirmed_by": "fixture-reviewer",
+          "confirmed_on": "2000-01-02",
+          "inbox": "I-0002",
+          "kind": "proof",
+          "on": "2000-01-01",
+          "opened_by": "fixture-author",
+          "reason": "The proof relies on the false claim that every natural number equals its successor.",
+          "status": "open"
+        },
+        "doc": "Fixture2000",
+        "fidelity": {
+          "status": "faithful"
+        },
+        "id": "Fixture2000.Prop_2",
+        "kind": "proposition",
+        "nl_proof_source": {
+          "follows": "document"
+        },
+        "proof_md": "Every natural number equals its successor. It follows in particular that the degree equals itself.",
+        "source": {
+          "chapter": "1",
+          "label": "Proposition 2",
+          "pages": [
+            3
+          ],
+          "section": "1.1"
+        },
+        "statement_md": "For every toy chain complex $C$, $\\deg C=\\deg C$.",
+        "tags": [
+          "chain-complex",
+          "basic"
+        ],
+        "title": "Proposition 2"
+      },
+      "derived": {
+        "decl_info": [
+          {
+            "direct_sorry": true,
+            "docstring": "**Proposition 2** (Fixture2000). PROOF-DISPUTED: the source claims every number equals its successor.\nThe source proof asserts n + 1 = n for every natural number and infers reflexivity of the degree;\nthat argument is invalid and must not be silently replaced by the trivial alternative proof. ",
+            "hollow": false,
+            "is_prop": true,
+            "kind": "theorem",
+            "line": 69,
+            "meaning_hash": "b652b7834df82cac",
+            "name": "Fixture2000.degree_self_disputed",
+            "type": "∀ (c : Fixture2000.ChainComplexToy), c.degree = c.degree",
+            "type_hash": "000000008b8031e5",
+            "type_sha256": "d6f1d4c34231afe09a10f4721c4b5fdbfb709efe1e59de79636e262f68a3db10",
+            "type_uses_external": [
+              "Eq",
+              "Nat"
+            ],
+            "type_uses_external_truncated": false,
+            "type_uses_nodes": [
+              "Fixture2000.Def_1"
+            ],
+            "value_uses_external": [
+              "Bool.false",
+              "Eq",
+              "Lean.Name",
+              "Lean.Name.anonymous",
+              "Lean.Name.num",
+              "Lean.Name.str",
+              "Nat",
+              "OfNat.ofNat",
+              "instOfNatNat",
+              "sorryAx"
+            ],
+            "value_uses_external_truncated": false,
+            "value_uses_nodes": []
+          }
+        ],
+        "declared_deps": {
+          "proof": [],
+          "statement": [
+            "Fixture2000.Def_1"
+          ]
+        },
+        "deps_diff": {
+          "declared_not_verified": {
+            "proof": [],
+            "statement": []
+          },
+          "verified_not_declared": []
+        },
+        "file": {
+          "lines": 75,
+          "path": "HomAlg/Fixture2000/Prop_2.lean",
+          "sha256": "6f260c86457f8980063cbe9d63e033a0e788252baed69811fe44dfb55345aeef"
+        },
+        "imports": {
+          "mathlib": [],
+          "nodes": [
+            "Fixture2000.Def_1"
+          ]
+        },
+        "local_status": "stated",
+        "sorry_count_text": 1,
+        "verified_deps": {
+          "proof": [],
+          "statement": [
+            "Fixture2000.Def_1"
+          ]
+        }
+      },
+      "global": {
+        "blob_url": "https://github.com/example/homalg-db/blob/fixture/HomAlg/Fixture2000/Prop_2.lean#L69",
+        "chapter_title": "Toy chain complexes",
+        "closure": {
+          "blocked_by": []
+        },
+        "commit": "fixture",
+        "decl_axioms": {
+          "Fixture2000.degree_self_disputed": {
+            "axioms": [
+              "sorryAx"
+            ],
+            "transitive_sorry": true
+          }
+        },
+        "dependents": [],
+        "doc_authors": [
+          "HomAlgDB fixture authors"
+        ],
+        "doc_title": "Toy chain complexes",
+        "doc_year": 2000,
+        "headline": "error",
+        "rank": 1,
+        "reopened": false,
+        "status": "disputed"
+      },
+      "id": "Fixture2000.Prop_2"
+    },
+    {
+      "authored": {
+        "concepts": {
+          "defines": [],
+          "uses": []
+        },
+        "decls": [],
+        "deps": {
+          "proof": [],
+          "statement": []
+        },
+        "description_md": "A formalizable remark kept at the planned stage to test header-only Lean modules.",
+        "doc": "Fixture2000",
+        "fidelity": {
+          "status": "faithful"
+        },
+        "id": "Fixture2000.Rem_1",
+        "kind": "remark",
+        "source": {
+          "chapter": "1",
+          "label": "Remark 1",
+          "pages": [
+            3
+          ],
+          "section": "1.1"
+        },
+        "statement_md": "The distinguished degree of the zero complex is zero.",
+        "tags": [
+          "chain-complex",
+          "basic"
+        ],
+        "title": "Remark 1"
+      },
+      "derived": {
+        "decl_info": [],
+        "declared_deps": {
+          "proof": [],
+          "statement": []
+        },
+        "deps_diff": {
+          "declared_not_verified": {
+            "proof": [],
+            "statement": []
+          },
+          "verified_not_declared": []
+        },
+        "file": {
+          "lines": 42,
+          "path": "HomAlg/Fixture2000/Rem_1.lean",
+          "sha256": "c33dd89488ea8e4081d4b8fafde89442e7ab9b38ed77faccbbb12de10a294d7b"
+        },
+        "imports": {
+          "mathlib": [],
+          "nodes": []
+        },
+        "local_status": "planned",
+        "sorry_count_text": 0,
+        "verified_deps": {
+          "proof": [],
+          "statement": []
+        }
+      },
+      "global": {
+        "blob_url": "https://github.com/example/homalg-db/blob/fixture/HomAlg/Fixture2000/Rem_1.lean#L1",
+        "chapter_title": "Toy chain complexes",
+        "closure": {
+          "blocked_by": []
+        },
+        "commit": "fixture",
+        "decl_axioms": {},
+        "dependents": [],
+        "doc_authors": [
+          "HomAlgDB fixture authors"
+        ],
+        "doc_title": "Toy chain complexes",
+        "doc_year": 2000,
+        "headline": "in-progress",
+        "rank": 0,
+        "reopened": false,
+        "status": "planned"
+      },
+      "id": "Fixture2000.Rem_1"
+    },
+    {
+      "authored": {
+        "concepts": {
+          "defines": [],
+          "uses": []
+        },
+        "decls": [
+          "Fixture2000.degree_add_zero",
+          "Fixture2000.eq_degree_zero"
+        ],
+        "deps": {
+          "proof": [
+            "Fixture2000.Lem_2"
+          ],
+          "statement": [
+            "Fixture2000.Def_1"
+          ]
+        },
+        "description_md": "Two parts of one theorem share a node; the second declaration deliberately starts with eq_.",
+        "doc": "Fixture2000",
+        "fidelity": {
+          "status": "faithful"
+        },
+        "id": "Fixture2000.Thm_1",
+        "kind": "theorem",
+        "nl_proof_source": {
+          "follows": "document"
+        },
+        "proof_md": "Apply Lemma 2 to the degree, proving the first assertion. [uses `Fixture2000.Lem_2`] Substitute the assumed equality into that assertion to obtain the second.",
+        "source": {
+          "chapter": "1",
+          "label": "Theorem 1",
+          "pages": [
+            2
+          ],
+          "section": "1.1"
+        },
+        "statement_md": "For every toy chain complex $C$, $\\deg C+0=\\deg C$. If $\\deg C=0$, then $\\deg C+0=0$.",
+        "tags": [
+          "chain-complex",
+          "basic"
+        ],
+        "title": "Theorem 1"
+      },
+      "derived": {
+        "decl_info": [
+          {
+            "direct_sorry": false,
+            "docstring": "**Theorem 1** (Fixture2000). Apply Lemma 2 to the distinguished degree. ",
+            "hollow": false,
+            "is_prop": true,
+            "kind": "theorem",
+            "line": 61,
+            "meaning_hash": "6ceca6803f931b7f",
+            "name": "Fixture2000.degree_add_zero",
+            "type": "∀ (c : Fixture2000.ChainComplexToy), c.degree + 0 = c.degree",
+            "type_hash": "00000000dd7940ca",
+            "type_sha256": "86f79b914aee6df179514cb194a3a5efdf34a7f03efc48fd310e2513206f5f90",
+            "type_uses_external": [
+              "Eq",
+              "HAdd.hAdd",
+              "Nat",
+              "OfNat.ofNat",
+              "instAddNat",
+              "instHAdd",
+              "instOfNatNat"
+            ],
+            "type_uses_external_truncated": false,
+            "type_uses_nodes": [
+              "Fixture2000.Def_1"
+            ],
+            "value_uses_external": [],
+            "value_uses_external_truncated": false,
+            "value_uses_nodes": [
+              "Fixture2000.Lem_2"
+            ]
+          },
+          {
+            "direct_sorry": false,
+            "docstring": "**Theorem 1 (ii)** (Fixture2000). Substitute the assumed zero degree in part (i). ",
+            "hollow": false,
+            "is_prop": true,
+            "kind": "theorem",
+            "line": 65,
+            "meaning_hash": "67e4eba416edb807",
+            "name": "Fixture2000.eq_degree_zero",
+            "type": "∀ (c : Fixture2000.ChainComplexToy), c.degree = 0 → c.degree + 0 = 0",
+            "type_hash": "000000001f2d76d2",
+            "type_sha256": "1318bf98d49788ce683f27d2f3e6661540feddc590cc077360e876ab55f980cb",
+            "type_uses_external": [
+              "Eq",
+              "HAdd.hAdd",
+              "Nat",
+              "OfNat.ofNat",
+              "instAddNat",
+              "instHAdd",
+              "instOfNatNat"
+            ],
+            "type_uses_external_truncated": false,
+            "type_uses_nodes": [
+              "Fixture2000.Def_1"
+            ],
+            "value_uses_external": [
+              "Eq",
+              "Eq.trans",
+              "HAdd.hAdd",
+              "Nat",
+              "OfNat.ofNat",
+              "instAddNat",
+              "instHAdd",
+              "instOfNatNat"
+            ],
+            "value_uses_external_truncated": false,
+            "value_uses_nodes": [
+              "Fixture2000.Lem_2"
+            ]
+          }
+        ],
+        "declared_deps": {
+          "proof": [
+            "Fixture2000.Lem_2"
+          ],
+          "statement": [
+            "Fixture2000.Def_1"
+          ]
+        },
+        "deps_diff": {
+          "declared_not_verified": {
+            "proof": [],
+            "statement": []
+          },
+          "verified_not_declared": []
+        },
+        "file": {
+          "lines": 69,
+          "path": "HomAlg/Fixture2000/Thm_1.lean",
+          "sha256": "81039814c2874b7bb07d80fbb76427badafce269ee0f5f4f96ea5c930b743545"
+        },
+        "imports": {
+          "mathlib": [],
+          "nodes": [
+            "Fixture2000.Def_1",
+            "Fixture2000.Lem_2"
+          ]
+        },
+        "local_status": "proved",
+        "sorry_count_text": 0,
+        "verified_deps": {
+          "proof": [
+            "Fixture2000.Lem_2"
+          ],
+          "statement": [
+            "Fixture2000.Def_1"
+          ]
+        }
+      },
+      "global": {
+        "blob_url": "https://github.com/example/homalg-db/blob/fixture/HomAlg/Fixture2000/Thm_1.lean#L61",
+        "chapter_title": "Toy chain complexes",
+        "closure": {
+          "blocked_by": []
+        },
+        "commit": "fixture",
+        "decl_axioms": {
+          "Fixture2000.degree_add_zero": {
+            "axioms": [],
+            "transitive_sorry": false
+          },
+          "Fixture2000.eq_degree_zero": {
+            "axioms": [],
+            "transitive_sorry": false
+          }
+        },
+        "dependents": [
+          "Fixture2001.Thm_1"
+        ],
+        "doc_authors": [
+          "HomAlgDB fixture authors"
+        ],
+        "doc_title": "Toy chain complexes",
+        "doc_year": 2000,
+        "headline": "in-progress",
+        "rank": 1,
+        "reopened": false,
+        "status": "proved"
+      },
+      "id": "Fixture2000.Thm_1"
+    },
+    {
+      "authored": {
+        "concepts": {
+          "defines": [],
+          "uses": []
+        },
+        "decls": [
+          "Fixture2000.two_add_two"
+        ],
+        "deps": {
+          "proof": [],
+          "statement": []
+        },
+        "description_md": "A decidable arithmetic statement whose compiled evaluation uses a nonstandard trust axiom.",
+        "doc": "Fixture2000",
+        "fidelity": {
+          "status": "faithful"
+        },
+        "id": "Fixture2000.Thm_2",
+        "kind": "theorem",
+        "nl_proof_source": {
+          "follows": "document"
+        },
+        "proof_md": "Evaluate the sum of the two displayed natural numbers.",
+        "source": {
+          "chapter": "1",
+          "label": "Theorem 2",
+          "pages": [
+            2
+          ],
+          "section": "1.1"
+        },
+        "statement_md": "The sum $2+2$ is $4$.",
+        "tags": [
+          "basic"
+        ],
+        "title": "Theorem 2"
+      },
+      "derived": {
+        "decl_info": [
+          {
+            "direct_sorry": false,
+            "docstring": "**Theorem 2** (Fixture2000). Evaluate addition of the displayed natural numbers. ",
+            "hollow": false,
+            "is_prop": true,
+            "kind": "theorem",
+            "line": 56,
+            "meaning_hash": "00000000c8a69e1e",
+            "name": "Fixture2000.two_add_two",
+            "type": "2 + 2 = 4",
+            "type_hash": "00000000c8a69e1e",
+            "type_sha256": "e93dff0d1076b537cd1bd659d14bb77d5fd47db13204a227cb3cd66e81dd454c",
+            "type_uses_external": [
+              "Eq",
+              "HAdd.hAdd",
+              "Nat",
+              "OfNat.ofNat",
+              "instAddNat",
+              "instHAdd",
+              "instOfNatNat"
+            ],
+            "type_uses_external_truncated": false,
+            "type_uses_nodes": [],
+            "value_uses_external": [
+              "Bool",
+              "Bool.true",
+              "Decidable.decide",
+              "Eq",
+              "HAdd.hAdd",
+              "Nat",
+              "OfNat.ofNat",
+              "instAddNat",
+              "instDecidableEqNat",
+              "instHAdd",
+              "instOfNatNat",
+              "of_decide_eq_true"
+            ],
+            "value_uses_external_truncated": false,
+            "value_uses_nodes": []
+          }
+        ],
+        "declared_deps": {
+          "proof": [],
+          "statement": []
+        },
+        "deps_diff": {
+          "declared_not_verified": {
+            "proof": [],
+            "statement": []
+          },
+          "verified_not_declared": []
+        },
+        "file": {
+          "lines": 60,
+          "path": "HomAlg/Fixture2000/Thm_2.lean",
+          "sha256": "c628e0480808553461b9a76d9bcfdb00b5287e76016448e793f457b8d2bcc7c2"
+        },
+        "imports": {
+          "mathlib": [],
+          "nodes": []
+        },
+        "local_status": "proved",
+        "sorry_count_text": 0,
+        "verified_deps": {
+          "proof": [],
+          "statement": []
+        }
+      },
+      "global": {
+        "blob_url": "https://github.com/example/homalg-db/blob/fixture/HomAlg/Fixture2000/Thm_2.lean#L56",
+        "chapter_title": "Toy chain complexes",
+        "closure": {
+          "blocked_by": []
+        },
+        "commit": "fixture",
+        "decl_axioms": {
+          "Fixture2000.two_add_two": {
+            "axioms": [
+              "Fixture2000.two_add_two._native.native_decide.ax_1_1"
+            ],
+            "transitive_sorry": false
+          }
+        },
+        "dependents": [],
+        "doc_authors": [
+          "HomAlgDB fixture authors"
+        ],
+        "doc_title": "Toy chain complexes",
+        "doc_year": 2000,
+        "headline": "in-progress",
+        "rank": 0,
+        "reopened": false,
+        "status": "proved-with-axioms"
+      },
+      "id": "Fixture2000.Thm_2"
+    },
+    {
+      "authored": {
+        "concepts": {
+          "defines": [],
+          "uses": []
+        },
+        "decls": [
+          "Fixture2000.degree_le_mul_one_add_zero"
+        ],
+        "deps": {
+          "proof": [
+            "Fixture2000.Lem_1"
+          ],
+          "statement": [
+            "Fixture2000.Def_1"
+          ]
+        },
+        "description_md": "The proof is written, but the separate lemma on which it depends still contains sorry.",
+        "doc": "Fixture2000",
+        "fidelity": {
+          "status": "faithful"
+        },
+        "id": "Fixture2000.Thm_3",
+        "kind": "theorem",
+        "nl_proof_source": {
+          "follows": "document"
+        },
+        "proof_md": "Apply Lemma 1, then use that adding zero leaves its right side unchanged. [uses `Fixture2000.Lem_1`]",
+        "source": {
+          "chapter": "1",
+          "label": "Theorem 3",
+          "pages": [
+            3
+          ],
+          "section": "1.1"
+        },
+        "statement_md": "For every toy chain complex $C$, $\\deg C \\leq (\\deg C)\\cdot 1+0$.",
+        "tags": [
+          "chain-complex",
+          "basic"
+        ],
+        "title": "Theorem 3"
+      },
+      "derived": {
+        "decl_info": [
+          {
+            "direct_sorry": false,
+            "docstring": "**Theorem 3** (Fixture2000). Apply Lemma 1 and remove the final addition of zero. ",
+            "hollow": false,
+            "is_prop": true,
+            "kind": "theorem",
+            "line": 62,
+            "meaning_hash": "4135f00c8bf725b6",
+            "name": "Fixture2000.degree_le_mul_one_add_zero",
+            "type": "∀ (c : Fixture2000.ChainComplexToy), c.degree ≤ c.degree * 1 + 0",
+            "type_hash": "000000007b68bd57",
+            "type_sha256": "abd2e2f2956faa5416d614572f3e608e780daf467de35afeda8669c78b962f83",
+            "type_uses_external": [
+              "HAdd.hAdd",
+              "HMul.hMul",
+              "LE.le",
+              "Nat",
+              "OfNat.ofNat",
+              "instAddNat",
+              "instHAdd",
+              "instHMul",
+              "instLENat",
+              "instMulNat",
+              "instOfNatNat"
+            ],
+            "type_uses_external_truncated": false,
+            "type_uses_nodes": [
+              "Fixture2000.Def_1"
+            ],
+            "value_uses_external": [
+              "HAdd.hAdd",
+              "HMul.hMul",
+              "LE.le",
+              "Nat",
+              "OfNat.ofNat",
+              "id",
+              "instAddNat",
+              "instHAdd",
+              "instHMul",
+              "instLENat",
+              "instMulNat",
+              "instOfNatNat"
+            ],
+            "value_uses_external_truncated": false,
+            "value_uses_nodes": [
+              "Fixture2000.Lem_1"
+            ]
+          }
+        ],
+        "declared_deps": {
+          "proof": [
+            "Fixture2000.Lem_1"
+          ],
+          "statement": [
+            "Fixture2000.Def_1"
+          ]
+        },
+        "deps_diff": {
+          "declared_not_verified": {
+            "proof": [],
+            "statement": []
+          },
+          "verified_not_declared": []
+        },
+        "file": {
+          "lines": 66,
+          "path": "HomAlg/Fixture2000/Thm_3.lean",
+          "sha256": "ef685e03afb8dd9ffa5849debb5c305030493e382761ebce8ab92e565d065b36"
+        },
+        "imports": {
+          "mathlib": [],
+          "nodes": [
+            "Fixture2000.Def_1",
+            "Fixture2000.Lem_1"
+          ]
+        },
+        "local_status": "proved",
+        "sorry_count_text": 0,
+        "verified_deps": {
+          "proof": [
+            "Fixture2000.Lem_1"
+          ],
+          "statement": [
+            "Fixture2000.Def_1"
+          ]
+        }
+      },
+      "global": {
+        "blob_url": "https://github.com/example/homalg-db/blob/fixture/HomAlg/Fixture2000/Thm_3.lean#L62",
+        "chapter_title": "Toy chain complexes",
+        "closure": {
+          "blocked_by": [
+            "Fixture2000.Lem_1"
+          ]
+        },
+        "commit": "fixture",
+        "decl_axioms": {
+          "Fixture2000.degree_le_mul_one_add_zero": {
+            "axioms": [
+              "sorryAx"
+            ],
+            "transitive_sorry": true
+          }
+        },
+        "dependents": [],
+        "doc_authors": [
+          "HomAlgDB fixture authors"
+        ],
+        "doc_title": "Toy chain complexes",
+        "doc_year": 2000,
+        "headline": "in-progress",
+        "rank": 2,
+        "reopened": false,
+        "status": "proved-pending-deps"
+      },
+      "id": "Fixture2000.Thm_3"
+    },
+    {
+      "authored": {
+        "concepts": {
+          "defines": [],
+          "uses": []
+        },
+        "decls": [
+          "Fixture2000.degree_mul_comm"
+        ],
+        "deps": {
+          "proof": [
+            "Fixture2000.Cited_mul_comm"
+          ],
+          "statement": [
+            "Fixture2000.Def_1"
+          ]
+        },
+        "description_md": "A complete proof modulo the single unproved cited arithmetic result.",
+        "doc": "Fixture2000",
+        "fidelity": {
+          "status": "faithful"
+        },
+        "id": "Fixture2000.Thm_4",
+        "kind": "theorem",
+        "nl_proof_source": {
+          "follows": "document"
+        },
+        "proof_md": "Use the well-known commutativity of multiplication, taking the first factor to be the degree. [uses `Fixture2000.Cited_mul_comm`]",
+        "source": {
+          "chapter": "1",
+          "label": "Theorem 4",
+          "pages": [
+            4
+          ],
+          "section": "1.1"
+        },
+        "statement_md": "For every toy chain complex $C$ and natural number $n$, $(\\deg C)n=n(\\deg C)$.",
+        "tags": [
+          "chain-complex",
+          "basic"
+        ],
+        "title": "Theorem 4"
+      },
+      "derived": {
+        "decl_info": [
+          {
+            "direct_sorry": false,
+            "docstring": "**Theorem 4** (Fixture2000). Specialize the cited commutativity law to the degree. ",
+            "hollow": false,
+            "is_prop": true,
+            "kind": "theorem",
+            "line": 62,
+            "meaning_hash": "f20842c61f5bc7d2",
+            "name": "Fixture2000.degree_mul_comm",
+            "type": "∀ (c : Fixture2000.ChainComplexToy) (n : ℕ), c.degree * n = n * c.degree",
+            "type_hash": "00000000db923723",
+            "type_sha256": "919122b191fec797234393637a4608780e8c6dde71b1b0af204fb0f015986206",
+            "type_uses_external": [
+              "Eq",
+              "HMul.hMul",
+              "Nat",
+              "instHMul",
+              "instMulNat"
+            ],
+            "type_uses_external_truncated": false,
+            "type_uses_nodes": [
+              "Fixture2000.Def_1"
+            ],
+            "value_uses_external": [
+              "Nat"
+            ],
+            "value_uses_external_truncated": false,
+            "value_uses_nodes": [
+              "Fixture2000.Cited_mul_comm"
+            ]
+          }
+        ],
+        "declared_deps": {
+          "proof": [
+            "Fixture2000.Cited_mul_comm"
+          ],
+          "statement": [
+            "Fixture2000.Def_1"
+          ]
+        },
+        "deps_diff": {
+          "declared_not_verified": {
+            "proof": [],
+            "statement": []
+          },
+          "verified_not_declared": []
+        },
+        "file": {
+          "lines": 66,
+          "path": "HomAlg/Fixture2000/Thm_4.lean",
+          "sha256": "7915de595660a949a7e0d3279b593135b84a5d8a2d6df748a25daa48d3b7308a"
+        },
+        "imports": {
+          "mathlib": [],
+          "nodes": [
+            "Fixture2000.Cited_mul_comm",
+            "Fixture2000.Def_1"
+          ]
+        },
+        "local_status": "proved",
+        "sorry_count_text": 0,
+        "verified_deps": {
+          "proof": [
+            "Fixture2000.Cited_mul_comm"
+          ],
+          "statement": [
+            "Fixture2000.Def_1"
+          ]
+        }
+      },
+      "global": {
+        "blob_url": "https://github.com/example/homalg-db/blob/fixture/HomAlg/Fixture2000/Thm_4.lean#L62",
+        "chapter_title": "Toy chain complexes",
+        "closure": {
+          "blocked_by": [
+            "Fixture2000.Cited_mul_comm"
+          ]
+        },
+        "commit": "fixture",
+        "decl_axioms": {
+          "Fixture2000.degree_mul_comm": {
+            "axioms": [
+              "sorryAx"
+            ],
+            "transitive_sorry": true
+          }
+        },
+        "dependents": [],
+        "doc_authors": [
+          "HomAlgDB fixture authors"
+        ],
+        "doc_title": "Toy chain complexes",
+        "doc_year": 2000,
+        "headline": "in-progress",
+        "rank": 1,
+        "reopened": false,
+        "status": "proved-modulo-citations"
+      },
+      "id": "Fixture2000.Thm_4"
+    },
+    {
+      "authored": {
+        "concepts": {
+          "defines": [],
+          "uses": []
+        },
+        "decls": [
+          "Fixture2001.PointedToyComplex"
+        ],
+        "deps": {
+          "proof": [],
+          "statement": [
+            "Fixture2000.Def_1"
+          ]
+        },
+        "description_md": "A later source extends the earlier definition while retaining an explicit cross-document dependency.",
+        "doc": "Fixture2001",
+        "fidelity": {
+          "status": "faithful"
+        },
+        "id": "Fixture2001.Def_1",
+        "kind": "definition",
+        "source": {
+          "chapter": "1",
+          "label": "Definition 1",
+          "pages": [
+            1
+          ],
+          "section": "1.1"
+        },
+        "statement_md": "A pointed toy chain complex is a toy chain complex in the sense of Fixture2000, together with a chosen natural number.",
+        "tags": [
+          "chain-complex",
+          "basic"
+        ],
+        "title": "Definition 1"
+      },
+      "derived": {
+        "decl_info": [
+          {
+            "direct_sorry": false,
+            "docstring": "**Definition 1** (Fixture2001). A toy complex equipped with a chosen natural number. ",
+            "hollow": false,
+            "is_prop": false,
+            "kind": "structure",
+            "line": 52,
+            "meaning_hash": "00000000ea5019a6",
+            "name": "Fixture2001.PointedToyComplex",
+            "type": "Type",
+            "type_hash": "00000000ea5019a6",
+            "type_sha256": "baaddf70fb5d432b8bd948ef91d6f910124a6d138edae4d5f000c4610ddc8eae",
+            "type_uses_external": [
+              "Nat"
+            ],
+            "type_uses_external_truncated": false,
+            "type_uses_nodes": [
+              "Fixture2000.Def_1"
+            ],
+            "value_uses_external": [],
+            "value_uses_external_truncated": false,
+            "value_uses_nodes": []
+          }
+        ],
+        "declared_deps": {
+          "proof": [],
+          "statement": [
+            "Fixture2000.Def_1"
+          ]
+        },
+        "deps_diff": {
+          "declared_not_verified": {
+            "proof": [],
+            "statement": []
+          },
+          "verified_not_declared": []
+        },
+        "file": {
+          "lines": 59,
+          "path": "HomAlg/Fixture2001/Def_1.lean",
+          "sha256": "bdc9e0a867c65d10bbe22d3bad887726e272daff83f651268c3e692b57097823"
+        },
+        "imports": {
+          "mathlib": [],
+          "nodes": [
+            "Fixture2000.Def_1"
+          ]
+        },
+        "local_status": "proved",
+        "sorry_count_text": 0,
+        "verified_deps": {
+          "proof": [],
+          "statement": [
+            "Fixture2000.Def_1"
+          ]
+        }
+      },
+      "global": {
+        "blob_url": "https://github.com/example/homalg-db/blob/fixture/HomAlg/Fixture2001/Def_1.lean#L52",
+        "chapter_title": "Pointed toy chain complexes",
+        "closure": {
+          "blocked_by": []
+        },
+        "commit": "fixture",
+        "decl_axioms": {
+          "Fixture2001.PointedToyComplex": {
+            "axioms": [],
+            "transitive_sorry": false
+          }
+        },
+        "dependents": [
+          "Fixture2001.Thm_1"
+        ],
+        "doc_authors": [
+          "HomAlgDB fixture authors"
+        ],
+        "doc_title": "Pointed toy chain complexes",
+        "doc_year": 2001,
+        "headline": "in-progress",
+        "rank": 0,
+        "reopened": false,
+        "status": "proved"
+      },
+      "id": "Fixture2001.Def_1"
+    },
+    {
+      "authored": {
+        "concepts": {
+          "defines": [],
+          "uses": []
+        },
+        "decls": [
+          "Fixture2001.degree_add_zero"
+        ],
+        "deps": {
+          "proof": [
+            "Fixture2000.Thm_1"
+          ],
+          "statement": [
+            "Fixture2001.Def_1",
+            "Fixture2000.Def_1"
+          ]
+        },
+        "description_md": "A later theorem cites the earlier two-part theorem through an explicit fully qualified name.",
+        "doc": "Fixture2001",
+        "fidelity": {
+          "status": "faithful"
+        },
+        "id": "Fixture2001.Thm_1",
+        "kind": "theorem",
+        "nl_proof_source": {
+          "follows": "document"
+        },
+        "proof_md": "Apply part (i) of Theorem 1 of Fixture2000 to the underlying complex. [uses `Fixture2000.Thm_1`]",
+        "source": {
+          "chapter": "1",
+          "label": "Theorem 1",
+          "pages": [
+            1
+          ],
+          "section": "1.1"
+        },
+        "statement_md": "If $C$ is a pointed toy chain complex, the degree of its underlying complex is unchanged by adding zero.",
+        "tags": [
+          "chain-complex",
+          "basic"
+        ],
+        "title": "Theorem 1"
+      },
+      "derived": {
+        "decl_info": [
+          {
+            "direct_sorry": false,
+            "docstring": "**Theorem 1** (Fixture2001). Apply part (i) of Fixture2000 Theorem 1 to the underlying complex. ",
+            "hollow": false,
+            "is_prop": true,
+            "kind": "theorem",
+            "line": 64,
+            "meaning_hash": "a58cd93d46fc50ee",
+            "name": "Fixture2001.degree_add_zero",
+            "type": "∀ (c : Fixture2001.PointedToyComplex), c.complex.degree + 0 = c.complex.degree",
+            "type_hash": "0000000040923ee7",
+            "type_sha256": "498a4581a20559d80938a60d629c6cc338accc2fd39f7932ec8f7ba04e5b5b26",
+            "type_uses_external": [
+              "Eq",
+              "HAdd.hAdd",
+              "Nat",
+              "OfNat.ofNat",
+              "instAddNat",
+              "instHAdd",
+              "instOfNatNat"
+            ],
+            "type_uses_external_truncated": false,
+            "type_uses_nodes": [
+              "Fixture2000.Def_1",
+              "Fixture2001.Def_1"
+            ],
+            "value_uses_external": [],
+            "value_uses_external_truncated": false,
+            "value_uses_nodes": [
+              "Fixture2000.Thm_1"
+            ]
+          }
+        ],
+        "declared_deps": {
+          "proof": [
+            "Fixture2000.Thm_1"
+          ],
+          "statement": [
+            "Fixture2000.Def_1",
+            "Fixture2001.Def_1"
+          ]
+        },
+        "deps_diff": {
+          "declared_not_verified": {
+            "proof": [],
+            "statement": []
+          },
+          "verified_not_declared": []
+        },
+        "file": {
+          "lines": 68,
+          "path": "HomAlg/Fixture2001/Thm_1.lean",
+          "sha256": "7ed15aa56788dc74686eaadc5ec525b937cf7112231501733841d5c2fc4b20f9"
+        },
+        "imports": {
+          "mathlib": [],
+          "nodes": [
+            "Fixture2000.Def_1",
+            "Fixture2000.Thm_1",
+            "Fixture2001.Def_1"
+          ]
+        },
+        "local_status": "proved",
+        "sorry_count_text": 0,
+        "verified_deps": {
+          "proof": [
+            "Fixture2000.Thm_1"
+          ],
+          "statement": [
+            "Fixture2000.Def_1",
+            "Fixture2001.Def_1"
+          ]
+        }
+      },
+      "global": {
+        "blob_url": "https://github.com/example/homalg-db/blob/fixture/HomAlg/Fixture2001/Thm_1.lean#L64",
+        "chapter_title": "Pointed toy chain complexes",
+        "closure": {
+          "blocked_by": []
+        },
+        "commit": "fixture",
+        "decl_axioms": {
+          "Fixture2001.degree_add_zero": {
+            "axioms": [],
+            "transitive_sorry": false
+          }
+        },
+        "dependents": [],
+        "doc_authors": [
+          "HomAlgDB fixture authors"
+        ],
+        "doc_title": "Pointed toy chain complexes",
+        "doc_year": 2001,
+        "headline": "in-progress",
+        "rank": 1,
+        "reopened": false,
+        "status": "proved"
+      },
+      "id": "Fixture2001.Thm_1"
+    }
+  ],
+  "relations": [],
+  "repo_url": "https://github.com/example/homalg-db",
+  "schema_version": 1,
+  "stats": {
+    "counts": {
+      "aux_headline_counts": {
+        "error": 0,
+        "in-progress": 0,
+        "proof-complete": 1,
+        "statement-complete": 0
+      },
+      "aux_total": 2,
+      "cited_headline_counts": {
+        "error": 0,
+        "in-progress": 1,
+        "proof-complete": 0,
+        "statement-complete": 0
+      },
+      "fidelity_counts": {
+        "deviates": 1,
+        "faithful": 16,
+        "foundation": 0,
+        "reviewed": 0
+      },
+      "headline_counts": {
+        "error": 1,
+        "in-progress": 13,
+        "proof-complete": 0,
+        "statement-complete": 0
+      },
+      "items_total": 14,
+      "node_counts": {
+        "cited": 1,
+        "disputed": 2,
+        "informal": 0,
+        "planned": 1,
+        "proved": 8,
+        "proved-modulo-citations": 1,
+        "proved-pending-deps": 1,
+        "proved-with-axioms": 1,
+        "pruned": 1,
+        "stated": 2
+      }
+    },
+    "facets": {
+      "author": {
+        "HomAlgDB fixture authors": 17
+      },
+      "concept": {
+        "chain-complex": 1
+      },
+      "doc": {
+        "Fixture2000": 15,
+        "Fixture2001": 2
+      },
+      "fidelity": {
+        "deviates": 1,
+        "faithful": 16
+      },
+      "headline": {
+        "error": 1,
+        "in-progress": 14,
+        "proof-complete": 1
+      },
+      "kind": {
+        "definition": 4,
+        "lemma": 4,
+        "proposition": 2,
+        "remark": 1,
+        "theorem": 6
+      },
+      "status": {
+        "disputed": 2,
+        "planned": 1,
+        "proved": 8,
+        "proved-modulo-citations": 1,
+        "proved-pending-deps": 1,
+        "proved-with-axioms": 1,
+        "pruned": 1,
+        "stated": 2
+      },
+      "tag": {
+        "basic": 14,
+        "bridge": 1,
+        "chain-complex": 12,
+        "erratum": 1,
+        "technical": 1
+      },
+      "year": {
+        "2000": 15,
+        "2001": 2
+      }
+    }
+  },
+  "tags": [
+    {
+      "id": "chain-complex",
+      "label": "Chain complex",
+      "parent": null
+    },
+    {
+      "id": "cochain-complex",
+      "label": "Cochain complex",
+      "parent": "chain-complex"
+    },
+    {
+      "id": "double-complex",
+      "label": "Double complex",
+      "parent": "chain-complex"
+    },
+    {
+      "id": "total-complex",
+      "label": "Total complex",
+      "parent": "chain-complex"
+    },
+    {
+      "id": "homology",
+      "label": "Homology",
+      "parent": null
+    },
+    {
+      "id": "cohomology",
+      "label": "Cohomology",
+      "parent": null
+    },
+    {
+      "id": "exact-sequence",
+      "label": "Exact sequence",
+      "parent": null
+    },
+    {
+      "id": "short-exact-sequence",
+      "label": "Short exact sequence",
+      "parent": "exact-sequence"
+    },
+    {
+      "id": "long-exact-sequence",
+      "label": "Long exact sequence",
+      "parent": "exact-sequence"
+    },
+    {
+      "id": "chain-map",
+      "label": "Chain map",
+      "parent": null
+    },
+    {
+      "id": "chain-homotopy",
+      "label": "Chain homotopy",
+      "parent": null
+    },
+    {
+      "id": "quasi-isomorphism",
+      "label": "Quasi isomorphism",
+      "parent": null
+    },
+    {
+      "id": "mapping-cone",
+      "label": "Mapping cone",
+      "parent": null
+    },
+    {
+      "id": "mapping-cylinder",
+      "label": "Mapping cylinder",
+      "parent": null
+    },
+    {
+      "id": "bicomplex",
+      "label": "Bicomplex",
+      "parent": "double-complex"
+    },
+    {
+      "id": "simplicial-object",
+      "label": "Simplicial object",
+      "parent": null
+    },
+    {
+      "id": "cosimplicial-object",
+      "label": "Cosimplicial object",
+      "parent": null
+    },
+    {
+      "id": "module",
+      "label": "Module",
+      "parent": null
+    },
+    {
+      "id": "projective-module",
+      "label": "Projective module",
+      "parent": "module"
+    },
+    {
+      "id": "injective-module",
+      "label": "Injective module",
+      "parent": "module"
+    },
+    {
+      "id": "flat-module",
+      "label": "Flat module",
+      "parent": "module"
+    },
+    {
+      "id": "free-module",
+      "label": "Free module",
+      "parent": "module"
+    },
+    {
+      "id": "abelian-category",
+      "label": "Abelian category",
+      "parent": null
+    },
+    {
+      "id": "additive-category",
+      "label": "Additive category",
+      "parent": null
+    },
+    {
+      "id": "exact-category",
+      "label": "Exact category",
+      "parent": null
+    },
+    {
+      "id": "grothendieck-category",
+      "label": "Grothendieck category",
+      "parent": null
+    },
+    {
+      "id": "enough-projectives",
+      "label": "Enough projectives",
+      "parent": null
+    },
+    {
+      "id": "enough-injectives",
+      "label": "Enough injectives",
+      "parent": null
+    },
+    {
+      "id": "generator",
+      "label": "Generator",
+      "parent": null
+    },
+    {
+      "id": "cogenerator",
+      "label": "Cogenerator",
+      "parent": null
+    },
+    {
+      "id": "functor-category",
+      "label": "Functor category",
+      "parent": null
+    },
+    {
+      "id": "resolution",
+      "label": "Resolution",
+      "parent": null
+    },
+    {
+      "id": "projective-resolution",
+      "label": "Projective resolution",
+      "parent": "resolution"
+    },
+    {
+      "id": "injective-resolution",
+      "label": "Injective resolution",
+      "parent": "resolution"
+    },
+    {
+      "id": "flat-resolution",
+      "label": "Flat resolution",
+      "parent": "resolution"
+    },
+    {
+      "id": "derived-functor",
+      "label": "Derived functor",
+      "parent": null
+    },
+    {
+      "id": "left-derived-functor",
+      "label": "Left derived functor",
+      "parent": "derived-functor"
+    },
+    {
+      "id": "right-derived-functor",
+      "label": "Right derived functor",
+      "parent": "derived-functor"
+    },
+    {
+      "id": "satellite",
+      "label": "Satellite",
+      "parent": null
+    },
+    {
+      "id": "delta-functor",
+      "label": "Delta functor",
+      "parent": null
+    },
+    {
+      "id": "universal-delta-functor",
+      "label": "Universal delta functor",
+      "parent": "delta-functor"
+    },
+    {
+      "id": "effaceable",
+      "label": "Effaceable",
+      "parent": null
+    },
+    {
+      "id": "ext",
+      "label": "Ext",
+      "parent": "derived-functor"
+    },
+    {
+      "id": "tor",
+      "label": "Tor",
+      "parent": "derived-functor"
+    },
+    {
+      "id": "balancing",
+      "label": "Balancing",
+      "parent": null
+    },
+    {
+      "id": "dimension-shifting",
+      "label": "Dimension shifting",
+      "parent": null
+    },
+    {
+      "id": "horseshoe-lemma",
+      "label": "Horseshoe lemma",
+      "parent": null
+    },
+    {
+      "id": "comparison-theorem",
+      "label": "Comparison theorem",
+      "parent": null
+    },
+    {
+      "id": "snake-lemma",
+      "label": "Snake lemma",
+      "parent": null
+    },
+    {
+      "id": "five-lemma",
+      "label": "Five lemma",
+      "parent": null
+    },
+    {
+      "id": "nine-lemma",
+      "label": "Nine lemma",
+      "parent": null
+    },
+    {
+      "id": "diagram-chase",
+      "label": "Diagram chase",
+      "parent": null
+    },
+    {
+      "id": "splitting-lemma",
+      "label": "Splitting lemma",
+      "parent": null
+    },
+    {
+      "id": "acyclic-assembly",
+      "label": "Acyclic assembly",
+      "parent": null
+    },
+    {
+      "id": "kunneth",
+      "label": "Kunneth formula",
+      "parent": null
+    },
+    {
+      "id": "universal-coefficient",
+      "label": "Universal coefficient",
+      "parent": null
+    },
+    {
+      "id": "adjoint-functor",
+      "label": "Adjoint functor",
+      "parent": null
+    },
+    {
+      "id": "limits-colimits",
+      "label": "Limits and colimits",
+      "parent": null
+    },
+    {
+      "id": "mittag-leffler",
+      "label": "Mittag leffler",
+      "parent": null
+    },
+    {
+      "id": "lim1",
+      "label": "First derived inverse limit",
+      "parent": null
+    },
+    {
+      "id": "projective-dimension",
+      "label": "Projective dimension",
+      "parent": null
+    },
+    {
+      "id": "injective-dimension",
+      "label": "Injective dimension",
+      "parent": null
+    },
+    {
+      "id": "global-dimension",
+      "label": "Global dimension",
+      "parent": null
+    },
+    {
+      "id": "flat-dimension",
+      "label": "Flat dimension",
+      "parent": null
+    },
+    {
+      "id": "tor-dimension",
+      "label": "Tor dimension",
+      "parent": null
+    },
+    {
+      "id": "regular-ring",
+      "label": "Regular ring",
+      "parent": null
+    },
+    {
+      "id": "koszul-complex",
+      "label": "Koszul complex",
+      "parent": null
+    },
+    {
+      "id": "local-cohomology",
+      "label": "Local cohomology",
+      "parent": null
+    },
+    {
+      "id": "depth",
+      "label": "Depth",
+      "parent": null
+    },
+    {
+      "id": "spectral-sequence",
+      "label": "Spectral sequence",
+      "parent": null
+    },
+    {
+      "id": "filtration",
+      "label": "Filtration",
+      "parent": null
+    },
+    {
+      "id": "exact-couple",
+      "label": "Exact couple",
+      "parent": null
+    },
+    {
+      "id": "grothendieck-spectral-sequence",
+      "label": "Grothendieck spectral sequence",
+      "parent": "spectral-sequence"
+    },
+    {
+      "id": "lyndon-hochschild-serre",
+      "label": "Lyndon-Hochschild-Serre spectral sequence",
+      "parent": "spectral-sequence"
+    },
+    {
+      "id": "cartan-eilenberg-resolution",
+      "label": "Cartan eilenberg resolution",
+      "parent": null
+    },
+    {
+      "id": "hypercohomology",
+      "label": "Hypercohomology",
+      "parent": null
+    },
+    {
+      "id": "group-cohomology",
+      "label": "Group cohomology",
+      "parent": "cohomology"
+    },
+    {
+      "id": "group-homology",
+      "label": "Group homology",
+      "parent": "homology"
+    },
+    {
+      "id": "lie-algebra-cohomology",
+      "label": "Lie algebra cohomology",
+      "parent": "cohomology"
+    },
+    {
+      "id": "hochschild-homology",
+      "label": "Hochschild homology",
+      "parent": "homology"
+    },
+    {
+      "id": "hochschild-cohomology",
+      "label": "Hochschild cohomology",
+      "parent": "cohomology"
+    },
+    {
+      "id": "cyclic-homology",
+      "label": "Cyclic homology",
+      "parent": "homology"
+    },
+    {
+      "id": "bar-resolution",
+      "label": "Bar resolution",
+      "parent": null
+    },
+    {
+      "id": "standard-complex",
+      "label": "Standard complex",
+      "parent": null
+    },
+    {
+      "id": "separable-algebra",
+      "label": "Separable algebra",
+      "parent": null
+    },
+    {
+      "id": "semisimple-algebra",
+      "label": "Semisimple algebra",
+      "parent": null
+    },
+    {
+      "id": "radical",
+      "label": "Radical",
+      "parent": null
+    },
+    {
+      "id": "algebra-extension",
+      "label": "Algebra extension",
+      "parent": null
+    },
+    {
+      "id": "singular-extension",
+      "label": "Singular extension",
+      "parent": "algebra-extension"
+    },
+    {
+      "id": "segregated-extension",
+      "label": "Segregated extension",
+      "parent": "algebra-extension"
+    },
+    {
+      "id": "derivation",
+      "label": "Derivation",
+      "parent": null
+    },
+    {
+      "id": "wedderburn-principal-theorem",
+      "label": "Wedderburn principal theorem",
+      "parent": null
+    },
+    {
+      "id": "sheaf-cohomology",
+      "label": "Sheaf cohomology",
+      "parent": "cohomology"
+    },
+    {
+      "id": "cech-cohomology",
+      "label": "Cech cohomology",
+      "parent": "sheaf-cohomology"
+    },
+    {
+      "id": "flasque-sheaf",
+      "label": "Flasque sheaf",
+      "parent": "sheaf-cohomology"
+    },
+    {
+      "id": "injective-sheaf",
+      "label": "Injective sheaf",
+      "parent": "sheaf-cohomology"
+    },
+    {
+      "id": "derived-category",
+      "label": "Derived category",
+      "parent": null
+    },
+    {
+      "id": "triangulated-category",
+      "label": "Triangulated category",
+      "parent": null
+    },
+    {
+      "id": "localization",
+      "label": "Localization",
+      "parent": null
+    },
+    {
+      "id": "homotopy-category",
+      "label": "Homotopy category",
+      "parent": null
+    },
+    {
+      "id": "t-structure",
+      "label": "t-structure",
+      "parent": null
+    },
+    {
+      "id": "dg-category",
+      "label": "Differential graded category",
+      "parent": null
+    },
+    {
+      "id": "model-category",
+      "label": "Model category",
+      "parent": null
+    },
+    {
+      "id": "basic",
+      "label": "Basic/foundational item",
+      "parent": null
+    },
+    {
+      "id": "technical",
+      "label": "Technical lemma",
+      "parent": null
+    },
+    {
+      "id": "bridge",
+      "label": "Bridge",
+      "parent": null
+    },
+    {
+      "id": "historical",
+      "label": "Historical",
+      "parent": null
+    },
+    {
+      "id": "notation",
+      "label": "Notation",
+      "parent": null
+    },
+    {
+      "id": "erratum",
+      "label": "Erratum",
+      "parent": null
+    }
+  ]
+}

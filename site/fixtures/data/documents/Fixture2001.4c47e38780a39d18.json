@@ -1,0 +1,218 @@
+{
+  "chapters": [
+    {
+      "chapter": "1",
+      "node_ids": [
+        "Fixture2001.Def_1",
+        "Fixture2001.Thm_1"
+      ],
+      "sections": [
+        {
+          "id": "1.1",
+          "pages": {
+            "first": 1,
+            "last": 1
+          },
+          "title": "Pointed toy chain complexes"
+        }
+      ],
+      "title": "Pointed toy chain complexes"
+    }
+  ],
+  "document": {
+    "authors": [
+      {
+        "family": "HomAlgDB fixture authors"
+      }
+    ],
+    "doc_key": "Fixture2001",
+    "foundations": [
+      {
+        "confirmed_by": "fixture-reviewer",
+        "evidence": "docs/fixtures/Fixture2001.md, p. 1: We use ordinary natural numbers and elementary arithmetic as background.",
+        "justification": "The synthetic source assumes ordinary natural-number arithmetic.",
+        "mathlib": [
+          "Nat",
+          "Nat.add_zero",
+          "Nat.mul_one"
+        ],
+        "notion": "Natural numbers and elementary arithmetic",
+        "status": "confirmed"
+      }
+    ],
+    "item_kinds": [
+      "definition",
+      "theorem",
+      "lemma",
+      "proposition",
+      "remark"
+    ],
+    "language": "en",
+    "notes": "Project-authored synthetic regression document: docs/fixtures/Fixture2001.md. All dates and fixture-reviewer adjudications are fictitious test data, not evidence of an actual human review.",
+    "schema_version": 1,
+    "structure": [
+      {
+        "chapter": "1",
+        "pages": {
+          "first": 1,
+          "last": 1
+        },
+        "sections": [
+          {
+            "id": "1.1",
+            "pages": {
+              "first": 1,
+              "last": 1
+            },
+            "title": "Pointed toy chain complexes"
+          }
+        ],
+        "title": "Pointed toy chain complexes"
+      }
+    ],
+    "title": "Pointed toy chain complexes",
+    "type": "synthetic",
+    "year": 2001
+  },
+  "edges": [
+    {
+      "declared": true,
+      "from": "Fixture2001.Def_1",
+      "kind": "statement",
+      "to": "Fixture2000.Def_1",
+      "verified": true
+    },
+    {
+      "declared": true,
+      "from": "Fixture2001.Thm_1",
+      "kind": "statement",
+      "to": "Fixture2000.Def_1",
+      "verified": true
+    },
+    {
+      "declared": true,
+      "from": "Fixture2001.Thm_1",
+      "kind": "proof",
+      "to": "Fixture2000.Thm_1",
+      "verified": true
+    },
+    {
+      "declared": true,
+      "from": "Fixture2001.Thm_1",
+      "kind": "statement",
+      "to": "Fixture2001.Def_1",
+      "verified": true
+    }
+  ],
+  "external_nodes": [
+    {
+      "doc": "Fixture2000",
+      "headline": "in-progress",
+      "id": "Fixture2000.Def_1",
+      "label": "Definition 1",
+      "status": "proved"
+    },
+    {
+      "doc": "Fixture2000",
+      "headline": "in-progress",
+      "id": "Fixture2000.Thm_1",
+      "label": "Theorem 1",
+      "status": "proved"
+    }
+  ],
+  "layout": {
+    "nodes": {
+      "Fixture2000.Def_1": {
+        "x": 354,
+        "y": 47
+      },
+      "Fixture2000.Thm_1": {
+        "x": 114,
+        "y": 47
+      },
+      "Fixture2001.Def_1": {
+        "x": 320,
+        "y": 185
+      },
+      "Fixture2001.Thm_1": {
+        "x": 320,
+        "y": 323
+      }
+    },
+    "options_hash": "63e9e24822a9829d",
+    "view": "aux-collapsed"
+  },
+  "nodes": [
+    {
+      "chapter": "1",
+      "concepts_defines": [],
+      "concepts_uses": [],
+      "decl_names": [
+        "Fixture2001.PointedToyComplex"
+      ],
+      "deps_mismatch": false,
+      "disputed": false,
+      "doc": "Fixture2001",
+      "fidelity_status": "faithful",
+      "has_mathlib": false,
+      "headline": "in-progress",
+      "id": "Fixture2001.Def_1",
+      "is_aux": false,
+      "kind": "definition",
+      "label": "Definition 1",
+      "local_id": "Def_1",
+      "local_status": "proved",
+      "needs_repair": false,
+      "pages": [
+        1
+      ],
+      "rank": 0,
+      "reopened": false,
+      "reviewed": false,
+      "section": "1.1",
+      "statement_first_line": "A pointed toy chain complex is a toy chain complex in the sense of Fixture2000, together with a chosen natural number.",
+      "status": "proved",
+      "tags": [
+        "basic",
+        "chain-complex"
+      ],
+      "title": "Definition 1"
+    },
+    {
+      "chapter": "1",
+      "concepts_defines": [],
+      "concepts_uses": [],
+      "decl_names": [
+        "Fixture2001.degree_add_zero"
+      ],
+      "deps_mismatch": false,
+      "disputed": false,
+      "doc": "Fixture2001",
+      "fidelity_status": "faithful",
+      "has_mathlib": false,
+      "headline": "in-progress",
+      "id": "Fixture2001.Thm_1",
+      "is_aux": false,
+      "kind": "theorem",
+      "label": "Theorem 1",
+      "local_id": "Thm_1",
+      "local_status": "proved",
+      "needs_repair": false,
+      "pages": [
+        1
+      ],
+      "rank": 1,
+      "reopened": false,
+      "reviewed": false,
+      "section": "1.1",
+      "statement_first_line": "If C is a pointed toy chain complex, the degree of its underlying complex is unchanged by adding zero.",
+      "status": "proved",
+      "tags": [
+        "basic",
+        "chain-complex"
+      ],
+      "title": "Theorem 1"
+    }
+  ],
+  "schema_version": 1
+}

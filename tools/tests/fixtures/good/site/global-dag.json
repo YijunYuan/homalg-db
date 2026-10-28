@@ -1,0 +1,19 @@
+{
+  "edges": [],
+  "nodes": [
+    {
+      "doc": "Fixture2000",
+      "headline": "in-progress",
+      "id": "Fixture2000.Rem_1",
+      "kind": "remark",
+      "status": "planned",
+      "x": 2000,
+      "y": 0,
+      "year": 2000
+    }
+  ],
+  "range": [
+    2000,
+    2000
+  ]
+}

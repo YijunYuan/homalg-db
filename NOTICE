@@ -1,0 +1,21 @@
+HomAlgDB
+Copyright 2026 HomAlgDB contributors
+
+Code, Lean formalizations, tools, schemas and site implementation are licensed
+under Apache-2.0; see LICENSE. Project-original prose and data (including
+metadata, taxonomy, descriptions and the synthetic fixture documents) are
+licensed under Creative Commons Attribution 4.0 International; see LICENSE-DATA.
+
+Verbatim quotations from third-party documents are excluded from both project
+licenses. Their copyright remains with the respective rights holders. A node's
+source metadata identifies its origin. The public repository does not distribute
+PDFs, private page images or complete page transcriptions.
+
+The synthetic Fixture2000 and Fixture2001 documents are original test material.
+Their fictional reviews, disputes and bibliographic records are test data only.
+
+The approved requirements supplied the initial schema contracts and Lean
+exporter prototype. SHEAF leanindex (frenzymath/SHEAF at
+6e5abd804e1b0c8d4626349e3508103c97452711) was consulted for the lexer interface;
+the Python lexer in this repository is independently implemented. No upstream
+SHEAF code or tests are redistributed here.

@@ -1,0 +1,96 @@
+{
+  "$id": "https://homalg-db/schema/relation-reviews.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "reviews": {
+      "additionalProperties": {
+        "additionalProperties": false,
+        "properties": {
+          "by": {
+            "$ref": "common.schema.json#/$defs/Login"
+          },
+          "note": {
+            "type": "string"
+          },
+          "on": {
+            "$ref": "common.schema.json#/$defs/Date"
+          },
+          "status": {
+            "enum": [
+              "accepted",
+              "rejected"
+            ]
+          },
+          "kind": {
+            "const": "agent"
+          },
+          "session": {
+            "type": "string",
+            "minLength": 1
+          },
+          "author_session": {
+            "type": "string",
+            "minLength": 1
+          },
+          "report": {
+            "type": "string",
+            "minLength": 1
+          },
+          "report_sha256": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          },
+          "subject_sha256": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          }
+        },
+        "required": [
+          "status",
+          "by",
+          "on"
+        ],
+        "type": "object",
+        "allOf": [
+          {
+            "if": {
+              "required": [
+                "kind"
+              ],
+              "properties": {
+                "kind": {
+                  "const": "agent"
+                }
+              }
+            },
+            "then": {
+              "required": [
+                "by",
+                "on",
+                "kind",
+                "session",
+                "author_session",
+                "report",
+                "report_sha256",
+                "subject_sha256"
+              ]
+            }
+          }
+        ]
+      },
+      "propertyNames": {
+        "pattern": "^rel-(h-)?[0-9a-f]{8}$"
+      },
+      "type": "object"
+    },
+    "schema_version": {
+      "const": 1
+    }
+  },
+  "required": [
+    "schema_version",
+    "reviews"
+  ],
+  "type": "object"
+}
