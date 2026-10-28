@@ -18,13 +18,13 @@
     "disputed": 1,
     "headline": {
       "error": 1,
-      "in_progress": 1,
-      "proof_complete": 26,
+      "in_progress": 0,
+      "proof_complete": 27,
       "statement_complete": 1
     },
     "informal": 0,
     "items_total": 29,
-    "locked": 27,
+    "locked": 28,
     "pages_reviewed": 10,
     "pages_total": 11,
     "planned": 0,
@@ -36,13 +36,13 @@
     "stated": 0
   },
   "doc_key": "Hochschild1945",
-  "generated_at": "2026-10-28T06:37:20Z",
+  "generated_at": "2026-10-28T09:35:00Z",
   "holder": "YijunYuan",
   "last_check": {
-    "at": null,
-    "result": "none"
+    "at": "2026-10-28T06:57:38Z",
+    "result": "green"
   },
-  "open_for_human": 1,
+  "open_for_human": 0,
   "schema_version": 1,
   "scope_chapters": [
     "1",
@@ -65,8 +65,12 @@
       "done": 6,
       "total": 6
     },
-    "STMT": {
+    "PROOF": {
       "done": 6,
+      "total": 6
+    },
+    "STMT": {
+      "done": 12,
       "total": 12
     },
     "T": {
