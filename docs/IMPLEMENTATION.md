@@ -28,18 +28,17 @@ did not have. Human-only commands never fabricate approvals.
 
 Local checks on 2026-10-28:
 
-- `make test`: 333 Python tests passed, 14 skipped; Ruff, generated TypeScript,
-  frontend lint/format and 28 frontend unit tests passed. The skipped checks are
+- `make test`: 363 Python tests passed, 17 skipped; Ruff, generated TypeScript,
+  frontend lint/format and 31 frontend unit tests passed. The skipped checks are
   actual Lean-dependent tests and the opt-in large benchmark, run separately.
   Site fixture artifacts regenerated from the committed raw-export golden match.
-- Browser suite: 15 tests passed, including static navigation/accessibility,
+- Browser suite: 18 tests passed, including static navigation/accessibility,
   evolution rendering, actual SQLite API search/node/timeline/concepts, and
   chapter-scoped requests for a large document.
 - Lifecycle/API focused suite: 46 tests passed. Temporary local Git remotes
   verify ownership, expiry, publication races, no force pushes, private snapshot
   recovery, idempotent attempts, three-stall blocking, scoped backups and sync.
-- Fork suite: 503 tests passed at the implementation handoff, with additional
-  recovery and concurrency regressions passing afterward. Its dashboard unit and
+- Fork suite: 506 tests passed before the published release. Its dashboard unit and
   browser tests passed; the wheel includes frontend assets and notices.
 - `check_engine_integration.py`: two actual null-harness sessions invoked real
   HomAlg hooks and Lean exports in an isolated fixture checkout. The original

@@ -29,7 +29,33 @@ jobs:
       - run: |
           uv sync --project tools --locked
           echo "$GITHUB_WORKSPACE/tools/.venv/bin" >> "$GITHUB_PATH"
-      - uses: leanprover/lean-action@fe408643ea7367d8c0404a8be3975bb145f5fb64 # v1
+      - name: Set up Lean (attempt 1/3)
+        id: lean_setup_1
+        continue-on-error: true
+        uses: leanprover/lean-action@fe408643ea7367d8c0404a8be3975bb145f5fb64 # v1
+        with:
+          auto-config: false
+          build: false
+          test: false
+          lint: false
+          use-github-cache: false
+          use-mathlib-cache: true
+      - name: Set up Lean (attempt 2/3)
+        id: lean_setup_2
+        if: steps.lean_setup_1.outcome == 'failure'
+        continue-on-error: true
+        uses: leanprover/lean-action@fe408643ea7367d8c0404a8be3975bb145f5fb64 # v1
+        with:
+          auto-config: false
+          build: false
+          test: false
+          lint: false
+          use-github-cache: false
+          use-mathlib-cache: true
+      - name: Set up Lean (attempt 3/3)
+        id: lean_setup_3
+        if: steps.lean_setup_2.outcome == 'failure'
+        uses: leanprover/lean-action@fe408643ea7367d8c0404a8be3975bb145f5fb64 # v1
         with:
           auto-config: false
           build: false

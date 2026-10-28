@@ -125,3 +125,13 @@ incremental PR builds exceed 45 minutes, a compressed cache exceeds 4 GB, a modu
 needs over 16 GB memory, or the library reaches roughly 8,000 modules. Set the
 repository variable `LEAN_RUNNER=lean-large`; the Lean job honors
 this runner override.
+
+## Transient dependency-download retries
+
+Lean setup retries at most three times in validation, deployment and snapshot
+release jobs. Actual runs encountered TLS failures at the pinned toolchain's
+upstream download endpoint before any repository check ran. Only the first two
+setup attempts tolerate failure; the last attempt and every build/validation
+step still fail normally. All attempts use the same immutable lean-action SHA,
+toolchain and TLS verification. Cancelled superseded runs skip the aggregate
+gate instead of producing an artificial gate failure.
