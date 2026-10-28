@@ -2,7 +2,8 @@
 
 A Lean 4 database of the homological-algebra literature. Each document keeps its
 own definitions and proof route, with one metadata-bearing Lean file per node.
-The static site exposes dependencies, source fidelity, search and concept history.
+The [public site](https://yijunyuan.github.io/homalg-db/) exposes dependencies,
+source fidelity, search and concept history.
 
 The implementation includes the Lean exporter and validation pipeline, a React
 site, collaboration commands, private PDF ingestion and a local Horizon fork.
