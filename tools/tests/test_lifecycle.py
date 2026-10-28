@@ -8,6 +8,7 @@ import pytest
 
 from homalg import lifecycle, publishing
 from homalg.documents import dump_metadata, parse_metadata
+from homalg.human import HumanApprovalRequired
 from homalg.io import json_text
 from homalg.runtime_state import document_state, overlay_nodes
 from homalg.validate import Finding
@@ -194,6 +195,66 @@ def test_log_archive_keeps_full_comments_and_scopes_records(repo: Path, monkeypa
     assert "Entire reply" in (destination / paths[0]).read_text()
     assert "Detailed attempt" in (destination / paths[1]).read_text()
     assert not (destination / "literature/Fixture2001").exists()
+
+
+@pytest.mark.parametrize(
+    "items",
+    [
+        [],
+        [{"id": "I-closed", "kind": "issue", "status": "closed"}],
+        [
+            {
+                "id": "I-linked",
+                "kind": "dispute",
+                "status": "open",
+                "comments": [{"body": "github-issue: https://example.invalid/issues/42"}],
+            }
+        ],
+        [{"id": "I-local", "kind": "question", "status": "open", "comments": []}],
+    ],
+    ids=["empty-inbox", "closed-item", "already-published", "local-only-item"],
+)
+def test_escalation_without_candidates_needs_no_human_or_github(
+    repo: Path, monkeypatch: pytest.MonkeyPatch, items: list[dict]
+) -> None:
+    monkeypatch.setenv("ARCHON_HORIZON_SESSION", "synthetic-empty-escalation-test")
+    monkeypatch.setattr(publishing, "related_items", lambda *args: items)
+    monkeypatch.setattr(
+        lifecycle, "check_human_session", lambda *args: pytest.fail("empty escalation used guard")
+    )
+    monkeypatch.setattr(
+        lifecycle, "Client", lambda *args: pytest.fail("empty escalation constructed GitHub client")
+    )
+    result = lifecycle.escalate(
+        repo, "Fixture2000", confirm=lambda item: pytest.fail("empty escalation prompted")
+    )
+    assert result == {"candidates": 0, "published": []}
+    assert not (repo / ".archon-horizon/overlay/escalated-Fixture2000.json").exists()
+
+
+@pytest.mark.parametrize("kind", ["issue", "dispute", "document-error", "question"])
+def test_escalation_with_candidates_still_requires_human_before_any_publication(
+    repo: Path, monkeypatch: pytest.MonkeyPatch, kind: str
+) -> None:
+    monkeypatch.setenv("ARCHON_HORIZON_SESSION", "synthetic-nonempty-escalation-test")
+    item = {
+        "id": "I-needs-human",
+        "kind": kind,
+        "status": "open",
+        "body": "Synthetic unresolved item",
+        "comments": [{"author": "human", "body": "escalate: github"}] if kind == "question" else [],
+    }
+    monkeypatch.setattr(publishing, "related_items", lambda *args: [item])
+    monkeypatch.setattr(
+        lifecycle, "Client", lambda *args: pytest.fail("unguarded escalation constructed client")
+    )
+    with pytest.raises(HumanApprovalRequired, match="requires a human"):
+        lifecycle.escalate(
+            repo,
+            "Fixture2000",
+            confirm=lambda item: pytest.fail("unguarded escalation prompted"),
+        )
+    assert not (repo / ".archon-horizon/overlay/escalated-Fixture2000.json").exists()
 
 
 def test_escalation_individually_confirms_and_retries_local_record_without_duplicate_issue(
