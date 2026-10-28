@@ -135,7 +135,7 @@ created [PR #13](https://github.com/YijunYuan/homalg-db-acceptance/pull/13).
 Its [final CI run](https://github.com/YijunYuan/homalg-db-acceptance/actions/runs/40642480584)
 passed classify, checks, Lean and gate; owner-approval also passed. GitHub
 reported `mergeStateStatus=CLEAN` and no review requests. The PR was merged by
-ordinary squash merge without administrator bypass. Its private backup was
+ordinary squash merge without administrator/force options or rule changes. Its private backup was
 inspected and contains the current source proof. The merge commit is
 `4e96a3939cb0f6c39bd841b485ede6eec9f18745`.
 
@@ -275,8 +275,9 @@ do not substitute for PR CI or deployed-page acceptance.
 
 The actual [PR validation run](https://github.com/YijunYuan/homalg-db/actions/runs/40666512164)
 passed every applicable check, including Lean in 3 minutes 43 seconds. The PR
-was merged through ordinary squash merge at `2026-10-28T09:52:25Z`, without
-an administrator bypass or review requests. The resulting main commit is
+was merged through the standard REST squash endpoint at `2026-10-28T09:52:25Z`,
+using the exact expected head SHA. No administrator/force option, rule change
+or review request was used. The resulting main commit is
 `5b4771d924974ea59a9c4c1ec5bd5713af4e6482`; the independently retrieved
 merged PR metadata is retained in `build/acceptance-live-pilot-pr16-merged.json`.
 Its push started [production deployment 40667644896](https://github.com/YijunYuan/homalg-db/actions/runs/40667644896),
