@@ -1,14 +1,18 @@
 version: 2
 updates:
   - package-ecosystem: github-actions
+    # Development phase: agents handle dependency changes and their review.
+    open-pull-requests-limit: 0
     directory: /
     schedule:
       interval: monthly
   - package-ecosystem: pip
+    open-pull-requests-limit: 0
     directory: /tools
     schedule:
       interval: monthly
   - package-ecosystem: npm
+    open-pull-requests-limit: 0
     directory: /site
     schedule:
       interval: monthly
