@@ -471,7 +471,8 @@ export function Blueprint({
         hideEdgesOnViewport: graph.nodes.length > 1500,
         textureOnViewport: graph.nodes.length > 1500,
         wheelSensitivity: 0.2,
-        minZoom: graph.nodes.length > 500 ? 0.002 : 0.12,
+        // Sparse documents can still have very tall dependency layouts.
+        minZoom: 0.002,
         maxZoom: 3,
       });
       const constructMs = performance.now() - constructAt;
