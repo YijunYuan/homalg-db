@@ -1,0 +1,45 @@
+id: "I-0001"
+provider: "local"
+kind: "dispute"
+attention: "advisory"
+conversation: false
+status: "closed"
+labels:
+  - "agent-ready"
+body: "Hochschild1945.Thm_5_1: statement dispute\n\nOver a two-dimensional zero-product rational algebra,
+  the restriction kernel is zero but H1 of the quotient with the two-sided annihilator is one-dimensional;
+  see reviews/Thm_5_1.md and Aux_Thm_5_1_counterexample. The printed primitive-independence step fails.\n\
+  \nOwner adjudication received on 2026-10-28: confirm the source error and continue. See literature/Hochschild1945/reviews/Thm_5_1-owner-decision.md.
+  The source dispute remains open as a confirmed error; no replacement theorem is approved. This inbox
+  request for a decision is completed because the requested decision was received."
+scope:
+  blueprint_nodes:
+    - "Hochschild1945.Thm_5_1"
+audience: "human"
+author: "homalg"
+owner_task: ""
+read_by: []
+source_ref: null
+created_at: "2026-10-28T04:15:02.813064+00:00"
+updated_at: "2026-10-28T06:46:46.406387+00:00"
+comments: []
+metadata:
+  history:
+    - at: "2026-10-28T04:15:02.813865+00:00"
+      actor: "homalg"
+      field: "created"
+      from: ""
+      to: "open"
+      note: "opened"
+    - at: "2026-10-28T06:46:46.061238+00:00"
+      actor: "system"
+      field: "body"
+      from: ""
+      to: ""
+      note: "description edited"
+    - at: "2026-10-28T06:46:46.407334+00:00"
+      actor: "system"
+      field: "status"
+      from: "open"
+      to: "closed"
+      note: ""

@@ -254,6 +254,44 @@ foundations:
       session: "ci-separability-independent"
       author_session: "codex-schema-taxonomy-2026-10-28"
       content_sha256: "75e4f960a5f53caffb5f19045dc1a23243419087673714432f06a8df69fa2ffd"
+  - notion: "Finite matrices and full matrix algebras"
+    mathlib:
+      - "Matrix"
+      - "Matrix.mul_apply"
+    justification: "Use finite coordinate arrays with their usual entrywise linear structure and sum-of-products
+      matrix multiplication. This proposal includes finite products of these spaces but no splitting theorem,
+      semisimplicity criterion, or cohomology vanishing result."
+    evidence: "Printed p. 61 (PDF p. 5), section 4, writes the scalar extension as a finite direct sum
+      of full matrix algebras and then uses matrix units with e_ij e_kp = delta_jk e_ip."
+    status: "confirmed"
+    confirmation:
+      kind: "agent"
+      by: "codex-root"
+      status: "satisfactory"
+      on: "2026-10-28"
+      session: "root-section4-foundations-independent"
+      author_session: "/root/lean_fixtures"
+      content_sha256: "5402b0bbf0f502dd255a23ad3e5404c8bc7bb0251149e46720cd7fe0ca5e27a3"
+  - notion: "Algebraic and separable field extensions"
+    mathlib:
+      - "Algebra.IsAlgebraic"
+      - "Algebra.IsSeparable"
+    justification: "Use the classical minimal-polynomial notions of algebraicity and separability for
+      field extensions only. This does not replace the article-defined separability of an associative
+      algebra, which remains sourceSeparable with its original basis scalar extensions and semisimplicity
+      condition."
+    evidence: "Printed p. 62 (PDF p. 6), Lemma 4.1 and the immediately preceding center argument, use
+      an inseparable algebraic field extension over Phi as classical field-theoretic background; the source
+      does not define those field notions."
+    status: "confirmed"
+    confirmation:
+      kind: "agent"
+      by: "codex-root"
+      status: "satisfactory"
+      on: "2026-10-28"
+      session: "root-section4-foundations-independent"
+      author_session: "/root/lean_fixtures"
+      content_sha256: "896bf37af049753b9ef0bf74435888ffd2de66a3715ba07765aba19fec84b09a"
 item_kinds:
   - "definition"
   - "theorem"
@@ -264,10 +302,18 @@ item_kinds:
   - "notation"
   - "remark"
 notes: "PDF identity verified against the supplied source. All ten mathematical pages have independent
-  visual-transcription reviews; independent Lean fidelity and foundation reviews are in progress under
-  the owner's 2026-10-28 review-policy amendment. DOI and publisher metadata verified against the JSTOR
-  stable record and Crossref DOI registration on 2026-10-28. The scan confirms the full printed page range
-  58–67; Crossref records only starting page 58."
+  visual-transcription reviews. All 29 source items have current independent statement reviews or the
+  owner-confirmed Theorem 5.1 error. All 13 foundation entries and the first-chapter checkpoint have independent
+  agent confirmations under the owner's 2026-10-28 policy. Source-specific scope and proof-route deviations
+  remain explicit. DOI and publisher metadata were verified against JSTOR and Crossref on 2026-10-28;
+  the scan confirms the full printed page range 58–67, while Crossref records only starting page 58."
 identifiers:
   doi: "10.2307/1969145"
   url: "https://www.jstor.org/stable/1969145"
+early_review:
+  kind: "agent"
+  by: "codex-root"
+  status: "satisfactory"
+  on: "2026-10-28"
+  session: "root-firstchapter-checkpoint-independent"
+  author_session: "/root/lean_fixtures"

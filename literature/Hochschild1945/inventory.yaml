@@ -1,0 +1,120 @@
+schema_version: 1
+doc_key: "Hochschild1945"
+pages:
+  '0002':
+    items: []
+    complete: true
+  '0003':
+    items:
+      - label: "Definition (unnumbered, p. 59, 1)"
+        disposition: "node"
+        node: "Hochschild1945.Def_two_sided_module"
+      - label: "Definition (unnumbered, p. 59, 2)"
+        disposition: "node"
+        node: "Hochschild1945.Def_cochain"
+      - label: "Proposition 1.1"
+        disposition: "node"
+        node: "Hochschild1945.Prop_1_1"
+      - label: "Notation (unnumbered, p. 59)"
+        disposition: "node"
+        node: "Hochschild1945.Not_A_colon_P"
+      - label: "Definition 2.1"
+        disposition: "node"
+        node: "Hochschild1945.Def_2_1"
+    complete: true
+  '0004':
+    items:
+      - label: "Lemma (unnumbered, p. 60, 1)"
+        disposition: "node"
+        node: "Hochschild1945.Lem_delta_delta_zero"
+      - label: "Construction (unnumbered, p. 60)"
+        disposition: "node"
+        node: "Hochschild1945.Con_bar_map"
+      - label: "Definition 2.2"
+        disposition: "node"
+        node: "Hochschild1945.Def_2_2"
+      - label: "Lemma (unnumbered, p. 60, 2)"
+        disposition: "node"
+        node: "Hochschild1945.Lem_cocycle_subgroups"
+      - label: "Definition 2.3"
+        disposition: "node"
+        node: "Hochschild1945.Def_2_3"
+      - label: "Theorem 3.1"
+        disposition: "node"
+        node: "Hochschild1945.Thm_3_1"
+      - label: "Definition (footnote 6, p. 60)"
+        disposition: "node"
+        node: "Hochschild1945.Def_H0"
+    complete: true
+  '0005':
+    items:
+      - label: "Definition (unnumbered, p. 61)"
+        disposition: "node"
+        node: "Hochschild1945.Def_separable"
+    complete: true
+  '0006':
+    items:
+      - label: "Lemma 4.1"
+        disposition: "node"
+        node: "Hochschild1945.Lem_4_1"
+    complete: true
+  '0007':
+    items:
+      - label: "Theorem 4.1"
+        disposition: "node"
+        node: "Hochschild1945.Thm_4_1"
+      - label: "Definition (unnumbered, p. 63)"
+        disposition: "node"
+        node: "Hochschild1945.Def_natural_homomorphism"
+      - label: "Theorem 5.1"
+        disposition: "node"
+        node: "Hochschild1945.Thm_5_1"
+    complete: true
+  '0008':
+    items:
+      - label: "Corollary (p. 64)"
+        disposition: "node"
+        node: "Hochschild1945.Cor_quotient_separable"
+      - label: "Definition (unnumbered, p. 64)"
+        disposition: "node"
+        node: "Hochschild1945.Def_extension"
+      - label: "Proposition 6.1"
+        disposition: "node"
+        node: "Hochschild1945.Prop_6_1"
+      - label: "Lemma (unnumbered, p. 64)"
+        disposition: "node"
+        node: "Hochschild1945.Lem_semisimple_ideal_summand"
+    complete: true
+  '0009':
+    items:
+      - label: "Definition (unnumbered, p. 65)"
+        disposition: "node"
+        node: "Hochschild1945.Def_isomorphic_extensions"
+      - label: "Construction (unnumbered, p. 65)"
+        disposition: "node"
+        node: "Hochschild1945.Con_extension_module"
+    complete: true
+  '0010':
+    items:
+      - label: "Construction (unnumbered, p. 66, 1)"
+        disposition: "node"
+        node: "Hochschild1945.Con_extension_cocycle"
+      - label: "Construction (unnumbered, p. 66, 2)"
+        disposition: "node"
+        node: "Hochschild1945.Con_cocycle_extension"
+    complete: true
+  '0011':
+    items:
+      - label: "Proposition 6.2"
+        disposition: "node"
+        node: "Hochschild1945.Prop_6_2"
+      - label: "Proposition 6.3"
+        disposition: "node"
+        node: "Hochschild1945.Prop_6_3"
+      - label: "Theorem 6.1"
+        disposition: "node"
+        node: "Hochschild1945.Thm_6_1"
+      - label: "Corollary (p. 67)"
+        disposition: "node"
+        node: "Hochschild1945.Cor_separable_segregated"
+    complete: true
