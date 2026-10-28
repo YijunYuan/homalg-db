@@ -1,5 +1,75 @@
 import { test, expect, type Page } from "@playwright/test";
 import { readFile } from "node:fs/promises";
+import type { Core } from "cytoscape";
+
+test("fits a long sparse document without clipping its first or last node", async ({
+  page,
+}) => {
+  const base = new URL("../fixtures/data/", import.meta.url);
+  const manifest = JSON.parse(
+    await readFile(new URL("manifest.json", base), "utf8"),
+  );
+  const entry = manifest.documents[0];
+  const bundle = JSON.parse(
+    await readFile(new URL(entry.files.document, base), "utf8"),
+  );
+  const sample = bundle.nodes.find(
+    (node: { id: string }) => node.id === "Fixture2000.Thm_1",
+  );
+  bundle.nodes = [1, 2].map((index) => ({
+    ...sample,
+    id: `Fixture2000.Thm_${index}`,
+    local_id: `Thm_${index}`,
+    label: `Theorem ${index}`,
+    is_aux: false,
+  }));
+  bundle.external_nodes = [];
+  bundle.edges = [
+    {
+      from: bundle.nodes[1].id,
+      to: bundle.nodes[0].id,
+      kind: "proof",
+      declared: true,
+      verified: true,
+    },
+  ];
+  bundle.chapters = [
+    {
+      chapter: "1",
+      title: "A long sparse dependency layout",
+      node_ids: bundle.nodes.map((node: { id: string }) => node.id),
+    },
+  ];
+  bundle.layout = {
+    view: "aux-collapsed",
+    nodes: {
+      "Fixture2000.Thm_1": { x: 0, y: 0 },
+      "Fixture2000.Thm_2": { x: 0, y: 20000 },
+    },
+  };
+  await page.route("**/data/manifest.json", (route) =>
+    route.fulfill({ json: manifest }),
+  );
+  await page.route(`**/data/${entry.files.document}`, (route) =>
+    route.fulfill({ json: bundle }),
+  );
+  await page.goto("/#/doc/Fixture2000");
+  const canvas = page.locator(".graph-canvas");
+  await expect(canvas).toHaveAttribute("data-ready", "true");
+  const geometry = await canvas.evaluate((element) => {
+    // Read the pinned renderer's registered core; do not change its viewport.
+    const core = (element as HTMLElement & { _cyreg: { cy: Core } })._cyreg.cy;
+    return {
+      bounds: core.elements().renderedBoundingBox(),
+      width: core.width(),
+      height: core.height(),
+    };
+  });
+  expect(geometry.bounds.x1).toBeGreaterThanOrEqual(0);
+  expect(geometry.bounds.y1).toBeGreaterThanOrEqual(0);
+  expect(geometry.bounds.x2).toBeLessThanOrEqual(geometry.width);
+  expect(geometry.bounds.y2).toBeLessThanOrEqual(geometry.height);
+});
 
 async function largeDocument(page: Page) {
   const base = new URL("../fixtures/data/", import.meta.url);

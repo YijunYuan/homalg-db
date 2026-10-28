@@ -614,12 +614,8 @@ def sync_main(repo: Path, *, client: Client | None = None, now: datetime | None 
 
 def escalate(repo: Path, key: str, *, client: Client | None = None, confirm=None) -> dict:
     """Publish only individually confirmed unresolved items, with an idempotent local trail."""
-    check_human_session("Escalate unresolved run items to GitHub", repo)
     documents(repo, (key,))
-    client = client or Client(repo)
     records = publishing.related_items(repo, key)
-    journal_path = repo / f".archon-horizon/overlay/escalated-{key}.json"
-    journal = json.loads(journal_path.read_text()) if journal_path.exists() else {}
     candidates = []
     for item in records:
         comments = item.get("comments", item.get("metadata", {}).get("comments", []))
@@ -634,6 +630,12 @@ def escalate(repo: Path, key: str, *, client: Client | None = None, confirm=None
         )
         if item["kind"] in {"dispute", "document-error", "issue"} or requested:
             candidates.append(item)
+    if not candidates:
+        return {"candidates": 0, "published": []}
+    check_human_session("Escalate unresolved run items to GitHub", repo)
+    client = client or Client(repo)
+    journal_path = repo / f".archon-horizon/overlay/escalated-{key}.json"
+    journal = json.loads(journal_path.read_text()) if journal_path.exists() else {}
     approved = []
     # The injectable callback is only a UI/test boundary; the human-session guard
     # remains mandatory and there is deliberately no noninteractive --yes flag.
