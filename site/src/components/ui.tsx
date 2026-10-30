@@ -3,6 +3,8 @@ import type { ReactNode } from "react";
 import { t } from "../i18n/t";
 import { DataError } from "../data/source";
 import type { NodeSummary, NodeRef } from "../data/types";
+import { glyphs } from "../data/graph/presentation.mjs";
+export { glyphs } from "../data/graph/presentation.mjs";
 export const nodeUrl = (id: string) => `/node/${id.replace(".", "/")}`;
 export const blueprintUrl = (id: string) => `/doc/${id.replace(".", "/node/")}`;
 export function Loading() {
@@ -57,16 +59,6 @@ export function PageTitle({
     </header>
   );
 }
-export const glyphs: Record<NodeRef["status"], string> = {
-  planned: "○",
-  stated: "◐",
-  "proved-pending-deps": "◑",
-  "proved-modulo-citations": "◕",
-  proved: "●",
-  "proved-with-axioms": "⚠",
-  disputed: "✕",
-  pruned: "⊘",
-};
 export function StatusBadge({
   node,
 }: {

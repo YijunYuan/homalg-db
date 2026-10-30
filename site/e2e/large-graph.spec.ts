@@ -1,6 +1,8 @@
 import { test, expect, type Page } from "@playwright/test";
 import { readFile } from "node:fs/promises";
+import { createHash } from "node:crypto";
 import type { Core } from "cytoscape";
+import { layoutOptions } from "../scripts/layout.mjs";
 
 test("fits a long sparse document without clipping its first or last node", async ({
   page,
@@ -42,6 +44,12 @@ test("fits a long sparse document without clipping its first or last node", asyn
   ];
   bundle.layout = {
     view: "aux-collapsed",
+    options_hash: createHash("sha256")
+      .update(
+        JSON.stringify({ view: "aux-collapsed", ...layoutOptions(2, "ci") }),
+      )
+      .digest("hex")
+      .slice(0, 16),
     nodes: {
       "Fixture2000.Thm_1": { x: 0, y: 0 },
       "Fixture2000.Thm_2": { x: 0, y: 20000 },
@@ -56,15 +64,19 @@ test("fits a long sparse document without clipping its first or last node", asyn
   await page.goto("/#/doc/Fixture2000");
   const canvas = page.locator(".graph-canvas");
   await expect(canvas).toHaveAttribute("data-ready", "true");
+  await expect(canvas).toHaveAttribute("data-layout-ready", "true");
+  await page.getByRole("button", { name: "Fit all", exact: true }).click();
   const geometry = await canvas.evaluate((element) => {
     // Read the pinned renderer's registered core; do not change its viewport.
     const core = (element as HTMLElement & { _cyreg: { cy: Core } })._cyreg.cy;
     return {
       bounds: core.elements().renderedBoundingBox(),
+      modelHeight: core.elements().boundingBox().h,
       width: core.width(),
       height: core.height(),
     };
   });
+  expect(geometry.modelHeight).toBeGreaterThan(20000);
   expect(geometry.bounds.x1).toBeGreaterThanOrEqual(0);
   expect(geometry.bounds.y1).toBeGreaterThanOrEqual(0);
   expect(geometry.bounds.x2).toBeLessThanOrEqual(geometry.width);
@@ -146,6 +158,7 @@ test("explicit expansion renders every large-graph node and edge in WebGL", asyn
   const downloaded = page.waitForEvent("download");
   await page.getByRole("button", { name: "Export PNG" }).click();
   expect((await downloaded).suggestedFilename()).toBe("Fixture2000.png");
+  await page.locator("summary").filter({ hasText: "View options" }).click();
   await page
     .getByRole("button", { name: "Collapse chapters", exact: true })
     .click();

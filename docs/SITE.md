@@ -62,16 +62,34 @@ search, theme selection and drawers support keyboard navigation. The skip link
 focuses the main region without changing the hash route. Reduced-motion settings
 replace graph animation with immediate fitting.
 
-The Blueprint preserves dependency direction, chapter grouping and verified versus
-declared edges. `contractAux` projects collapsed helper nodes onto their parents,
-combines duplicate edges and preserves `via` evidence. Bridges and cited nodes
-remain visible. Clicking a parent with collapsed auxiliaries expands them;
-the selected parent also has an accessible expansion button. Auxiliary and chapter
-state persist per document in session storage. Node deep links override collapse.
-Default positions come from the document bundle; changed views use an isolated
-ELK worker and best-effort IndexedDB caching. Large documents initially collapse
-chapters. Context actions include identifiers, source links and dependency search;
-PNG and Mermaid export describe the displayed graph.
+The Blueprint displays complete, wrapped node titles; source numbers remain in
+the details panel instead of taking space on the graph cards.
+Its initial reading view keeps labels at least 12 screen pixels high; large graphs
+start at the first source item or the deep-linked selection. Read labels restores
+this view, while Fit all shows the entire graph. Explicit zoom controls supplement
+canvas dragging and wheel zoom. The compact document header and toolbars leave
+the remaining viewport to the canvas. Focus view additionally hides site navigation,
+document metadata and the chapter sidebar; its chapter selector preserves navigation.
+View options, Legend, Export and Help expand on demand without reducing the map.
+The Legend button shows status swatches and opens all color, shape, outline and
+edge explanations. Mobile node selection preserves the Blueprint tab.
+
+Only authored source chapters group nodes. Each chapter uses a layered DAG layout;
+chapter rectangles are packed in source order. Cross-chapter arrows remain visible
+and point from prerequisites to results, although they can run in any direction
+between chapter rectangles. `contractAux` projects collapsed helper nodes onto
+their parents, combines duplicate edges and preserves `via` evidence. Bridges and
+cited nodes remain visible. Clicking a visible source node opens its details
+without changing graph positions, zoom or auxiliary expansion. The selected parent
+has an explicit auxiliary expansion button. Auxiliary and chapter state persist
+per document in session storage. Node deep links override collapse.
+
+Default positions come from the document bundle only when their layout and card
+geometry versions match. Changed views use an isolated ELK worker and best-effort
+IndexedDB caching; the seed, worker and prerender share card dimensions and chapter
+packing. Large documents initially collapse chapters. Context actions include
+identifiers, source links and dependency search; PNG and Mermaid export describe
+the displayed graph. The very large WebGL overview retains its compact dot renderer.
 
 The page theme follows the system or a persisted manual choice. Shiki signatures
 and full source use separate light and dark CSS variables. The graph map keeps a
@@ -144,6 +162,15 @@ The same parser generates build diagnostics and browser output. No external
 font or script CDNs are required.
 
 ## Measured verification
+
+The October 30 Blueprint refinement was checked against the real Hochschild1945
+data in light and dark Chromium, at 1440 by 1000 and 390 by 844 pixels. The visible
+canvas occupies about 78% of desktop viewport height (88% in Focus view) and 67%
+on mobile. Browser regressions check complete title wrapping and diamond containment,
+at least 12-pixel initial labels, fixed graph positions when opening details,
+explicit auxiliary expansion, resize synchronization, mobile tab preservation and
+the keyboard-accessible legend. Layout tests use the committed pilot metadata to
+verify non-overlap and chapter-local dependency direction in both orientations.
 
 The October 2026 implementation run used the committed two-document fixtures:
 

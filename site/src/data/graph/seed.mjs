@@ -1,57 +1,96 @@
-/** Linear-time dependency ranks give a complete usable view while ELK refines it.
+import {
+  chapterGroups,
+  CHAPTER_PADDING,
+  packGroups,
+} from "../../../scripts/layout.mjs";
+import { nodeCard } from "./presentation.mjs";
+
+/** Complete chapter-local dependency ranks give an immediate, size-aware worker fallback.
  * @returns {Record<string, {x: number, y: number}>}
  */
 export function seedPositions(nodes, edges, chapters, direction = "DOWN") {
-  const ids = new Set(nodes.map((node) => node.id));
-  const pending = new Map(nodes.map((node) => [node.id, 0]));
-  const users = new Map(nodes.map((node) => [node.id, []]));
-  for (const edge of edges)
-    if (ids.has(edge.from) && ids.has(edge.to) && edge.from !== edge.to) {
+  const horizontal = direction === "RIGHT";
+  const groups = chapterGroups(nodes, edges, chapters).map((group) => {
+    const pending = new Map(group.nodes.map((node) => [node.id, 0]));
+    const users = new Map(group.nodes.map((node) => [node.id, []]));
+    const levels = new Map(group.nodes.map((node) => [node.id, 0]));
+    for (const edge of group.edges) {
       pending.set(edge.from, pending.get(edge.from) + 1);
       users.get(edge.to).push(edge.from);
     }
-  const levels = new Map(nodes.map((node) => [node.id, 0]));
-  const ready = nodes
-    .filter((node) => pending.get(node.id) === 0)
-    .map((node) => node.id);
-  for (let i = 0; i < ready.length; i++)
-    for (const id of users.get(ready[i])) {
-      levels.set(id, Math.max(levels.get(id), levels.get(ready[i]) + 1));
-      pending.set(id, pending.get(id) - 1);
-      if (pending.get(id) === 0) ready.push(id);
+    const ready = group.nodes
+      .filter((node) => pending.get(node.id) === 0)
+      .map((node) => node.id);
+    for (let index = 0; index < ready.length; index++)
+      for (const id of users.get(ready[index])) {
+        levels.set(id, Math.max(levels.get(id), levels.get(ready[index]) + 1));
+        pending.set(id, pending.get(id) - 1);
+        if (pending.get(id) === 0) ready.push(id);
+      }
+    const ranks = [];
+    let averageWidth = 0,
+      averageHeight = 0;
+    for (const node of group.nodes) {
+      const card = nodeCard(node);
+      averageWidth += card.width;
+      averageHeight += card.height;
+      const rank = levels.get(node.id);
+      (ranks[rank] ??= []).push({ id: node.id, ...card });
     }
-  const chapterOf = new Map(
-    chapters.flatMap((chapter, i) => chapter.node_ids.map((id) => [id, i])),
-  );
-  const buckets = new Map();
-  for (const node of nodes) {
-    const chapter = chapterOf.get(node.id) ?? chapters.length;
-    const level = pending.get(node.id)
-      ? Math.max(0, node.rank || 0)
-      : levels.get(node.id);
-    const key = `${chapter}:${level}`;
-    if (!buckets.has(key)) buckets.set(key, []);
-    buckets.get(key).push(node.id);
-  }
-  const widths = Array.from({ length: chapters.length + 1 }, () => 280);
-  for (const [key, ids] of buckets)
-    widths[Number(key.split(":")[0])] = Math.max(
-      widths[Number(key.split(":")[0])],
-      ids.length * 240 + 40,
+    const columns = Math.max(
+      1,
+      Math.ceil(
+        Math.sqrt(
+          (group.nodes.length *
+            (horizontal ? averageWidth : averageHeight) *
+            1.35) /
+            (horizontal ? averageHeight : averageWidth),
+        ),
+      ),
     );
-  const offsets = widths.map((_, i) =>
-    widths.slice(0, i).reduce((sum, width) => sum + width, 0),
-  );
+    const local = {};
+    let rankOffset = 0,
+      breadth = 0;
+    for (const rank of ranks) {
+      if (!rank) continue;
+      for (let first = 0; first < rank.length; first += columns) {
+        const row = rank.slice(first, first + columns);
+        let across = 0,
+          depth = 0;
+        for (const card of row) {
+          const span = horizontal ? card.height : card.width;
+          const extent = horizontal ? card.width : card.height;
+          local[card.id] = horizontal
+            ? { x: rankOffset + extent / 2, y: across + span / 2 }
+            : { x: across + span / 2, y: rankOffset + extent / 2 };
+          across += span + 28;
+          depth = Math.max(depth, extent);
+        }
+        breadth = Math.max(breadth, across - 28);
+        rankOffset += depth + 48;
+      }
+    }
+    const depth = Math.max(0, rankOffset - 48);
+    return {
+      width:
+        (horizontal ? depth : breadth) +
+        CHAPTER_PADDING.left +
+        CHAPTER_PADDING.right,
+      height:
+        (horizontal ? breadth : depth) +
+        CHAPTER_PADDING.top +
+        CHAPTER_PADDING.bottom,
+      local,
+    };
+  });
+  const offsets = packGroups(groups);
   const result = {};
-  for (const [key, ids] of buckets) {
-    const [chapter, level] = key.split(":").map(Number);
-    ids.forEach((id, i) => {
-      const point = {
-        x: offsets[chapter] + 130 + i * 240,
-        y: 80 + level * 140,
+  groups.forEach((group, index) => {
+    for (const [id, point] of Object.entries(group.local))
+      result[id] = {
+        x: point.x + offsets[index].x + CHAPTER_PADDING.left,
+        y: point.y + offsets[index].y + CHAPTER_PADDING.top,
       };
-      result[id] = direction === "RIGHT" ? { x: point.y, y: point.x } : point;
-    });
-  }
+  });
   return result;
 }

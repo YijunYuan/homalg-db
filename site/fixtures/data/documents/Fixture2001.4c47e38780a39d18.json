@@ -123,23 +123,23 @@
   "layout": {
     "nodes": {
       "Fixture2000.Def_1": {
-        "x": 354,
-        "y": 47
+        "x": 490,
+        "y": 91
       },
       "Fixture2000.Thm_1": {
-        "x": 114,
-        "y": 47
+        "x": 490,
+        "y": 197
       },
       "Fixture2001.Def_1": {
-        "x": 320,
-        "y": 185
+        "x": 142,
+        "y": 91
       },
       "Fixture2001.Thm_1": {
-        "x": 320,
-        "y": 323
+        "x": 142,
+        "y": 209
       }
     },
-    "options_hash": "63e9e24822a9829d",
+    "options_hash": "0f3f03f14aaf8e27",
     "view": "aux-collapsed"
   },
   "nodes": [

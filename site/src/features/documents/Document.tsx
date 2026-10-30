@@ -57,6 +57,7 @@ export default function Document() {
     [chapter, setChapter] = useState(""),
     [headline, setHeadline] = useState(""),
     [expandAux, setExpandAux] = useState(false),
+    [focused, setFocused] = useState(false),
     [direction, setDirection] = useState("DOWN"),
     [edgeMode, setEdgeMode] = useState("all");
   const entry = manifest.data?.documents.find(
@@ -166,7 +167,9 @@ export default function Document() {
       (!headline || node.headline === headline),
   );
   return (
-    <div className={`document-page ${selected ? "with-drawer" : ""}`}>
+    <div
+      className={`document-page ${selected ? "with-drawer" : ""} ${tab === "blueprint" ? `blueprint-page ${focused ? "blueprint-focused" : ""}` : ""}`}
+    >
       <header className="document-header">
         <div>
           <p className="eyebrow">
@@ -232,6 +235,7 @@ export default function Document() {
         </aside>
         <div className="document-main">
           <Tabs.Root
+            className="document-tabs"
             value={tab}
             onValueChange={(value) => {
               if (value === "fidelity") navigate(`/doc/${docKey}/fidelity`);
@@ -244,13 +248,26 @@ export default function Document() {
                 });
             }}
           >
-            <Tabs.List className="tabs" aria-label={t("doc.tabs")}>
-              <Tabs.Trigger value="blueprint">
-                {t("doc.blueprint")}
-              </Tabs.Trigger>
-              <Tabs.Trigger value="fidelity">{t("doc.fidelity")}</Tabs.Trigger>
-              <Tabs.Trigger value="list">{t("doc.list")}</Tabs.Trigger>
-            </Tabs.List>
+            <div className="document-view-bar">
+              <Tabs.List className="tabs" aria-label={t("doc.tabs")}>
+                <Tabs.Trigger value="blueprint">
+                  {t("doc.blueprint")}
+                </Tabs.Trigger>
+                <Tabs.Trigger value="fidelity">
+                  {t("doc.fidelity")}
+                </Tabs.Trigger>
+                <Tabs.Trigger value="list">{t("doc.list")}</Tabs.Trigger>
+              </Tabs.List>
+              {tab === "blueprint" && (
+                <button
+                  className="focus-view-button"
+                  aria-pressed={focused}
+                  onClick={() => setFocused(!focused)}
+                >
+                  {focused ? t("doc.exitFocus") : t("doc.focusView")}
+                </button>
+              )}
+            </div>
             {tab !== "fidelity" && !chapterOverview && (
               <div className="document-controls">
                 <label className="filter-input">
@@ -262,70 +279,112 @@ export default function Document() {
                     placeholder={t("doc.filter")}
                   />
                 </label>
-                <label>
-                  <span className="sr-only">{t("search.headline")}</span>
+                {tab === "blueprint" && (
                   <select
-                    value={headline}
-                    onChange={(event) => setHeadline(event.target.value)}
-                    aria-label={t("search.headline")}
+                    className="blueprint-chapter-select"
+                    aria-label={t("doc.chapters")}
+                    value={chapter}
+                    onChange={(event) => {
+                      setChapter(event.target.value);
+                      if (selected) close();
+                    }}
                   >
-                    <option value="">{t("search.all")}</option>
-                    {[
-                      "in-progress",
-                      "statement-complete",
-                      "proof-complete",
-                      "error",
-                    ].map((value) => (
-                      <option key={value} value={value}>
-                        {t(`enum.HeadlineStatus.${value}`)}
+                    <option value="">{t("doc.allChapters")}</option>
+                    {allChapters.map((item) => (
+                      <option
+                        key={item.chapter}
+                        value={
+                          largeApi
+                            ? item.chapter || "__unsectioned__"
+                            : item.chapter
+                        }
+                      >
+                        {item.chapter}
+                        {" · "}
+                        {item.title}
                       </option>
                     ))}
                   </select>
-                </label>
-                {tab === "blueprint" && (
-                  <>
-                    <label className="check-label">
-                      <input
-                        type="checkbox"
-                        checked={expandAux}
-                        onChange={(event) => setExpandAux(event.target.checked)}
-                      />
-                      {t("doc.includeAux")}
-                    </label>
-                    <select
-                      aria-label={t("doc.edges")}
-                      value={edgeMode}
-                      onChange={(event) => setEdgeMode(event.target.value)}
-                    >
-                      <option value="all">{t("doc.edgesAll")}</option>
-                      <option value="declared">{t("doc.edgesDeclared")}</option>
-                      <option value="verified">{t("doc.edgesVerified")}</option>
-                    </select>
-                    <select
-                      aria-label={t("doc.direction")}
-                      value={direction}
-                      onChange={(event) => setDirection(event.target.value)}
-                    >
-                      <option value="DOWN">{t("doc.down")}</option>
-                      <option value="RIGHT">{t("doc.right")}</option>
-                    </select>
-                    <button
-                      onClick={() =>
-                        setCollapsed(
-                          collapsed.size
-                            ? new Set()
-                            : new Set(
-                                bundle.chapters.map((item) => item.chapter),
-                              ),
-                        )
-                      }
-                    >
-                      {collapsed.size
-                        ? t("doc.expandChapters")
-                        : t("doc.collapseChapters")}
-                    </button>
-                  </>
                 )}
+                <details
+                  className="document-options"
+                  name="blueprint-tools"
+                  open={tab !== "blueprint" ? true : undefined}
+                >
+                  <summary>{t("doc.options")}</summary>
+                  <div className="document-options-panel">
+                    <label>
+                      <span className="sr-only">{t("search.headline")}</span>
+                      <select
+                        value={headline}
+                        onChange={(event) => setHeadline(event.target.value)}
+                        aria-label={t("search.headline")}
+                      >
+                        <option value="">{t("search.all")}</option>
+                        {[
+                          "in-progress",
+                          "statement-complete",
+                          "proof-complete",
+                          "error",
+                        ].map((value) => (
+                          <option key={value} value={value}>
+                            {t(`enum.HeadlineStatus.${value}`)}
+                          </option>
+                        ))}
+                      </select>
+                    </label>
+                    {tab === "blueprint" && (
+                      <>
+                        <label className="check-label">
+                          <input
+                            type="checkbox"
+                            checked={expandAux}
+                            onChange={(event) =>
+                              setExpandAux(event.target.checked)
+                            }
+                          />
+                          {t("doc.includeAux")}
+                        </label>
+                        <select
+                          aria-label={t("doc.edges")}
+                          value={edgeMode}
+                          onChange={(event) => setEdgeMode(event.target.value)}
+                        >
+                          <option value="all">{t("doc.edgesAll")}</option>
+                          <option value="declared">
+                            {t("doc.edgesDeclared")}
+                          </option>
+                          <option value="verified">
+                            {t("doc.edgesVerified")}
+                          </option>
+                        </select>
+                        <select
+                          aria-label={t("doc.direction")}
+                          value={direction}
+                          onChange={(event) => setDirection(event.target.value)}
+                        >
+                          <option value="DOWN">{t("doc.down")}</option>
+                          <option value="RIGHT">{t("doc.right")}</option>
+                        </select>
+                        <button
+                          onClick={() =>
+                            setCollapsed(
+                              collapsed.size
+                                ? new Set()
+                                : new Set(
+                                    bundle.chapters.map((item) => item.chapter),
+                                  ),
+                            )
+                          }
+                        >
+                          {collapsed.size
+                            ? t("doc.expandChapters")
+                            : t("doc.collapseChapters")}
+                        </button>
+                      </>
+                    )}
+                  </div>
+                </details>
               </div>
             )}
             <Tabs.Content value="blueprint">

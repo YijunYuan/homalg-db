@@ -298,7 +298,7 @@ describe("graph projection", () => {
       },
     ]);
   });
-  it("builds flat chapter partitions and dependency-first arrows", () => {
+  it("builds only explicit chapters and retains dependency-first arrows within them", () => {
     const nodes = [
         { id: "A", label: "A" },
         { id: "B", label: "B" },
@@ -306,17 +306,14 @@ describe("graph projection", () => {
       edges = [
         { from: "B", to: "A", kind: "proof", declared: true, verified: true },
       ];
-    const input = graphInput(nodes, edges, [
-      { node_ids: ["A"] },
-      { node_ids: ["B"] },
-    ]);
+    const input = graphInput(nodes, edges, [{ node_ids: ["A", "B"] }]);
     expect(
-      input.children.map(
-        (node: { layoutOptions: Record<string, string> }) =>
-          node.layoutOptions["elk.partitioning.partition"],
-      ),
-    ).toEqual(["1", "2"]);
-    expect(input.edges[0]).toMatchObject({ sources: ["A"], targets: ["B"] });
+      input.children[0].children.map((node: { id: string }) => node.id),
+    ).toEqual(["A", "B"]);
+    expect(input.children[0].edges[0]).toMatchObject({
+      sources: ["A"],
+      targets: ["B"],
+    });
     expect(toMermaid(nodes, edges)).toContain("n0 --> n1");
   });
 });
@@ -520,7 +517,7 @@ it("aggregates projected chapter edges while preserving dependency flags", () =>
   ).toBe(true);
 });
 
-it("paints a complete dependency-ordered seed before worker refinement", () => {
+it("paints a complete chapter-local dependency seed before worker refinement", () => {
   const nodes = [{ id: "A" }, { id: "B" }, { id: "C" }];
   const positions = seedPositions(
     nodes,
@@ -532,6 +529,6 @@ it("paints a complete dependency-ordered seed before worker refinement", () => {
   );
   expect(Object.keys(positions)).toHaveLength(3);
   expect(positions.A.y).toBeLessThan(positions.B.y);
-  expect(positions.B.y).toBeLessThan(positions.C.y);
-  expect(positions.C.x).toBeGreaterThan(positions.B.x);
+  expect(Number.isFinite(positions.C.x)).toBe(true);
+  expect(positions.C).not.toEqual(positions.B);
 });
