@@ -49,6 +49,7 @@ test("deep links expand collapsed chapters and retain desktop drawer focus", asy
   page,
 }) => {
   await page.goto("/#/doc/Fixture2000");
+  await page.locator("summary").filter({ hasText: "View options" }).click();
   await page
     .getByRole("button", { name: "Collapse chapters", exact: true })
     .click();

@@ -11,9 +11,20 @@ import {
   defaultCollapsed,
   toMermaid,
 } from "../../data/graph/contract.mjs";
-import { layout } from "./layout";
+import { layout, compatiblePrecomputed } from "./layout";
+import {
+  nodeCard,
+  NODE_FONT_SIZE,
+  CARD_LAYOUT_VERSION,
+} from "../../data/graph/presentation.mjs";
+import { BlueprintLegend } from "./BlueprintLegend";
+import {
+  blueprintColors as colors,
+  blueprintShapes as shapes,
+} from "./appearance";
+import { readLabels, revealSelection } from "./viewport";
 import { seedPositions } from "../../data/graph/seed.mjs";
-import { glyphs, blueprintUrl, ErrorView, Loading } from "../../components/ui";
+import { blueprintUrl, ErrorView, Loading } from "../../components/ui";
 import type { DocumentBundle, Manifest } from "../../data/source";
 import type { NodeSummary, NodeRef, Edge } from "../../data/types";
 import { t } from "../../i18n/t";
@@ -23,18 +34,21 @@ export const styles: StylesheetStyle[] = [
   {
     selector: "node",
     style: {
-      shape: "roundrectangle",
-      width: 204,
-      height: 70,
-      "background-color": "#ffffff",
+      shape: shapes.source,
+      width: "data(width)",
+      height: "data(height)",
+      "background-color": colors.inProgress.fill,
       "border-width": 2,
-      "border-color": "#63776a",
+      "border-color": colors.inProgress.border,
       label: "data(label)",
       color: "#183426",
       "font-family": "system-ui",
-      "font-size": 12,
+      "font-size": NODE_FONT_SIZE,
+      "font-weight": 500,
+      "line-height": 1.25,
       "text-wrap": "wrap",
-      "text-max-width": "182px",
+      "text-max-width": "data(textWidth)",
+      "text-overflow-wrap": "anywhere",
       "text-valign": "center",
       "text-halign": "center",
       "min-zoomed-font-size": 8,
@@ -42,31 +56,37 @@ export const styles: StylesheetStyle[] = [
   },
   {
     selector: 'node[headline = "statement-complete"]',
-    style: { "background-color": "#d6efdc", "border-color": "#3f7850" },
+    style: {
+      "background-color": colors.statementComplete.fill,
+      "border-color": colors.statementComplete.border,
+    },
   },
   {
     selector: 'node[headline = "proof-complete"]',
     style: {
-      "background-color": "#247347",
-      color: "#ffffff",
-      "border-color": "#164d2e",
+      "background-color": colors.proofComplete.fill,
+      color: colors.inProgress.fill,
+      "border-color": colors.proofComplete.border,
     },
   },
   {
     selector: 'node[headline = "error"]',
     style: {
-      "background-color": "#ffe0dc",
-      "border-color": "#b02e22",
+      "background-color": colors.error.fill,
+      "border-color": colors.error.border,
       color: "#7d2018",
     },
   },
   {
     selector: 'node[headline = "none"]',
-    style: { "background-color": "#d5dcd7" },
+    style: { "background-color": colors.informalOrPruned },
   },
   {
     selector: 'node[status = "pruned"]',
-    style: { "background-color": "#d5dcd7", "background-opacity": 0.5 },
+    style: {
+      "background-color": colors.informalOrPruned,
+      "background-opacity": 0.5,
+    },
   },
   {
     selector: 'node[status = "proved-modulo-citations"]',
@@ -87,33 +107,43 @@ export const styles: StylesheetStyle[] = [
   },
   {
     selector: 'node[status = "proved-with-axioms"]',
-    style: { "border-color": "#b77b00", "border-width": 4 },
+    style: { "border-color": colors.extraAxioms, "border-width": 4 },
   },
   {
     selector: 'node[fidelity = "foundation"]',
-    style: { "border-color": "#3c4650", "border-width": 3 },
+    style: { "border-color": colors.foundation, "border-width": 3 },
   },
   {
     selector: 'node[fidelity = "deviates"]',
-    style: { "border-color": "#bc5c00", "border-width": 3 },
+    style: { "border-color": colors.deviation, "border-width": 3 },
   },
   {
     selector: "node[raised = 1]",
     style: {
-      "border-color": "#8052a3",
+      "border-color": colors.dispute,
       "border-style": "dashed",
       "border-width": 3,
     },
   },
-  { selector: "node[aux = 1]", style: { width: 168, height: 58 } },
-  { selector: "node[bridge = 1]", style: { shape: "diamond", height: 104 } },
+  { selector: "node[aux = 1]", style: { shape: shapes.auxiliary } },
+  { selector: "node[bridge = 1]", style: { shape: shapes.bridge } },
   {
     selector: "node[cited = 1]",
-    style: { shape: "hexagon", "border-style": "dashed" },
+    style: { shape: shapes.cited, "border-style": "dashed" },
   },
   {
     selector: "node[external = 1]",
-    style: { "border-style": "dashed", "background-color": "#edf2ef" },
+    style: { "border-style": "dashed", "background-color": colors.external },
+  },
+  {
+    selector: "node[chapterSummary = 1]",
+    style: {
+      "background-color": colors.external,
+      color: "#183426",
+      "border-color": colors.inProgress.border,
+      "border-style": "solid",
+      "font-weight": "bold",
+    },
   },
   {
     selector: ":parent",
@@ -124,6 +154,7 @@ export const styles: StylesheetStyle[] = [
       "border-color": "#c2d0c5",
       label: "data(label)",
       "text-valign": "top",
+      "text-max-width": "480px",
       "font-weight": "bold",
       padding: "28px",
       shape: "roundrectangle",
@@ -133,15 +164,16 @@ export const styles: StylesheetStyle[] = [
     selector: "edge",
     style: {
       width: 1.8,
-      "line-color": "#778a7e",
-      "target-arrow-color": "#778a7e",
+      opacity: 0.35,
+      "line-color": colors.edge,
+      "target-arrow-color": colors.edge,
       "target-arrow-shape": "triangle",
       "curve-style": "bezier",
       "arrow-scale": 0.9,
       label: "data(viaLabel)",
       "font-size": 11,
       color: "#385543",
-      "text-background-color": "#ffffff",
+      "text-background-color": colors.inProgress.fill,
       "text-background-opacity": 0.9,
       "text-background-padding": "3px",
     },
@@ -149,14 +181,17 @@ export const styles: StylesheetStyle[] = [
   { selector: "edge[verified = 0]", style: { "line-style": "dashed" } },
   {
     selector: "edge[declared = 0]",
-    style: { "line-color": "#c6691b", "target-arrow-color": "#c6691b" },
+    style: {
+      "line-color": colors.undeclaredEdge,
+      "target-arrow-color": colors.undeclaredEdge,
+    },
   },
   {
     selector: 'edge[kind = "proof"]',
     style: { "target-arrow-fill": "hollow" },
   },
   {
-    selector: ".focus",
+    selector: "node.focus",
     style: {
       "underlay-color": "#268651",
       "underlay-opacity": 0.2,
@@ -164,6 +199,7 @@ export const styles: StylesheetStyle[] = [
     },
   },
   { selector: ".neighbor", style: { "border-width": 4 } },
+  { selector: "edge.focus", style: { opacity: 1, width: 2.5 } },
 ];
 export function Blueprint({
   bundle,
@@ -193,6 +229,11 @@ export function Blueprint({
   const container = useRef<HTMLDivElement>(null),
     cy = useRef<Core | null>(null),
     navigate = useNavigate();
+  const selection = useRef(selected);
+  selection.current = selected;
+  const viewMode = useRef<"readable" | "overview">("readable");
+  const userMoved = useRef(false);
+  const [zoom, setZoom] = useState(1);
   const [busy, setBusy] = useState(false),
     [error, setError] = useState<unknown>(),
     [tooltip, setTooltip] = useState(""),
@@ -341,10 +382,22 @@ export function Blueprint({
     collapsedChapters,
     edgeMode,
   ]);
+  // Selecting an already visible node must not recreate or relayout the graph.
+  const layoutKey = `${entry.doc_key}:${entry.graph_hash}:${CARD_LAYOUT_VERSION}:${direction}:${graph.nodes.map((node) => node.id).join(",")}:${graph.edges.map((edge) => `${edge.from}>${edge.to}:${edge.kind}`).join(",")}`;
+  useEffect(() => {
+    const instance = cy.current;
+    if (!instance) return;
+    const frame = requestAnimationFrame(() => {
+      if (!instance.destroyed()) revealSelection(instance, selected);
+    });
+    return () => cancelAnimationFrame(frame);
+  }, [selected]);
   useEffect(() => {
     // Expanding a large document must not allocate a second Canvas renderer.
     if (graph.nodes.length > 20_000) return;
     let cancelled = false;
+    let resizeObserver: ResizeObserver | undefined;
+    let resizeFrame = 0;
     setError(undefined);
     const apply = async () => {
       const applyAt = performance.now();
@@ -356,34 +409,21 @@ export function Blueprint({
         !headline &&
         !expandAux &&
         !expandedParents.size &&
-        (!collapsedChapters.size ||
-          collapsedChapters.size === bundle.chapters.length) &&
+        !collapsedChapters.size &&
         direction === "DOWN" &&
         edgeMode === "all" &&
-        !selected?.includes(".Aux_");
-      const key = `${entry.doc_key}:${entry.graph_hash}:${direction}:${graph.nodes.map((node) => node.id).join(",")}:${edgeMode}`;
+        !selection.current?.includes(".Aux_");
+      const key = layoutKey;
       const chapters = bundle.chapters.map((item) => ({
         ...item,
         node_ids: [...item.node_ids, `chapter:${item.chapter}`],
       }));
       const precomputed =
-        bundle.layout?.view === "aux-collapsed"
+        bundle.layout?.view === "aux-collapsed" &&
+        (await compatiblePrecomputed(bundle))
           ? bundle.layout.nodes
           : undefined;
       const projected = precomputed ? { ...precomputed } : undefined;
-      if (projected && collapsedChapters.size)
-        for (const item of bundle.chapters) {
-          const points = item.node_ids
-            .map((id) => projected[id])
-            .filter(Boolean);
-          if (points.length)
-            projected[`chapter:${item.chapter}`] = {
-              x:
-                points.reduce((sum, point) => sum + point.x, 0) / points.length,
-              y:
-                points.reduce((sum, point) => sum + point.y, 0) / points.length,
-            };
-        }
       const refinement =
         defaults && projected
           ? undefined
@@ -407,6 +447,9 @@ export function Blueprint({
               id: `group:${item.chapter}`,
               label: `${item.chapter} · ${item.title || ""}`,
               chapter: item.chapter,
+              width: 264,
+              height: 64,
+              textWidth: 480,
             },
           });
       const auxCounts = new Map<string, number>();
@@ -416,14 +459,26 @@ export function Blueprint({
             item.aux_parent,
             (auxCounts.get(item.aux_parent) || 0) + 1,
           );
+      const chapterOrder = new Map(
+        bundle.chapters.map((item, i) => [item.chapter, i]),
+      );
       for (const node of graph.nodes) {
+        const card = nodeCard(node);
         const local = nodeById.get(node.id),
           auxCount = auxCounts.get(node.id) || 0;
         elements.push({
           data: {
             id: node.id,
             auxCount,
-            label: `${local?.needs_repair ? "⚒ " : ""}${glyphs[node.status]} ${node.label}${local?.title ? `\n${local.title}` : ""}${auxCount ? `\n${t("doc.auxCount", { count: auxCount })}` : ""}`,
+            ...card,
+            label: `${card.label}${auxCount ? `\n${t("doc.auxCount", { count: auxCount })}` : ""}`,
+            sourceItem:
+              local && !local.is_aux && !local.local_id.startsWith("Cited_")
+                ? 1
+                : 0,
+            chapterOrder:
+              chapterOrder.get(graph.chapterOf.get(node.id) || "") ??
+              bundle.chapters.length,
             headline: node.headline || "none",
             status: node.status,
             fidelity: local?.fidelity_status,
@@ -462,6 +517,7 @@ export function Blueprint({
       );
       cy.current?.destroy();
       container.current.dataset.ready = "false";
+      container.current.dataset.layoutReady = "false";
       const constructAt = performance.now();
       const instance = cytoscape({
         container: container.current,
@@ -477,6 +533,16 @@ export function Blueprint({
       });
       const constructMs = performance.now() - constructAt;
       cy.current = instance;
+      userMoved.current = false;
+      instance.on("zoom", () => setZoom(instance.zoom()));
+      instance.on("dragpan scrollzoom pinchzoom", () => {
+        userMoved.current = true;
+      });
+      const applyView = () => {
+        if (viewMode.current === "overview") instance.fit(undefined, 35);
+        else readLabels(instance, selection.current);
+        revealSelection(instance, selection.current);
+      };
       instance.one("render", () => {
         if (!cancelled && container.current) {
           container.current.dataset.ready = "true";
@@ -499,15 +565,14 @@ export function Blueprint({
         else if (node.data("chapterSummary"))
           onToggleChapter(node.id().slice(8));
         else {
-          if (node.data("auxCount")) toggleAux(node.id());
-          navigate(blueprintUrl(node.id()));
+          navigate(`${blueprintUrl(node.id())}?view=blueprint`);
         }
       });
       instance.on("dbltap", "node", (event) => {
         const node = event.target;
         instance.elements().removeClass("neighbor");
         node.closedNeighborhood().addClass("neighbor");
-        instance.fit(node.closedNeighborhood(), 70);
+        readLabels(instance, node.id());
       });
       instance.on("mouseover", "node", (event) => {
         const node = nodeById.get(event.target.id());
@@ -520,22 +585,17 @@ export function Blueprint({
       instance.on("cxttap", "node", (event) =>
         setContext(nodeById.get(event.target.id())),
       );
-      if (selected) {
-        const node = instance.getElementById(selected);
-        if (node.length) {
-          node.addClass("focus");
-          if (matchMedia("(prefers-reduced-motion: reduce)").matches)
-            instance.fit(node.closedNeighborhood(), 80);
-          else
-            instance.animate({
-              fit: { eles: node.closedNeighborhood(), padding: 80 },
-              duration: 250,
-            });
-          setTimeout(() => {
-            if (!instance.destroyed()) node.removeClass("focus");
-          }, 2000);
-        }
-      } else instance.fit(undefined, 35);
+      applyView();
+      resizeObserver = new ResizeObserver(() => {
+        cancelAnimationFrame(resizeFrame);
+        resizeFrame = requestAnimationFrame(() => {
+          if (!cancelled && !instance.destroyed()) {
+            instance.resize();
+            revealSelection(instance, selection.current);
+          }
+        });
+      });
+      resizeObserver.observe(container.current);
       if (refinement)
         void refinement
           .then((refined) => {
@@ -545,13 +605,8 @@ export function Blueprint({
                 if (refined[node.id])
                   instance.getElementById(node.id).position(refined[node.id]);
             });
-            const focus = selected
-              ? instance.getElementById(selected)
-              : undefined;
-            instance.fit(
-              focus?.length ? focus.closedNeighborhood() : undefined,
-              35,
-            );
+            if (!userMoved.current) applyView();
+            container.current?.setAttribute("data-layout-ready", "true");
             setBusy(false);
           })
           .catch((reason) => {
@@ -560,7 +615,10 @@ export function Blueprint({
               setBusy(false);
             }
           });
-      else setBusy(false);
+      else {
+        setBusy(false);
+        container.current?.setAttribute("data-layout-ready", "true");
+      }
     };
     void apply().catch((reason) => {
       if (!cancelled) {
@@ -570,26 +628,12 @@ export function Blueprint({
     });
     return () => {
       cancelled = true;
+      resizeObserver?.disconnect();
+      cancelAnimationFrame(resizeFrame);
       cy.current?.destroy();
       cy.current = null;
     };
-  }, [
-    bundle,
-    graph,
-    nodeById,
-    expandedParents,
-    entry,
-    chapter,
-    filter,
-    headline,
-    expandAux,
-    collapsedChapters,
-    direction,
-    edgeMode,
-    selected,
-    navigate,
-    onToggleChapter,
-  ]);
+  }, [bundle, layoutKey, nodeById, onToggleChapter]);
   const copy = async (text: string) => {
     try {
       await navigator.clipboard.writeText(text);
@@ -614,6 +658,67 @@ export function Blueprint({
   return (
     <div className="blueprint">
       <div className="graph-actions">
+        <div
+          className="graph-view-controls"
+          role="group"
+          aria-label={t("doc.readableView")}
+        >
+          <button
+            onClick={() => {
+              if (!cy.current) return;
+              viewMode.current = "readable";
+              userMoved.current = false;
+              readLabels(cy.current, selected);
+            }}
+          >
+            {t("doc.readableView")}
+          </button>
+          <button
+            onClick={() => {
+              if (!cy.current) return;
+              viewMode.current = "overview";
+              userMoved.current = false;
+              cy.current.fit(undefined, 35);
+            }}
+          >
+            {t("doc.fitAll")}
+          </button>
+          <button
+            aria-label={t("doc.zoomOut")}
+            onClick={() => {
+              if (!cy.current) return;
+              userMoved.current = true;
+              cy.current.zoom({
+                level: cy.current.zoom() / 1.25,
+                renderedPosition: {
+                  x: cy.current.width() / 2,
+                  y: cy.current.height() / 2,
+                },
+              });
+            }}
+          >
+            {t("doc.zoomOutSymbol")}
+          </button>
+          <output className="graph-zoom">
+            {t("doc.zoomLevel", { percent: Math.round(zoom * 100) })}
+          </output>
+          <button
+            aria-label={t("doc.zoomIn")}
+            onClick={() => {
+              if (!cy.current) return;
+              userMoved.current = true;
+              cy.current.zoom({
+                level: cy.current.zoom() * 1.25,
+                renderedPosition: {
+                  x: cy.current.width() / 2,
+                  y: cy.current.height() / 2,
+                },
+              });
+            }}
+          >
+            {t("doc.zoomInSymbol")}
+          </button>
+        </div>
         {selected && auxParents.has(selected) && !expandAux && (
           <button onClick={() => toggleAux(selected)}>
             {expandedParents.has(selected)
@@ -621,20 +726,42 @@ export function Blueprint({
               : t("doc.expandParentAux")}
           </button>
         )}
-        <button
-          onClick={() => {
-            if (!cy.current) return;
-            const link = document.createElement("a");
-            link.href = cy.current.png({ full: true, scale: 2, bg: "#f6f8f6" });
-            link.download = `${entry.doc_key}.png`;
-            link.click();
-          }}
-        >
-          {t("doc.exportPng")}
-        </button>
-        <button onClick={() => void copy(toMermaid(graph.nodes, graph.edges))}>
-          {t("doc.exportMermaid")}
-        </button>
+        <div className="graph-utilities">
+          <BlueprintLegend />
+          <details className="graph-menu" name="blueprint-tools">
+            <summary>{t("doc.export")}</summary>
+            <div className="graph-menu-panel">
+              <button
+                onClick={() => {
+                  if (!cy.current) return;
+                  const link = document.createElement("a");
+                  link.href = cy.current.png({
+                    full: true,
+                    scale: 2,
+                    bg: "#f6f8f6",
+                  });
+                  link.download = `${entry.doc_key}.png`;
+                  link.click();
+                }}
+              >
+                {t("doc.exportPng")}
+              </button>
+              <button
+                onClick={() => void copy(toMermaid(graph.nodes, graph.edges))}
+              >
+                {t("doc.exportMermaid")}
+              </button>
+            </div>
+          </details>
+          <details className="graph-menu" name="blueprint-tools">
+            <summary>{t("doc.help")}</summary>
+            <div className="graph-menu-panel graph-help-panel">
+              <p>{t("doc.panHelp")}</p>
+              <p>{t("doc.chapterLayoutHelp")}</p>
+              <p>{t("doc.overviewHelp")}</p>
+            </div>
+          </details>
+        </div>
       </div>
       {!!error && <ErrorView error={error} />}
       <p id="graph-help" className="sr-only">
@@ -666,7 +793,8 @@ export function Blueprint({
                   : neighbors.length - 1
               ]
             : current;
-          if (target) navigate(blueprintUrl(target.id()));
+          if (target?.length)
+            navigate(`${blueprintUrl(target.id())}?view=blueprint`);
         }}
       />
       {busy && (
