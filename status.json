@@ -18,28 +18,28 @@
     "disputed": 5,
     "headline": {
       "error": 0,
-      "in_progress": 69,
-      "proof_complete": 0,
-      "statement_complete": 0
+      "in_progress": 34,
+      "proof_complete": 25,
+      "statement_complete": 10
     },
     "informal": 0,
     "items_total": 70,
-    "locked": 0,
+    "locked": 36,
     "pages_reviewed": 15,
     "pages_total": 421,
-    "planned": 65,
-    "proved": 0,
+    "planned": 29,
+    "proved": 26,
     "proved_modulo_citations": 0,
     "proved_pending_deps": 0,
     "proved_with_axioms": 0,
     "pruned": 0,
-    "stated": 0
+    "stated": 10
   },
   "doc_key": "CartanEilenberg1956",
-  "generated_at": "2026-11-04T04:31:48Z",
+  "generated_at": "2026-11-04T05:36:00Z",
   "holder": "YijunYuan",
   "last_check": {
-    "at": "2026-11-04T04:30:50Z",
+    "at": "2026-11-04T05:34:28Z",
     "result": "green"
   },
   "open_for_human": 7,
