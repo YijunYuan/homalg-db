@@ -1,0 +1,155 @@
+schema_version: 1
+doc_key: "CartanEilenberg1956"
+type: "book"
+year: 1956
+title: "Homological Algebra"
+authors:
+  - family: "Cartan"
+    given: "Henri"
+  - family: "Eilenberg"
+    given: "Samuel"
+language: "en"
+foundations: []
+structure:
+  - chapter: "I"
+    title: "Rings and Modules"
+    pages:
+      first: 3
+      last: 17
+  - chapter: "II"
+    title: "Additive Functors"
+    pages:
+      first: 18
+      last: 32
+  - chapter: "III"
+    title: "Satellites"
+    pages:
+      first: 33
+      last: 52
+  - chapter: "IV"
+    title: "Homology"
+    pages:
+      first: 53
+      last: 74
+  - chapter: "V"
+    title: "Derived Functors"
+    pages:
+      first: 75
+      last: 105
+  - chapter: "VI"
+    title: "Derived Functors of Tensor and Hom"
+    pages:
+      first: 106
+      last: 126
+  - chapter: "VII"
+    title: "Integral Domains"
+    pages:
+      first: 127
+      last: 142
+  - chapter: "VIII"
+    title: "Augmented Rings"
+    pages:
+      first: 143
+      last: 161
+  - chapter: "IX"
+    title: "Associative Algebras"
+    pages:
+      first: 162
+      last: 181
+  - chapter: "X"
+    title: "Supplemented Algebras"
+    pages:
+      first: 182
+      last: 201
+  - chapter: "XI"
+    title: "Products"
+    pages:
+      first: 202
+      last: 231
+  - chapter: "XII"
+    title: "Finite Groups"
+    pages:
+      first: 232
+      last: 265
+  - chapter: "XIII"
+    title: "Lie Algebras"
+    pages:
+      first: 266
+      last: 288
+  - chapter: "XIV"
+    title: "Extensions"
+    pages:
+      first: 289
+      last: 314
+  - chapter: "XV"
+    title: "Spectral Sequences"
+    pages:
+      first: 315
+      last: 339
+  - chapter: "XVI"
+    title: "Applications of Spectral Sequences"
+    pages:
+      first: 340
+      last: 361
+  - chapter: "XVII"
+    title: "Hyperhomology"
+    pages:
+      first: 362
+      last: 378
+  - chapter: "Appendix"
+    title: "Exact Categories (David A. Buchsbaum)"
+    pages:
+      first: 379
+      last: 386
+pdf:
+  file: "1956_01_CE56_Homological_Algebra.pdf"
+  sha256: "1e0915f23ec4a4bd638f469561931f5659a7a47faf92d48468bd290ddd726365"
+  pages: 421
+  page_offset: 22
+  license:
+    id: "proprietary"
+  sources: []
+notes: "Source identity and bibliographic pages were independently checked against this exact 421-page
+  scan. PDF 8 identifies Princeton Mathematical Series 19; PDF 9-10 identify the authors, publisher and
+  1956 publication. No edition statement or ISBN is supplied by the scan; later reprint/electronic identifiers
+  are not assigned to it. L.C. Card No. 53-10148. The full mathematical scope is Chapters I-XVII, including
+  exercises, and the Buchsbaum appendix, printed pp. 3-386 (PDF 25-408). All chapter starts were visually
+  checked. Printed p. 378 (PDF 400) is blank and must receive an explicit empty-page inventory disposition.
+  Front matter includes the Preface (Roman pp. v-x, PDF 11-16) and Contents (xi-xv, PDF 17-21); it supplies
+  source context rather than fictitious Arabic-page nodes. The List of Symbols (387-388, PDF 409-410)
+  and Index of Terminology (389-390, PDF 411-412) are navigation material; PDF 413-421 are blank. Bibliographic
+  and source-coordinate checks are not mathematical foundation or statement approvals."
+publisher: "Princeton University Press"
+series:
+  name: "Princeton Mathematical Series"
+  volume: "19"
+first_published: 1956
+identifiers:
+  url: "https://library.kaist.ac.kr/search/ctlgSearch/posesn/view.do?bibctrlno=6924&ty=B"
+item_kinds:
+  - "definition"
+  - "theorem"
+  - "lemma"
+  - "proposition"
+  - "corollary"
+  - "example"
+  - "exercise"
+  - "remark"
+  - "construction"
+  - "notation"
+  - "axiom"
+  - "conjecture"
+transcription:
+  conventions:
+    - "Preserve the 1956 source definitions, notation, hypotheses and historical terminology; do not substitute
+      later categorical definitions."
+    - "Include numbered and unnumbered mathematical items, examples, exercises and substantive footnote
+      assertions in each chapter inventory; distinguish a source-supplied proof from a newly supplied
+      solution."
+    - "Printed Arabic page p corresponds to PDF page p + 22. Roman-numbered Preface pages v-x are PDF
+      pages 11-16 and are read as contextual front matter using their original Roman labels; do not encode
+      them as Arabic source.pages."
+    - "Running headers and printed page-number furniture may be omitted from faithful page transcription;
+      retain substantive footnotes after their source paragraph."
+    - "Attribute the Appendix, Exact Categories, to David A. Buchsbaum. Its introduction states that proofs
+      are not supplied here; preserve that boundary explicitly."
