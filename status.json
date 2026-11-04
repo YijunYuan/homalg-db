@@ -1,0 +1,54 @@
+{
+  "counts": {
+    "aux_headline": {
+      "error": 0,
+      "in_progress": 0,
+      "proof_complete": 0,
+      "statement_complete": 0
+    },
+    "aux_proved": 0,
+    "aux_total": 0,
+    "cited_headline": {
+      "error": 0,
+      "in_progress": 0,
+      "proof_complete": 0,
+      "statement_complete": 0
+    },
+    "cited_total": 0,
+    "disputed": 0,
+    "headline": {
+      "error": 0,
+      "in_progress": 0,
+      "proof_complete": 0,
+      "statement_complete": 0
+    },
+    "informal": 0,
+    "items_total": 0,
+    "locked": 0,
+    "pages_reviewed": 5,
+    "pages_total": 421,
+    "planned": 0,
+    "proved": 0,
+    "proved_modulo_citations": 0,
+    "proved_pending_deps": 0,
+    "proved_with_axioms": 0,
+    "pruned": 0,
+    "stated": 0
+  },
+  "doc_key": "CartanEilenberg1956",
+  "generated_at": "2026-11-04T03:10:19Z",
+  "holder": "YijunYuan",
+  "last_check": {
+    "at": "2026-11-04T03:10:16Z",
+    "result": "green"
+  },
+  "open_for_human": 1,
+  "schema_version": 1,
+  "scope_chapters": [],
+  "stages": {
+    "T": {
+      "done": 1,
+      "total": 77
+    }
+  }
+}
