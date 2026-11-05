@@ -1,5 +1,6 @@
 """Explicit opt-in policy for independent agent reviews, preserving genuine human evidence."""
 
+import copy
 import hashlib
 import re
 from datetime import UTC, date, datetime
@@ -12,15 +13,42 @@ from homalg.schemas import SchemaStore, load_yaml
 POLICY_PATH = "horizon/review-policy.yaml"
 
 
+_POLICY_CACHE: dict[str, tuple[tuple[int, ...], dict[str, Any]]] = {}
+
+
 def read_policy(repo: Path) -> dict[str, Any]:
-    """Read the tracked policy; absence keeps the original human review boundary."""
+    """Read the tracked policy; absence keeps the original human review boundary.
+
+    A validated parse is reused only while the policy and schema files keep the
+    same identity (inode, size and timestamps); callers receive a private copy.
+    """
     path = repo / POLICY_PATH
     if not path.exists():
         return {"schema_version": 1, "allow_independent_agent_reviews": False}
+    schema = repo / "schema" / "review-policy.schema.json"
+
+    def identity() -> tuple[int, ...]:
+        values = []
+        for item in (path, schema):
+            stat = item.stat() if item.exists() else None
+            values.extend(
+                (stat.st_dev, stat.st_ino, stat.st_size, stat.st_mtime_ns, stat.st_ctime_ns)
+                if stat
+                else (0, 0, 0, 0, 0)
+            )
+        return tuple(values)
+
+    key = str(path.resolve())
+    before = identity()
+    cached = _POLICY_CACHE.get(key)
+    if cached is not None and cached[0] == before:
+        return copy.deepcopy(cached[1])
     value = load_yaml(path.read_text())
     errors = SchemaStore(repo / "schema").validate(value, "review-policy.schema.json")
     if errors:
         raise ValueError(f"Invalid review policy: {errors[0].message}")
+    if identity() == before:
+        _POLICY_CACHE[key] = (before, copy.deepcopy(value))
     return value
 
 

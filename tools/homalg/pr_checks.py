@@ -169,7 +169,11 @@ def pr_findings(
             valid = path in permitted or path.startswith(f"HomAlg/{key}/")
             if path.startswith(f"literature/{key}/"):
                 relative = path.removeprefix(f"literature/{key}/")
-                valid = relative in metadata or relative.startswith(("reviews/", "run-log/"))
+                valid = (
+                    relative in metadata
+                    or relative.startswith(("reviews/", "run-log/"))
+                    or bool(re.fullmatch(r"owner-decisions/[A-Za-z0-9_-]+\.json", relative))
+                )
             if "regen" in labels and (
                 re.fullmatch(r"literature/[^/]+/nodes\.json", path)
                 or re.fullmatch(r"HomAlg/[^/]+\.lean", path)

@@ -1,5 +1,6 @@
 """Comment-preserving metadata I/O with schema validation and atomic replacement."""
 
+import copy
 from copy import deepcopy
 from io import StringIO
 from pathlib import Path
@@ -23,6 +24,31 @@ def parse_metadata(text: str) -> CommentedMap:
     yaml.preserve_quotes = True
     yaml.allow_duplicate_keys = False
     return yaml.load(text)
+
+
+_METADATA_CACHE: dict[str, tuple[tuple[int, ...], CommentedMap]] = {}
+
+
+def _identity(path: Path) -> tuple[int, ...]:
+    stat = path.stat()
+    return (stat.st_dev, stat.st_ino, stat.st_size, stat.st_mtime_ns, stat.st_ctime_ns)
+
+
+def read_metadata_file(path: Path) -> CommentedMap:
+    """Parse a metadata file, reusing a prior parse while its file identity is unchanged.
+
+    The identity includes inode, size and both timestamps, so an atomic replace or
+    in-place edit is always reparsed. Callers receive a private copy.
+    """
+    key = str(path.resolve())
+    before = _identity(path)
+    cached = _METADATA_CACHE.get(key)
+    if cached is not None and cached[0] == before:
+        return copy.deepcopy(cached[1])
+    value = parse_metadata(path.read_text())
+    if _identity(path) == before:
+        _METADATA_CACHE[key] = (before, copy.deepcopy(value))
+    return value
 
 
 def dump_metadata(value: dict[str, Any]) -> str:

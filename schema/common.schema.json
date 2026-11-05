@@ -163,6 +163,35 @@
                 "proof-route",
                 "withdrawn"
               ]
+            },
+            "kind": {
+              "enum": [
+                "owner-decision-replay",
+                "agent-routine-proof-erratum"
+              ]
+            },
+            "decision_id": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9_-]+$"
+            },
+            "receipt": {
+              "type": "string"
+            },
+            "receipt_sha256": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            },
+            "session": {
+              "type": "string",
+              "minLength": 1
+            },
+            "adjudication_id": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            },
+            "policy_sha256": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
             }
           },
           "required": [
@@ -170,7 +199,128 @@
             "by",
             "on"
           ],
-          "type": "object"
+          "type": "object",
+          "allOf": [
+            {
+              "if": {
+                "required": [
+                  "kind"
+                ]
+              },
+              "then": {
+                "required": [
+                  "receipt",
+                  "receipt_sha256",
+                  "session"
+                ],
+                "properties": {
+                  "via": {
+                    "const": "erratum"
+                  }
+                }
+              },
+              "else": {
+                "not": {
+                  "anyOf": [
+                    {
+                      "required": [
+                        "decision_id"
+                      ]
+                    },
+                    {
+                      "required": [
+                        "receipt"
+                      ]
+                    },
+                    {
+                      "required": [
+                        "receipt_sha256"
+                      ]
+                    },
+                    {
+                      "required": [
+                        "session"
+                      ]
+                    },
+                    {
+                      "required": [
+                        "adjudication_id"
+                      ]
+                    },
+                    {
+                      "required": [
+                        "policy_sha256"
+                      ]
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "if": {
+                "required": [
+                  "kind"
+                ],
+                "properties": {
+                  "kind": {
+                    "const": "owner-decision-replay"
+                  }
+                }
+              },
+              "then": {
+                "required": [
+                  "decision_id"
+                ],
+                "properties": {
+                  "receipt": {
+                    "pattern": "^literature/[A-Za-z0-9]+/owner-decisions/[A-Za-z0-9_-]+\\.json$"
+                  }
+                },
+                "not": {
+                  "anyOf": [
+                    {
+                      "required": [
+                        "adjudication_id"
+                      ]
+                    },
+                    {
+                      "required": [
+                        "policy_sha256"
+                      ]
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "if": {
+                "required": [
+                  "kind"
+                ],
+                "properties": {
+                  "kind": {
+                    "const": "agent-routine-proof-erratum"
+                  }
+                }
+              },
+              "then": {
+                "required": [
+                  "adjudication_id",
+                  "policy_sha256"
+                ],
+                "properties": {
+                  "receipt": {
+                    "pattern": "^literature/[A-Za-z0-9]+/reviews/[A-Za-z0-9_]+\\.md$"
+                  }
+                },
+                "not": {
+                  "required": [
+                    "decision_id"
+                  ]
+                }
+              }
+            }
+          ]
         },
         "status": {
           "enum": [

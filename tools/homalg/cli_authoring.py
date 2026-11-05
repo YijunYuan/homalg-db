@@ -230,6 +230,83 @@ def register_commands(cli: click.Group) -> None:
             strict,
         )
 
+    @dispute_group.command("prepare-proof-erratum")
+    @common_options
+    @click.argument("node_id")
+    @click.option("--original", required=True)
+    @click.option("--corrected", required=True)
+    @click.option(
+        "--category",
+        type=click.Choice(["proof-membership-target-typo", "proof-map-label-typo"]),
+        default="proof-membership-target-typo",
+        show_default=True,
+        help="Explicit prospective erratum class; map labels require the exact pinned profile.",
+    )
+    @click.option("--author-workspace", required=True)
+    @click.option(
+        "--integration-commit", help="Exact committed paired import/dependency amendment."
+    )
+    @click.option("--author-event", nargs=2, required=True, metavar="CHILD_ID TURN_ID")
+    @click.option("--out", type=click.Path(path_type=Path), required=True)
+    def prepare_proof_erratum(
+        ctx: click.Context,
+        repo: Path,
+        machine: bool,
+        strict: bool,
+        node_id: str,
+        original: str,
+        corrected: str,
+        category: str,
+        author_workspace: str,
+        integration_commit: str | None,
+        author_event: tuple[str, str],
+        out: Path,
+    ) -> None:
+        """Native STMT lead: freeze an eligible local proof typo for two actual reviews."""
+        from homalg.agent_errata import prepare
+
+        result = prepare(
+            repo,
+            node_id,
+            original=original,
+            corrected=corrected,
+            category=category,
+            author_workspace=author_workspace,
+            integration_commit=integration_commit,
+            author_event=dict(zip(("child_id", "turn_id"), author_event, strict=True)),
+            out=out,
+        )
+        done(ctx, "dispute prepare-proof-erratum", result, machine, strict)
+
+    @dispute_group.command("adjudicate-proof-erratum")
+    @common_options
+    @click.argument("node_id")
+    @click.option("--snapshot", type=click.Path(path_type=Path), required=True)
+    @click.option(
+        "--reviewer-event", nargs=2, multiple=True, required=True, metavar="CHILD_ID TURN_ID"
+    )
+    def adjudicate_proof_erratum(
+        ctx: click.Context,
+        repo: Path,
+        machine: bool,
+        strict: bool,
+        node_id: str,
+        snapshot: Path,
+        reviewer_event: tuple[tuple[str, str], ...],
+    ) -> None:
+        """Apply a typed agent typo decision; grants no human or fidelity approval."""
+        from homalg.agent_errata import adjudicate
+
+        result = adjudicate(
+            repo,
+            node_id,
+            snapshot=snapshot,
+            reviewer_events=[
+                dict(zip(("child_id", "turn_id"), item, strict=True)) for item in reviewer_event
+            ],
+        )
+        done(ctx, "dispute adjudicate-proof-erratum", result, machine, strict)
+
     @dispute_group.command("confirm")
     @common_options
     @click.argument("node_id")
@@ -276,6 +353,56 @@ def register_commands(cli: click.Group) -> None:
             machine,
             strict,
         )
+
+    @cli.command("record-owner-decision")
+    @common_options
+    @click.argument("decision")
+    @click.option("--by", required=True)
+    @click.option("--session", required=True)
+    @click.option("--attest-existing-owner-instruction", is_flag=True)
+    def record_owner_decision(
+        ctx: click.Context,
+        repo: Path,
+        machine: bool,
+        strict: bool,
+        decision: str,
+        by: str,
+        session: str,
+        attest_existing_owner_instruction: bool,
+    ) -> None:
+        """Outer operator: attest a profiled prior direction, without human impersonation."""
+        from homalg.owner_decisions import record
+
+        receipt = record(
+            repo,
+            decision,
+            by=by,
+            session=session,
+            attest_existing=attest_existing_owner_instruction,
+        )
+        done(ctx, "record-owner-decision", {"receipt": receipt}, machine, strict)
+
+    @dispute_group.command("replay-owner-decision")
+    @common_options
+    @click.argument("node_id")
+    @click.option("--decision", required=True)
+    @click.option("--by", required=True)
+    @click.option("--session", required=True)
+    def replay_owner_decision(
+        ctx: click.Context,
+        repo: Path,
+        machine: bool,
+        strict: bool,
+        node_id: str,
+        decision: str,
+        by: str,
+        session: str,
+    ) -> None:
+        """Replay a bounded prior direction; fresh independent fidelity review is still required."""
+        from homalg.owner_decisions import replay
+
+        dispute = replay(repo, node_id, decision=decision, by=by, session=session)
+        done(ctx, "dispute replay-owner-decision", {"dispute": dispute}, machine, strict)
 
     @cli.command("review-fidelity")
     @common_options
@@ -328,6 +455,94 @@ def register_commands(cli: click.Group) -> None:
                 )
             }
         done(ctx, "review-fidelity", result, machine, strict)
+
+    @cli.command("review-fidelity-snapshot")
+    @common_options
+    @click.argument("node_ids", nargs=-1, required=True)
+    @click.option("--out", type=click.Path(path_type=Path, dir_okay=False), required=True)
+    def fidelity_snapshot_command(
+        ctx: click.Context,
+        repo: Path,
+        machine: bool,
+        strict: bool,
+        node_ids: tuple[str, ...],
+        out: Path,
+    ) -> None:
+        """Freeze current review/build inputs without approving or compiling anything."""
+        from homalg.io import atomic_create, json_text
+        from homalg.review import freeze_fidelity_inputs
+
+        target = (repo / out).resolve()
+        build = repo.resolve() / "build"
+        if (
+            build.is_symlink()
+            or not target.is_relative_to(build)
+            or target == build
+            or target.exists()
+        ):
+            raise click.UsageError("--out must be a new file inside this repository's build/")
+        snapshot = json_text(freeze_fidelity_inputs(repo, node_ids))
+        atomic_create(target, snapshot)
+        done(ctx, "review-fidelity-snapshot", {"snapshot": str(target)}, machine, strict)
+
+    @cli.command("review-fidelity-batch")
+    @common_options
+    @click.argument("node_ids", nargs=-1, required=True)
+    @click.option("--by", required=True)
+    @click.option("--session", required=True)
+    @click.option("--author-session", required=True)
+    @click.option("--note", default="")
+    @click.option("--snapshot", type=click.Path(path_type=Path, dir_okay=False, exists=True))
+    def fidelity_batch_command(
+        ctx: click.Context,
+        repo: Path,
+        machine: bool,
+        strict: bool,
+        node_ids: tuple[str, ...],
+        by: str,
+        session: str,
+        author_session: str,
+        note: str,
+        snapshot: Path | None,
+    ) -> None:
+        """Register genuine independent reviews in one document with one fresh export."""
+        import json
+
+        from homalg.review import review_fidelity_batch
+
+        frozen = json.loads((repo / snapshot).read_text()) if snapshot else None
+        locks = review_fidelity_batch(
+            repo,
+            node_ids,
+            by=by,
+            session=session,
+            author_session=author_session,
+            note=note,
+            snapshot=frozen,
+        )
+        done(ctx, "review-fidelity-batch", {"locks": locks}, machine, strict)
+
+    @cli.command("review-fidelity-cohorts")
+    @common_options
+    @click.option(
+        "--snapshot",
+        "snapshot_path",
+        required=True,
+        type=click.Path(path_type=Path, exists=True, dir_okay=False),
+    )
+    def fidelity_cohorts_command(
+        ctx: click.Context, repo: Path, machine: bool, strict: bool, snapshot_path: Path
+    ) -> None:
+        """Register actual per-node reviewer/author identities in one agent-only transaction."""
+        from homalg.review_cohorts import register
+
+        done(
+            ctx,
+            "review-fidelity-cohorts",
+            {"locks": register(repo, snapshot_path)},
+            machine,
+            strict,
+        )
 
     @cli.group("taxonomy")
     @common_options

@@ -157,12 +157,15 @@ export default function NodeDetails({ id }: { id: string }) {
             <h3>{t("node.dispute")}</h3>
             <p>{authored.dispute.reason}</p>
             <p>
-              {authored.dispute.confirmed_by
-                ? t("node.confirmed", {
-                    by: authored.dispute.confirmed_by,
-                    on: authored.dispute.confirmed_on || "",
-                  })
-                : t("node.unconfirmed")}
+              {authored.dispute.resolution?.kind ===
+              "agent-routine-proof-erratum"
+                ? t("node.agentProofErratum")
+                : authored.dispute.confirmed_by
+                  ? t("node.confirmed", {
+                      by: authored.dispute.confirmed_by,
+                      on: authored.dispute.confirmed_on || "",
+                    })
+                  : t("node.unconfirmed")}
             </p>
           </div>
         )}

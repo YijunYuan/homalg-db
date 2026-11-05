@@ -1,0 +1,157 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://homalg-db/schema/owner-decision.schema.json",
+  "title": "Operator attestation of an already recorded owner instruction (not human confirmation)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "kind",
+    "decision_id",
+    "node_id",
+    "owner",
+    "attested_by",
+    "attestation_session",
+    "recorded_at",
+    "profile_sha256",
+    "binding_sha256",
+    "original_dispute",
+    "original_history",
+    "evidence",
+    "instruction",
+    "authority",
+    "artifacts"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": 1
+    },
+    "kind": {
+      "const": "recorded-owner-instruction-attestation"
+    },
+    "decision_id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9_-]+$"
+    },
+    "node_id": {
+      "$ref": "common.schema.json#/$defs/NodeId"
+    },
+    "owner": {
+      "$ref": "common.schema.json#/$defs/Login"
+    },
+    "attested_by": {
+      "$ref": "common.schema.json#/$defs/Login"
+    },
+    "attestation_session": {
+      "type": "string",
+      "minLength": 1
+    },
+    "recorded_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "profile_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "binding_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "original_dispute": {
+      "allOf": [
+        {
+          "$ref": "common.schema.json#/$defs/Dispute"
+        },
+        {
+          "properties": {
+            "status": {
+              "const": "open"
+            },
+            "kind": {
+              "enum": [
+                "statement",
+                "proof"
+              ]
+            }
+          },
+          "not": {
+            "anyOf": [
+              {
+                "required": [
+                  "confirmed_by"
+                ]
+              },
+              {
+                "required": [
+                  "confirmed_on"
+                ]
+              },
+              {
+                "required": [
+                  "resolution"
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "original_history": {
+      "type": "array",
+      "items": {
+        "$ref": "common.schema.json#/$defs/Dispute"
+      }
+    },
+    "evidence": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "sha256"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^I-[0-9]{4,}$"
+          },
+          "sha256": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          }
+        }
+      }
+    },
+    "instruction": {
+      "type": "string",
+      "minLength": 1
+    },
+    "authority": {
+      "const": "operator-attestation-of-preexisting-owner-direction"
+    },
+    "artifacts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "path",
+          "sha256"
+        ],
+        "properties": {
+          "path": {
+            "type": "string",
+            "minLength": 1
+          },
+          "sha256": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          }
+        }
+      }
+    }
+  }
+}

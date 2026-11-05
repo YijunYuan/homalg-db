@@ -14,6 +14,14 @@ from homalg.runtime_state import document_state, overlay_nodes
 from homalg.validate import Finding
 
 
+def test_native_lead_cannot_manually_finalize(repo: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setenv("ARCHON_HORIZON_RUN", "fictional-native-run")
+    monkeypatch.setattr(lifecycle.engine, "task", lambda *args: pytest.fail("hook work started"))
+    with pytest.raises(ValueError, match="belongs to the Horizon engine"):
+        lifecycle.after_session(repo, "fictional-task", repo / "session", "a" * 40, "b" * 40)
+    assert not (repo / "session").exists()
+
+
 @pytest.fixture
 def task(repo: Path, monkeypatch: pytest.MonkeyPatch) -> dict:
     record = {
@@ -133,6 +141,12 @@ def test_after_session_runs_silent_ordered_pipeline_and_preserves_other_overlay(
     result = lifecycle.after_session(repo, task["id"], session, "a" * 40, "b" * 40)
     assert result["ok"] is not build_fails
     assert calls == ["export", "validate", "plan", "publish", "backup"]
+    timings = result["phase_timings"]
+    assert timings["lean_export"]["outcome"] == ("raised" if build_fails else "returned")
+    assert timings["publish"]["outcome"] == "raised"
+    assert timings["backup"]["outcome"] == "returned"
+    assert all(item["duration_seconds"] >= 0 for item in timings.values())
+    assert sum(item["duration_seconds"] for item in timings.values()) <= result["elapsed_seconds"]
     assert capsys.readouterr().out == ""
     assert "captured exporter diagnostic" in (session / "hooks.log").read_text()
     assert json.loads(overlay.read_text())["Fixture2001.Def_1"] == {"marker": "preserved"}

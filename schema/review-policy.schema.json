@@ -14,6 +14,53 @@
     },
     "allow_independent_agent_reviews": {
       "type": "boolean"
+    },
+    "routine_proof_errata": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "enabled",
+        "categories",
+        "excluded_nodes"
+      ],
+      "properties": {
+        "enabled": {
+          "type": "boolean"
+        },
+        "categories": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "proof-membership-target-typo",
+              "proof-map-label-typo"
+            ]
+          }
+        },
+        "map_label_profile_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "excluded_nodes": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "$ref": "https://homalg-db/schema/common.schema.json#/$defs/NodeId"
+          }
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "categories": {"contains": {"const": "proof-map-label-typo"}}
+            }
+          },
+          "then": {"required": ["map_label_profile_sha256"]},
+          "else": {"not": {"required": ["map_label_profile_sha256"]}}
+        }
+      ]
     }
   }
 }

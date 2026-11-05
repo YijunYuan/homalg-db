@@ -1,6 +1,7 @@
 """Independent review policy preserves human evidence and binds every foundation content field."""
 
 import copy
+import json
 from datetime import UTC, datetime
 from pathlib import Path
 
@@ -178,7 +179,12 @@ def test_enabled_policy_locks_explained_deviation_with_agent_provenance(
     }
     path.write_text(replace_header(text, metadata, SchemaStore(repo / "schema")))
     report(repo / "literature/Fixture2000/reviews/Thm_1.md")
-    monkeypatch.setattr("homalg.leanexport.export_lean", lambda *args, **kw: {})
+    monkeypatch.setattr(
+        "homalg.leanexport.export_lean",
+        lambda *args, **kw: json.loads(
+            (Path(__file__).parent / "golden/fixture-export.json").read_text()
+        ),
+    )
     monkeypatch.setattr(
         review, "require_human", lambda *args, **kw: pytest.fail("agent requested human permission")
     )

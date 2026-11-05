@@ -11,7 +11,7 @@ from pathlib import Path
 from typing import Any
 
 from homalg.claims import claim_view, load_status_history
-from homalg.documents import dump_metadata, parse_metadata
+from homalg.documents import dump_metadata, parse_metadata, read_metadata_file
 from homalg.human import require_idle
 from homalg.io import atomic_write
 from homalg.leanexport import module_list, run_tool, workspace_lock
@@ -59,7 +59,7 @@ def tasks(repo: Path, key: str | None = None) -> list[dict[str, Any]]:
     """Read Horizon's public task shards without altering statuses or scope."""
     records = []
     for path in sorted((repo / ".archon-horizon/tasks/items").glob("*.yaml")):
-        item = parse_metadata(path.read_text())
+        item = read_metadata_file(path)
         if key is None or item.get("metadata", {}).get("homalg", {}).get("doc") == key:
             records.append(item)
     return records

@@ -31,14 +31,19 @@ homalg ingest-pdf Hochschild1945
 homalg horizon-init --engine codex
 homalg doctor
 homalg plan Hochschild1945 --chapters 1,2
-horizon run '*' --rounds 1
+homalg workflow next Hochschild1945 --json
+horizon run ACTUAL_READY_TASK --rounds 1
 ```
 
 Configure the private repository URL locally; never put it in committed files.
 `horizon-init` installs the pinned fork's resources and configures its hooks.
 The default permits one run in a workspace. Tasks appear only when their
 prerequisites are ready. Rerun `homalg plan` as work progresses; it preserves
-existing tasks. The user override dated 2026-10-28 permits independent agents to
+existing tasks. To defer new proof tasks, set `homalg plan Hochschild1945
+--proofs deferred`; later `--advance` inherits that mode. Existing PROOF tasks
+remain, so select a ready task explicitly from `workflow next`. Follow
+[PARALLEL_WORKFLOW.md](../PARALLEL_WORKFLOW.md) for isolated drafts and frozen
+review batches. The user override dated 2026-10-28 permits independent agents to
 complete the first-chapter checkpoint and foundation/fidelity reviews through the
 commands in [review-fidelity.md](review-fidelity.md), with distinct author/reviewer
 sessions and the enabled repository policy. Unresolved disputes still require a

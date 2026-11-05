@@ -34,6 +34,11 @@ an unresolved dispute. Existing locks reopen when their source/type hashes diffe
 changes to referenced definitions also require checking meaning-hash warnings.
 Never hand-edit a review lock or a derived field.
 
+If the node is part of a parallel handoff, also invalidate the affected input
+snapshot and notify its coordinator. Recheck dependent drafts and obtain review
+of the revised bytes before guarded integration. Keep the earlier report and
+failed check evidence; do not rewrite them to describe the repaired result.
+
 ```sh
 horizon check HomAlg.Hochschild1945.Thm_4_1
 homalg fix-deps Hochschild1945 --out /tmp/homalg-deps-review

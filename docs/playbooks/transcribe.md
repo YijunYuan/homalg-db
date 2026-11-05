@@ -19,6 +19,15 @@ running headers, printed page numbers and download footers. Place footnotes at
 the page end as `[Footnote n]` paragraphs. Keep each fragment of a cross-page
 sentence on its own page. Mark unreadable text `% [illegible]` without guessing.
 
+Parallel preparation may use explicitly assigned ignored staging directories.
+It must retain the real transcriber's identity, exact PDF/PNG/TeX hashes and a
+candidate status. It neither writes canonical private pages nor completes a T
+task. A genuinely independent full-page review may be retained for later import
+only if every recorded input still matches exactly. At an authorized idle
+boundary, the operator must still perform the normal private snapshot, scoped
+landing/review and completion checks. See
+[PARALLEL_WORKFLOW.md](../PARALLEL_WORKFLOW.md); a hash checker is not a reviewer.
+
 ```sh
 homalg transcription land Hochschild1945 --pages 2-6 \
   --session "$ARCHON_HORIZON_SESSION" --engine codex

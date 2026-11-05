@@ -1,6 +1,10 @@
 # Submit document work
 
-Finish the current engine session and ensure the workspace has no active run.
+Wait for the current engine session and its configured outer hook to finish, then
+ensure the workspace has no active run. Inspect the resulting validation and task
+evaluation before submission; do not manually repeat the hook inside the native
+lead session. Worker checks, promoted drafts and registered review batches alone
+do not satisfy the session's final gates.
 Read [CONTRIBUTING.md](../CONTRIBUTING.md) for collaborator and claim requirements.
 Submission requires an active claim held by your authenticated GitHub account
 on current main. An expired claim cannot be renewed by submitting formalization.

@@ -117,6 +117,15 @@ foundation and explained-deviation nodes accept independent agent reviews under
 the enabled policy. Unresolved mathematical or source disagreements still require
 owner adjudication. An agent review never implies human approval.
 
+Parallel preparation follows [PARALLEL_WORKFLOW.md](PARALLEL_WORKFLOW.md).
+Disjoint filenames in a shared live directory do not provide isolation. Give
+each writer explicit ownership in a separate draft checkout and freeze the
+dependency inputs used for independent review. Preserve per-node reports and
+actual identities when compiling or registering several nodes together; a batch
+does not supply a blanket verdict. A snapshot is an input fingerprint, not review
+evidence or a reusable compiled result. Reassess changed inputs before accepting
+the candidate, and retain all earlier review judgments.
+
 `dispute open` records a problem and local inbox request. A raised dispute differs
 from a confirmed source error; only `dispute confirm` writes the latter. Resolution
 preserves history through an erratum, a proof-route change, or withdrawal. Human

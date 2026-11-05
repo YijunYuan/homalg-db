@@ -24,8 +24,8 @@ def natural(value: str) -> tuple[tuple[int, str | int], ...]:
     )
 
 
-def source_order(repo: Path, key: str, headers: list[dict[str, Any]]) -> list[dict[str, Any]]:
-    """Use the page inventory's occurrence order when available, otherwise source coordinates."""
+def source_rank(repo: Path, key: str) -> dict[str, int]:
+    """Read the inventory's first occurrence of each node once."""
     path = repo / "literature" / key / "inventory.yaml"
     rank: dict[str, int] = {}
     if path.exists():
@@ -35,6 +35,18 @@ def source_order(repo: Path, key: str, headers: list[dict[str, Any]]) -> list[di
                 for item in page.get("items", []):
                     if isinstance(item.get("node"), str):
                         rank.setdefault(item["node"], len(rank))
+    return rank
+
+
+def source_order(
+    repo: Path,
+    key: str,
+    headers: list[dict[str, Any]],
+    *,
+    rank: dict[str, int] | None = None,
+) -> list[dict[str, Any]]:
+    """Use inventory occurrence order, optionally from this planning call's input index."""
+    rank = source_rank(repo, key) if rank is None else rank
 
     def order(item: dict[str, Any]) -> tuple[Any, ...]:
         source = item["source"]

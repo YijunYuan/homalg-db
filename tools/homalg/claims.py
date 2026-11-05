@@ -206,11 +206,9 @@ def transition(
     return result
 
 
-def load_status_history(
-    repo: Path, key: str, *, schemas: SchemaStore | None = None
-) -> list[dict[str, Any]]:
-    """Read valid status publications from an already-fetched remote branch, without network I/O."""
-    import json
+def status_history_commit(repo: Path, key: str) -> str | None:
+    """Resolve an already-fetched status branch once, without network I/O."""
+    import re
     import subprocess
 
     from homalg.repository import DOC_KEY
@@ -225,11 +223,40 @@ def load_status_history(
         text=True,
     )
     if present.returncode == 1:
-        return []
+        return None
     if present.returncode:
         raise ValueError(f"Cannot inspect status branch: {present.stderr.strip()}")
+    commit = subprocess.run(
+        ["git", "rev-parse", "--verify", ref],
+        cwd=repo,
+        capture_output=True,
+        text=True,
+        check=True,
+    ).stdout.strip()
+    if not re.fullmatch(r"(?:[0-9a-f]{40}|[0-9a-f]{64})", commit):
+        raise ValueError("Status branch did not resolve to a complete object id")
+    return commit
+
+
+def load_status_history(
+    repo: Path, key: str, *, schemas: SchemaStore | None = None, commit: str | None = None
+) -> list[dict[str, Any]]:
+    """Read validated publications from one immutable status-history commit."""
+    import json
+    import re
+    import subprocess
+
+    from homalg.repository import DOC_KEY
+
+    if not DOC_KEY.fullmatch(key):
+        raise ValueError(f"Invalid document key: {key}")
+    commit = status_history_commit(repo, key) if commit is None else commit
+    if commit is None:
+        return []
+    if not re.fullmatch(r"(?:[0-9a-f]{40}|[0-9a-f]{64})", commit):
+        raise ValueError("Status history requires a complete immutable commit id")
     commits = subprocess.run(
-        ["git", "log", "--format=%H", ref, "--", "status.json"],
+        ["git", "log", "--format=%H", commit, "--", "status.json"],
         cwd=repo,
         capture_output=True,
         text=True,

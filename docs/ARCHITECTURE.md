@@ -15,6 +15,7 @@ sections 3 and 4 of the approved requirements, version 1.0 (2026-10-27).
 | Local declaration information | Compiled Lean environment | `nodes.json.derived` |
 | Global closure, axioms and status | Joined export and document inputs | `build/index.json` |
 | Vocabulary and conceptual relations | `taxonomy/**/*.yaml` | Site taxonomy and evolution data |
+| Draft ownership and review handoff | Explicit scope, actual identities and frozen input fingerprints | Isolated candidate work and check evidence; no approval implied |
 
 Committed generated files depend only on their document and pinned toolchain.
 They do not contain timestamps, commits or global dependency closure. The global
@@ -51,6 +52,21 @@ Writes use a sibling temporary file and atomic replacement. Unchanged output
 does not rewrite the destination. Node JSON and root freshness are reproducible
 without volatile build metadata.
 
+## Parallel preparation and acceptance
+
+See [PARALLEL_WORKFLOW.md](PARALLEL_WORKFLOW.md) for the coordination contract.
+Draft authors use isolated source checkouts with disjoint ownership and fixed
+dependency inputs. Review consumes a frozen handoff; canonical integration
+rechecks those inputs rather than trusting a worker's success flag. Source
+snapshots identify input bytes and are separate from compiled exports and review
+approval. Each node retains its own independent review and compiled hashes when
+several nodes share a compilation/export operation.
+
+The private ledger, task evaluator and session hooks remain distinct from the
+user's Git history. A local worker check or promotion is not a completed stage,
+private-source validation or permission to publish. Shared canonical writes and
+their finalization are coordinated through guarded boundaries.
+
 ## Checks and interfaces
 
 Each implemented semantic check is a module exposing `check(ctx) -> list[Finding]`
@@ -62,3 +78,12 @@ All CLI commands accept `--repo`, `--json` and `--strict`. Exit codes are 0 for
 success, 1 for failed findings, 2 for usage/configuration errors and 3 for failed
 external tools. Full validation serializes Lake through the Horizon workspace
 check lock. Infrastructure bootstrap runs without an active Horizon session.
+
+Input reuse is local to a check or planning call. A validation context pins each
+document's already-fetched status history to one immutable Git object id; each
+node's claim, time and scope decision remains separate. A planning call indexes
+authored nodes and inventory order once while retaining the exact node lists and
+scopes for every task kind. New contexts and planning calls reread their inputs.
+Neither mechanism caches approval, compiled evidence or stage completion, and
+neither removes validation or export freshness checks. Measured acceptance and
+limitations are recorded in [IMPLEMENTATION.md](IMPLEMENTATION.md).

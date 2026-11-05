@@ -219,6 +219,59 @@ def test_no_build_validation_preserves_committed_files(repo: Path) -> None:
     assert path.read_bytes() == before
 
 
+def test_metadata_only_registration_reports_node_cache_coverage_skips(repo: Path) -> None:
+    document = json.loads((repo / "literature/Fixture2000/document.yaml").read_text())
+    document.update(doc_key="Registered2002", year=2002)
+    directory = repo / "literature/Registered2002"
+    directory.mkdir()
+    (directory / "document.yaml").write_text(json.dumps(document))
+    (directory / "claim.yaml").write_text(
+        json.dumps({"schema_version": 1, "doc_key": "Registered2002", "claims": []})
+    )
+    findings, skipped, _ = validate_repo(
+        repo,
+        ("Registered2002",),
+        fast=False,
+        export=json.loads(GOLDEN.read_text()),
+        only=("nodes-json-fresh", "nodes-json-stale"),
+    )
+    assert not findings
+    assert skipped == [
+        "nodes-json-fresh:Registered2002:no-node-modules",
+        "nodes-json-stale:Registered2002:no-node-modules",
+    ]
+    assert not (directory / "nodes.json").exists()
+
+
+@pytest.mark.parametrize("case", ["missing-cache", "old-cache", "invalid-cache", "bad-first-node"])
+def test_node_cache_checks_remain_strict_outside_empty_registration(repo: Path, case: str) -> None:
+    cache = repo / "literature/Fixture2000/nodes.json"
+    if case in {"missing-cache", "bad-first-node"}:
+        cache.unlink()
+    if case in {"old-cache", "invalid-cache", "bad-first-node"}:
+        for path in (repo / "HomAlg/Fixture2000").glob("*.lean"):
+            path.unlink()
+    if case == "invalid-cache":
+        cache.write_text('{"invalid": true}')
+    if case == "bad-first-node":
+        (repo / "HomAlg/Fixture2000/Def_1.lean").write_text("-- Missing node header\n")
+    findings, skipped, _ = validate_repo(
+        repo,
+        ("Fixture2000",),
+        fast=False,
+        export=json.loads(GOLDEN.read_text()),
+        only=("nodes-json-fresh", "nodes-json-stale", "header-syntax"),
+    )
+    assert not any("no-node-modules" in name for name in skipped)
+    assert any(item.rule == "nodes-json-stale" for item in findings)
+    if case != "bad-first-node":
+        assert any(
+            item.rule == "nodes-json-fresh" and item.severity == "error" for item in findings
+        )
+    else:
+        assert any(item.rule == "header-syntax" and item.severity == "error" for item in findings)
+
+
 def test_force_tracked_private_pdf_is_rejected(context: Context) -> None:
     subprocess.run(["git", "init", "-q"], cwd=context.repo, check=True)
     path = context.repo / "literature/.private/Fixture2000/source.pdf"

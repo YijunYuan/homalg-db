@@ -1,3 +1,8 @@
 schema_version: 1
 # Explicitly enabled by the user: independent agents may review source fidelity and foundations.
 allow_independent_agent_reviews: true
+routine_proof_errata:
+  enabled: true
+  categories: [proof-membership-target-typo, proof-map-label-typo]
+  map_label_profile_sha256: cc05ab6a89603e036d983b737bb977a7d7fcb1a1198fa0ce87c886cd9876ecf4
+  excluded_nodes: [CartanEilenberg1956.Prop_I_6_1]

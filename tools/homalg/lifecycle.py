@@ -11,12 +11,13 @@ import re
 import stat
 import subprocess
 import tempfile
+import time
 from dataclasses import asdict
 from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 
-from homalg import engine, planning, publishing, scope, stages
+from homalg import engine, planning, publishing, scope, settlement, stages
 from homalg.claims import claim_view, instant, load_status_history
 from homalg.collaboration import Client, append_merge_records, main_claim, policy_for
 from homalg.documents import dump_metadata, parse_metadata
@@ -334,24 +335,54 @@ def update_attempts(
     return {"attempts": attempts, "status": target}
 
 
+def _timed_call(timings: dict, phase: str, action):
+    """Measure an operation without interpreting its result as mathematical acceptance."""
+    started = time.perf_counter()
+    entry = {"started_at": datetime.now(UTC).isoformat(), "outcome": "raised"}
+    timings[phase] = entry
+    try:
+        result = action()
+        entry["outcome"] = "returned"
+        return result
+    finally:
+        entry["duration_seconds"] = time.perf_counter() - started
+        entry["finished_at"] = datetime.now(UTC).isoformat()
+
+
 def after_session(repo: Path, task_id: str, session: Path, since: str, until: str) -> dict:
     """Apply the nine-step hook, keeping all routine output exclusively in hooks.log."""
-    record = engine.task(repo, task_id)
-    violations = scope.check_scope(repo, task_id, since, until)
+    if os.environ.get("ARCHON_HORIZON_RUN"):
+        raise ValueError(
+            "Session finalization belongs to the Horizon engine after the native lead returns; "
+            "do not invoke after-session from a native author/reviewer session"
+        )
+    started = time.perf_counter()
+    timings = {}
+    record = _timed_call(timings, "task_lookup", lambda: engine.task(repo, task_id))
+    violations = _timed_call(
+        timings, "scope_check", lambda: scope.check_scope(repo, task_id, since, until)
+    )
     if violations:
         raise ScopeViolation(violations)
     key = record["metadata"]["homalg"]["doc"]
     session = session if session.is_absolute() else repo / session
     session.mkdir(parents=True, exist_ok=True)
     output = io.StringIO()
-    result: dict[str, Any] = {"task": task_id, "doc_key": key, "ok": False}
+    result: dict[str, Any] = {
+        "task": task_id,
+        "doc_key": key,
+        "ok": False,
+        "phase_timings": timings,
+    }
     overlay_path = repo / ".archon-horizon/overlay/HomAlg.json"
     prior_overlay = json.loads(overlay_path.read_text()) if overlay_path.exists() else {}
     start_path = repo / ".archon-horizon/overlay/private-start.json"
     private_start = json.loads(start_path.read_text()) if start_path.exists() else None
     with contextlib.redirect_stdout(output), contextlib.redirect_stderr(output):
         try:
-            result["private"] = private_after_session(repo, record, session)
+            result["private"] = _timed_call(
+                timings, "private_scope", lambda: private_after_session(repo, record, session)
+            )
             schemas = SchemaStore(repo / "schema")
             for path, content in generate_roots(repo, (key,)).items():
                 atomic_write(repo / path, content)
@@ -362,16 +393,20 @@ def after_session(repo: Path, task_id: str, session: Path, since: str, until: st
             export = repo / "build" / f"lean-export-{key}.json"
             build_error = None
             try:
-                export_lean(repo, key, export)
+                _timed_call(timings, "lean_export", lambda: export_lean(repo, key, export))
             except (ValueError, RuntimeError, OSError) as error:
                 build_error = error
                 publishing.log(repo, f"Lean export failed: {error}", session)
-            findings, skipped, data = validate_repo(
-                repo,
-                (key,),
-                fast=build_error is not None,
-                no_build=build_error is None,
-                export=export if build_error is None else None,
+            findings, skipped, data = _timed_call(
+                timings,
+                "validation",
+                lambda: validate_repo(
+                    repo,
+                    (key,),
+                    fast=build_error is not None,
+                    no_build=build_error is None,
+                    export=export if build_error is None else None,
+                ),
             )
             report = {
                 "command": "validate",
@@ -402,7 +437,7 @@ def after_session(repo: Path, task_id: str, session: Path, since: str, until: st
                 publishing.notify(
                     repo, key, finding["message"], rule=finding["rule"], node=node, task=task_id
                 )
-            state = document_state(repo, key)
+            state = _timed_call(timings, "document_state", lambda: document_state(repo, key))
             overlay = {
                 node: value
                 for node, value in prior_overlay.items()
@@ -410,9 +445,37 @@ def after_session(repo: Path, task_id: str, session: Path, since: str, until: st
             }
             overlay.update(overlay_nodes(state))
             atomic_write(overlay_path, json_text(overlay))
-            evaluation = stages.evaluate(repo, record, refresh_exports=False)
+            evaluation = _timed_call(
+                timings,
+                "stage_evaluation",
+                lambda: stages.evaluate(repo, record, refresh_exports=False),
+            )
             if not report["ok"]:
                 evaluation["complete"] = False
+            settled = None
+            if (
+                report["ok"]
+                and not evaluation["complete"]
+                and settlement.auto_eligible(repo, record)
+            ):
+                settled = _timed_call(
+                    timings,
+                    "settlement",
+                    lambda: settlement.plan_settlement(
+                        repo,
+                        record,
+                        evaluation,
+                        lambda narrowed: stages.evaluate(repo, narrowed, refresh_exports=False),
+                    ),
+                )
+                result["settlement"] = {
+                    name: value
+                    for name, value in settled.items()
+                    if name not in {"narrowed", "evaluation"}
+                }
+                if settled["applicable"]:
+                    settlement.apply_settlement(repo, settled, interval=(since, until))
+                    evaluation = settled["evaluation"]
             progressed = progress_made(
                 repo, record, state, prior_overlay, since, session, private_start
             )
@@ -420,15 +483,31 @@ def after_session(repo: Path, task_id: str, session: Path, since: str, until: st
             result.update(update_attempts(repo, record, evaluation, progressed, token))
             plan_path = repo / f".archon-horizon/overlay/plan-{key}.json"
             prior_plan = json.loads(plan_path.read_text()) if plan_path.exists() else {}
-            result["plan"] = planning.plan(
-                repo, key, advance=True, no_claim=prior_plan.get("no_claim", False)
+            result["plan"] = _timed_call(
+                timings,
+                "planning",
+                lambda: planning.plan(
+                    repo, key, advance=True, no_claim=prior_plan.get("no_claim", False)
+                ),
             )
+            if settled and settled["applicable"]:
+                result["released_units"] = _timed_call(
+                    timings,
+                    "released_units",
+                    lambda: settlement.ensure_units(
+                        repo,
+                        key,
+                        settled["released"],
+                        source=engine.task(repo, task_id),
+                        login=engine.settings(repo).get("login") or "",
+                    ),
+                )
             for operation, action in (
                 ("publish", lambda: publishing.publish_status(repo, key, session=session)),
                 ("backup", lambda: backup(repo, session=session)),
             ):
                 try:
-                    result[operation] = action()
+                    result[operation] = _timed_call(timings, operation, action)
                 except (ValueError, RuntimeError, OSError) as error:
                     publishing.log(repo, f"{operation} deferred; retry next time: {error}", session)
                     result[operation] = {"reason": str(error)}
@@ -437,10 +516,36 @@ def after_session(repo: Path, task_id: str, session: Path, since: str, until: st
             publishing.log(repo, f"Session hook failed: {error}", session)
             result["error"] = str(error)
         finally:
+            result["elapsed_seconds"] = time.perf_counter() - started
             if output.getvalue():
                 publishing.log(repo, output.getvalue(), session)
             publishing.log(repo, json_text(result), session)
     return result
+
+
+def _backup_ledger(repo: Path) -> Path | None:
+    """Select the fixed source ledger, refusing an invalid or redirected location."""
+    for name in (
+        "GIT_DIR",
+        "GIT_COMMON_DIR",
+        "GIT_WORK_TREE",
+        "GIT_INDEX_FILE",
+        "GIT_OBJECT_DIRECTORY",
+        "GIT_ALTERNATE_OBJECT_DIRECTORIES",
+        "GIT_NAMESPACE",
+        "GIT_SHALLOW_FILE",
+    ):
+        if os.environ.get(name):
+            raise ValueError(f"Backup requires an unredirected Git environment: {name} is set")
+    ledger = repo / ".archon-horizon/vcs/workspace.git"
+    for path in (ledger, ledger.parent, ledger.parent.parent):
+        if path.is_symlink():
+            raise ValueError("Backup source ledger must not traverse a symlink")
+    if not ledger.exists():
+        return None
+    if not ledger.is_dir():
+        raise ValueError("Backup source ledger is not a Git directory")
+    return ledger.resolve()
 
 
 def backup(
@@ -451,14 +556,24 @@ def backup(
     session: Path | None = None,
     client: Client | None = None,
 ) -> dict:
-    """Export owned run logs and fast-forward a private backup without publishing work publicly."""
+    """Archive owned logs and push the source ledger, keeping private Git separate."""
     current = instant(now or datetime.now(UTC))
     if publishing.throttled(repo, "backup", 360, current, force=force):
         return {"backed_up": False, "reason": "throttled"}
     login = engine.settings(repo).get("login")
     if not login:
         raise ValueError("Run horizon-init before backing up a contribution")
+    ledger = _backup_ledger(repo)
     client = client or Client(repo)
+
+    def source_git(*args: str) -> str:
+        # Remote configuration belongs to the user's checkout; source history
+        # belongs to the engine ledger when present. Never require a ledger remote.
+        prefix = ("--git-dir", str(ledger), "--work-tree", str(repo.resolve())) if ledger else ()
+        return client.git(*prefix, *args)
+
+    # A broken existing ledger must fail before log export, never fall back to .git.
+    source_git("rev-parse", "--verify", "HEAD^{commit}")
     remote = os.environ.get("HOMALG_BACKUP_REMOTE")
     private = repo / "literature/.private"
     if not remote:
@@ -468,10 +583,17 @@ def backup(
         remote = git(private, "remote", "get-url", "origin").stdout.decode().strip()
     if not remote:
         raise ValueError("Configure HOMALG_BACKUP_REMOTE or the private literature remote")
-    resolved = client.run("git", "remote", "get-url", remote, check=False)
-    remote_url = resolved.stdout.strip() if not resolved.returncode else remote
-    public = client.run("git", "remote", "get-url", "origin", check=False).stdout.strip()
-    if public and remote_url.rstrip("/") == public.rstrip("/"):
+    resolved = client.run("git", "remote", "get-url", "--push", "--all", remote, check=False)
+    targets = resolved.stdout.splitlines() if not resolved.returncode else [remote]
+    if len(targets) != 1 or not targets[0].strip():
+        raise ValueError("The private backup destination must have exactly one push URL")
+    remote_url = targets[0].strip()
+    public_urls = set()
+    for flags in (("--all",), ("--push", "--all")):
+        public = client.run("git", "remote", "get-url", *flags, "origin", check=False)
+        if not public.returncode:
+            public_urls.update(url.strip().rstrip("/") for url in public.stdout.splitlines())
+    if remote_url.rstrip("/") in public_urls:
         raise ValueError("The private backup destination must differ from the public origin")
     keys = []
     for key in documents(repo):
@@ -479,22 +601,42 @@ def backup(
         if claim["claims"] and claim["claims"][0]["holder"].casefold() == login.casefold():
             keys.append(key)
     paths = [path for key in keys for path in publishing.export_logs(repo, repo, key)]
-    if paths and client.git("status", "--porcelain", "--", *paths).strip():
-        client.git("add", "-A", "--", *paths)
-        client.git(
+    if paths and source_git("status", "--porcelain", "--", *paths).strip():
+        source_git("add", "-A", "--", *paths)
+        source_git(
             "commit", "--only", "-m", "backup: archive local contribution discussions", "--", *paths
         )
+    source_commit = source_git("rev-parse", "HEAD").strip()
+    source = "ledger" if ledger else "user-git"
+    operation = "private-source-push"
     try:
         if (private / ".git").exists():
             branch = git(private, "branch", "--show-current").stdout.decode().strip()
             if branch:
                 git(private, "push", "origin", f"HEAD:refs/heads/{branch}")
-        client.git("push", remote, f"HEAD:refs/heads/backup/{login}/work")
+        operation = "work-backup-push"
+        source_git("push", remote_url, f"{source_commit}:refs/heads/backup/{login}/work")
         publishing.stamp(repo, "backup", current)
-        return {"backed_up": True, "documents": keys, "archived": paths}
+        return {
+            "backed_up": True,
+            "documents": keys,
+            "archived": paths,
+            "source": source,
+            "source_commit": source_commit,
+        }
     except (RuntimeError, OSError) as error:
         publishing.log(repo, f"Backup failed; retained local commits for retry: {error}", session)
-        return {"backed_up": False, "reason": "network-or-git-error"}
+        rejected = str(error).lower()
+        non_fast_forward = "[rejected]" in rejected and (
+            "non-fast-forward" in rejected or "fetch first" in rejected
+        )
+        return {
+            "backed_up": False,
+            "reason": "non-fast-forward" if non_fast_forward else "network-or-git-error",
+            "operation": operation,
+            "source": source,
+            "source_commit": source_commit,
+        }
 
 
 def sync_main(repo: Path, *, client: Client | None = None, now: datetime | None = None) -> dict:

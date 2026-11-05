@@ -155,9 +155,15 @@ def check_scope(repo: Path, task_id: str, since: str, until: str) -> list[str]:
     record = task(repo, task_id)
     key = record["metadata"]["homalg"]["doc"]
     scopes = set(record.get("write_set", {}).get("files", record.get("scope", {}).get("files", [])))
+    # A settlement narrows a unit after its own session; re-auditing that exact
+    # interval keeps the scope the session actually held.
+    from homalg.settlement import released_scope
+
+    scopes |= released_scope(record, since, until)
     if any("*" in path or "?" in path or ".." in Path(path).parts for path in scopes):
         raise ValueError("HomAlg tasks must have explicit, repository-relative file scopes")
     schemas = SchemaStore(repo / "schema")
+    from homalg.owner_decisions import authorized_transition, protected_path
     from homalg.review_policy import agent_reviews_allowed
 
     policy_file = "horizon/review-policy.yaml"
@@ -210,11 +216,39 @@ def check_scope(repo: Path, task_id: str, since: str, until: str) -> list[str]:
                     allowed = False
                 elif old_text is None and new:
                     allowed |= new_node_allowed(path, new, record, scopes)
-                allowed &= not human_fields_changed(old, new)
+                protected_change = human_fields_changed(old, new)
+                if protected_change and old_text is not None and new_text is not None:
+
+                    def snapshot(ref: str, relative: str) -> str | None:
+                        result = ledger(repo, "show", f"{ref}:{relative}", check=False)
+                        return result.stdout if result.returncode == 0 else None
+
+                    document_text = snapshot(until, f"literature/{key}/document.yaml")
+                    protected_change = not authorized_transition(
+                        old_text,
+                        new_text,
+                        load_yaml(document_text or "{}"),
+                        trusted=lambda relative: snapshot(since, relative),
+                        current=lambda relative: snapshot(until, relative),
+                        schemas=schemas,
+                    )
+                    if protected_change:
+                        from homalg.agent_errata import authorized_transition as agent_transition
+
+                        protected_change = not agent_transition(
+                            old_text,
+                            new_text,
+                            trusted=lambda relative: snapshot(since, relative),
+                            current=lambda relative: snapshot(until, relative),
+                            schemas=schemas,
+                            native_repo=repo,
+                            native_bounds=(task_id, since, until),
+                        )
+                allowed &= not protected_change
         except (ValueError, TypeError, KeyError):
             allowed = False
         # Reuse the same document-path projection as PR classification/touch-scope.
         foreign = document_keys([path], include_fixtures=True) - {key}
-        if foreign or not allowed or path == policy_file:
+        if foreign or not allowed or path == policy_file or protected_path(path):
             violations.append(path)
     return sorted(set(violations))
