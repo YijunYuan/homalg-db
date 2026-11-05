@@ -129,6 +129,45 @@ def receipt_path(profile: dict[str, Any]) -> str:
     return f"literature/{profile['node_id'].split('.', 1)[0]}/owner-decisions/{decision}.json"
 
 
+def apply_correction(source: str, profile: dict[str, Any], schemas: SchemaStore) -> str:
+    """Write a profile's pinned, owner-adopted correction into a node, idempotently.
+
+    A profile may carry the adopted correction itself (``correction``): the
+    erratum deviation and, for a proof dispute, a Formalization-notes paragraph
+    with explicitly labelled corrected displays. Its binding is computed over the
+    node with this correction applied, so a decision adopted before any session
+    wrote the correction can still be attested and then replayed in one session.
+    Profiles without ``correction`` bind content already present in the node.
+    """
+    correction = profile.get("correction")
+    if not correction:
+        return source
+    deviation = correction["deviation"]
+    if deviation.get("kind") != "erratum" or not deviation.get("what") or not deviation.get("why"):
+        raise ValueError("A pinned owner correction must be an explicit erratum deviation")
+    metadata = header_mapping(source)
+    fidelity = metadata["fidelity"]
+    deviations = fidelity.setdefault("deviations", [])
+    text = source
+    if deviation not in deviations or fidelity.get("status") != "deviates":
+        if deviation not in deviations:
+            deviations.append(copy.deepcopy(deviation))
+        fidelity["status"] = "deviates"
+        text = replace_header(source, metadata, schemas)
+    note = correction.get("note", "").strip()
+    if note:
+        header = parse_header(text)
+        if note not in header.sections.get("Formalization notes", ""):
+            body = text[header.start : header.end - 2]
+            history = re.search(r"(?m)^## History\s*$", body)
+            position = header.start + history.start() if history else header.end - 2
+            heading = (
+                "" if "Formalization notes" in header.sections else "## Formalization notes\n\n"
+            )
+            text = text[:position] + "\n" + heading + note + "\n\n" + text[position:]
+    return text
+
+
 def _check_sources(repo: Path, profile: dict[str, Any]) -> None:
     control = repo
     if os.environ.get("HOMALG_SESSION_MAIN_ROOT"):
@@ -177,7 +216,9 @@ def record(
             raise ValueError("Replay profile differs from the trusted source-ledger baseline")
         profile = _profile(policy, decision)
         _check_sources(repo, profile)
-        source = node_path(repo, profile["node_id"]).read_text()
+        source = apply_correction(
+            node_path(repo, profile["node_id"]).read_text(), profile, SchemaStore(repo / "schema")
+        )
         header = parse_header(source)
         original = header.metadata.get("dispute", {})
         if original.get("status") != "open" or any(
@@ -423,13 +464,15 @@ def replay(repo: Path, node_id: str, *, decision: str, by: str, session: str) ->
         receipt = json.loads(receipt_text)
         path = node_path(repo, node_id)
         original_source = path.read_text()
-        source = original_source
-        metadata = header_mapping(source)
+        metadata = header_mapping(original_source)
         if metadata.get("dispute", {}).get("resolution", {}).get("kind") == KIND:
-            validate_resolution(repo, source, anchor=anchor, ledger=ledger, evidence=True)
+            validate_resolution(repo, original_source, anchor=anchor, ledger=ledger, evidence=True)
             if metadata["dispute"]["resolution"]["decision_id"] != decision:
                 raise ValueError("A conflicting owner decision is already applied")
             return metadata["dispute"]
+        schemas = SchemaStore(repo / "schema")
+        source = apply_correction(original_source, profile, schemas)
+        metadata = header_mapping(source)
         if metadata.get("dispute") != receipt["original_dispute"]:
             raise ValueError("Original dispute changed before replay")
         reviewed = metadata.get("fidelity", {}).get("reviewed")
@@ -454,7 +497,7 @@ def replay(repo: Path, node_id: str, *, decision: str, by: str, session: str) ->
         metadata["fidelity"].pop("reviewed", None)
         if metadata.get("decls"):
             source = _docstring_marker(source, metadata["decls"][0], None)
-        source = replace_header(source, metadata, SchemaStore(repo / "schema"))
+        source = replace_header(source, metadata, schemas)
         validate_resolution(repo, source, anchor=anchor, ledger=ledger, evidence=True)
         if path.read_text() != original_source:
             raise ValueError("Node changed while replay was being prepared")
