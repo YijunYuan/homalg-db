@@ -32,6 +32,11 @@ from homalg.statement_frontier import StatementFrontier, unit_blockers
 from homalg.transcription import status as transcription_status
 
 STAGES = ("T", "INV", "DAG", "CITED", "STMT", "PROOF")
+AUTHOR_GROUP_SIZE = 4
+DEFAULT_STATEMENT_BATCH = 12
+DEFAULT_REVIEW_BATCH = 16
+MAX_STATEMENT_BATCH = 32
+
 TEMPLATES = {
     "T": "transcribe",
     "INV": "inventory",
@@ -314,6 +319,10 @@ def unlocked_tasks(
         )
     )
     if statement_frontier or statement_nodes:
+        frontier = StatementFrontier(
+            repo, key, state_loader=lambda root, doc: facts.state(doc, document_state)
+        )
+        records = tasks(repo, key)
         proposals.extend(
             candidate
             for candidate in statement_units(
@@ -322,11 +331,22 @@ def unlocked_tasks(
                 chapters,
                 statement_nodes,
                 batch_size=statement_batch_size,
-                frontier=StatementFrontier(
-                    repo, key, state_loader=lambda root, doc: facts.state(doc, document_state)
-                ),
+                frontier=frontier,
             )
             if not candidate["blockers"]
+        )
+        # Delivered nodes go to separate review units, whole author deliveries each.
+        from homalg.phases import review_units
+
+        proposals.extend(
+            review_units(
+                repo,
+                key,
+                chapters,
+                frontier=frontier,
+                batch_size=DEFAULT_REVIEW_BATCH,
+                records=records,
+            )
         )
     facts.assert_current()
     return proposals, first_definitions
@@ -358,6 +378,7 @@ def statement_units(
                     "homalg": {
                         "doc": key,
                         "stage": "STMT",
+                        "phase": "author",
                         "chapter": node["source"]["chapter"],
                         "section": node["source"].get("section"),
                         "attempts": 0,
@@ -391,10 +412,17 @@ def statement_units(
     }
     reserved = set()
     preserved = []
+    phased = False
     for record in records:
         info = record.get("metadata", {}).get("homalg", {})
         if info.get("granularity") != "node":
             continue
+        if info.get("phase") in {"author", "review"}:
+            phased = True
+            if record.get("status") not in {"queued", "running", "blocked"}:
+                # A finished author/review unit holds nothing: each primary's derived
+                # state (settled, awaiting review, parked, needs authoring) decides.
+                continue
         primary = info.get("primary_nodes") or [
             identifier
             for identifier in info.get("node_ids", [])
@@ -415,6 +443,15 @@ def statement_units(
                     "blockers": unit_blockers(repo, record, frontier=frontier),
                 }
             )
+    if phased:
+        from homalg.phases import node_states
+
+        states = node_states(repo, key, frontier, records)
+        reserved.update(
+            node_id
+            for node_id, state in states.items()
+            if state["state"] in {"awaiting_review", "parked"}
+        )
     fresh = [
         candidate
         for candidate in candidates
@@ -473,12 +510,20 @@ def statement_units(
         digest = hashlib.sha256("\0".join(sorted(primary)).encode()).hexdigest()[:12]
         identifiers = [identifier for candidate in selected for identifier in candidate["node_ids"]]
         info = dict(selected[0]["metadata"]["homalg"])
+        # Contiguous groups of a few primaries: one writer each, all in one wave.
+        chunks = [
+            selected[index : index + AUTHOR_GROUP_SIZE]
+            for index in range(0, len(selected), AUTHOR_GROUP_SIZE)
+        ]
         info.update(
             primary_nodes=primary,
             node_ids=identifiers,
             author_groups=[
-                {"primary": candidate["node_ids"][0], "node_ids": candidate["node_ids"]}
-                for candidate in selected
+                {
+                    "primary": chunk[0]["node_ids"][0],
+                    "node_ids": [node for candidate in chunk for node in candidate["node_ids"]],
+                }
+                for chunk in chunks
             ],
         )
         info["pages"] = sorted(
@@ -514,7 +559,15 @@ def render_objective(
 ) -> str:
     """Render the generated objective exactly as task creation would."""
     info = record["metadata"]["homalg"]
-    template = (repo / "horizon/tasks" / f"{TEMPLATES[info['stage']]}.md").read_text()
+    name = {"author": "statement-author", "review": "statement-review"}.get(
+        info.get("phase"), TEMPLATES[info["stage"]]
+    )
+    template = (repo / "horizon/tasks" / f"{name}.md").read_text()
+    handoffs = "\n".join(
+        f"- {item['path']} (task {item['task']}, author {item['author_session']}): "
+        + ", ".join(item["node_ids"])
+        for item in info.get("handoffs", [])
+    )
     fields = {
         "doc_key": info["doc"],
         "doc_title": document["title"],
@@ -527,6 +580,7 @@ def render_objective(
         "login": login,
         "task_id": record["id"],
         "transcriber_model": settings(repo).get("transcriber_model", "a vision-capable model"),
+        "handoff_list": handoffs or "none",
     }
     objective = template.format_map(fields)
     if info.get("author_groups"):
@@ -584,7 +638,8 @@ def create_task(
     for file in record["write_set"]["files"]:
         args.extend(("--file", file))
     if info.get("granularity") == "node":
-        args.extend(("--priority", "high"))
+        # Review first: downstream authoring waits on accepted interfaces.
+        args.extend(("--priority", "urgent" if info.get("phase") == "review" else "high"))
     horizon(repo, *args)
     if inbox_refs:
         refs = ["task", "set", record["id"], "--author", "homalg", "--json"]
@@ -632,12 +687,12 @@ def plan(
         () if explicitly_disabled else tuple(prior.get("statement_nodes", []))
     )
     statement_batch_size = (
-        prior.get("statement_batch_size", 4)
+        prior.get("statement_batch_size", DEFAULT_STATEMENT_BATCH)
         if statement_batch_size is None
         else statement_batch_size
     )
-    if not 1 <= statement_batch_size <= 16:
-        raise ValueError("Statement batch size must be between 1 and 16")
+    if not 1 <= statement_batch_size <= MAX_STATEMENT_BATCH:
+        raise ValueError(f"Statement batch size must be between 1 and {MAX_STATEMENT_BATCH}")
     unit_options = (
         {
             "statement_frontier": statement_frontier,
@@ -762,9 +817,18 @@ def plan(
     existing = {record["id"] for record in current_tasks}
     inherited = settlement.inheritance(current_tasks)
     created = []
+    finished = {item["id"] for item in current_tasks if item.get("status") in {"done", "cancelled"}}
     for record in proposals:
         if proofs == "deferred" and record["metadata"]["homalg"]["stage"] == "PROOF":
             continue
+        phase = record["metadata"]["homalg"].get("phase")
+        if phase in {"author", "review"} and record["id"] in finished and "status" not in record:
+            # The same nodes again after a replan, a failed review or a stale delivery:
+            # a new unit, never a reopened finished one.
+            base, number = record["id"], 2
+            while f"{base}_r{number}" in existing:
+                number += 1
+            record = {**record, "id": f"{base}_r{number}"}
         if record["id"] not in existing:
             sources = [
                 inherited[identifier]
@@ -779,6 +843,7 @@ def plan(
                 guidance=settlement.guidance_text(sources),
                 inbox_refs=[ref for source in sources for ref in source.get("inbox_refs", [])],
             )
+            existing.add(record["id"])
             created.append(record["id"])
     if unit_options or prior.get("statement_frontier") or prior.get("statement_nodes"):
         reconcile_frontier_holds(
@@ -896,7 +961,14 @@ def reconcile_frontier_holds(
         if metadata.get("dispatch_hold") and not info.get("frontier_dispatch_hold"):
             continue
         reason = None
-        if info.get("granularity") == "node":
+        if info.get("granularity") == "node" and info.get("phase") == "review":
+            # Review units come from deliveries, not from the authoring frontier.
+            failures = unit_blockers(repo, record, frontier=frontier) if enabled else []
+            if not enabled:
+                reason = "Statement unit is outside the enabled frontier"
+            elif failures:
+                reason = "; ".join(failures)
+        elif info.get("granularity") == "node":
             candidate = units.get(record["id"])
             if not enabled or candidate is None:
                 reason = "Statement unit is outside the enabled frontier"

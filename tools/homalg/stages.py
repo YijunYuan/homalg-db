@@ -102,6 +102,21 @@ def evaluate(
         else None
     )
     failures: list[str] = unit_blockers(repo, record, frontier=frontier)
+    if info.get("phase") == "author" and stage in {"STMT", "CITED"}:
+        # Authoring completes on current compiled deliveries; independent review,
+        # locks and the full statement gate belong to the separate review unit.
+        from homalg.phases import author_failures
+
+        failures.extend(author_failures(repo, record))
+        if facts is not None:
+            facts.assert_current()
+        return {
+            "task": record["id"],
+            "doc_key": key,
+            "stage": stage,
+            "complete": not failures,
+            "failures": sorted(set(failures)),
+        }
     if stage == "T":
         states = transcription_status(repo, key, persist=persist_transcription)["pages"]
         failures.extend(

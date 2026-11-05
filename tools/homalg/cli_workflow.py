@@ -141,6 +141,27 @@ def register_commands(cli: click.Group) -> None:
             report("workflow review-snapshot-cohorts", [], data, machine=machine, strict=strict)
         )
 
+    @group.command("handoffs")
+    @common_options
+    @click.argument("task_id")
+    @click.option(
+        "--copy",
+        "copy",
+        type=click.Path(path_type=Path),
+        help="Copy the deliveries below build/ for registration commands.",
+    )
+    def handoffs(
+        ctx: click.Context,
+        repo: Path,
+        machine: bool,
+        strict: bool,
+        task_id: str,
+        copy: Path | None,
+    ) -> None:
+        """List a task's recorded author deliveries and whether each is still current."""
+        data = workflow.list_handoffs(repo, task_id, copy=copy)
+        ctx.exit(report("workflow handoffs", [], data, machine=machine, strict=strict))
+
     @group.command("settle")
     @common_options
     @click.argument("key")
@@ -156,6 +177,11 @@ def register_commands(cli: click.Group) -> None:
         is_flag=True,
         help="Refresh the compiled export through the shared build lock first.",
     )
+    @click.option(
+        "--replan",
+        is_flag=True,
+        help="Also recreate remaining pre-split statement units as author units.",
+    )
     def settle(
         ctx: click.Context,
         repo: Path,
@@ -165,6 +191,7 @@ def register_commands(cli: click.Group) -> None:
         task_ids: tuple[str, ...],
         apply: bool,
         refresh_export: bool,
+        replan: bool,
     ) -> None:
         """Close tasks already satisfied by evidence and settle partial statement units.
 
@@ -176,7 +203,12 @@ def register_commands(cli: click.Group) -> None:
         from homalg.settlement import settle_document
 
         data = settle_document(
-            repo, key, task_ids=task_ids, apply=apply, refresh_export=refresh_export
+            repo,
+            key,
+            task_ids=task_ids,
+            apply=apply,
+            refresh_export=refresh_export,
+            replan=replan,
         )
         ctx.exit(report("workflow settle", [], data, machine=machine, strict=strict))
 

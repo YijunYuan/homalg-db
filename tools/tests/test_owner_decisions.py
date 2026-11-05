@@ -462,8 +462,11 @@ def test_review_context_binds_receipt_and_profile(prepared: Path) -> None:
     attest(prepared)
     apply(prepared)
     context = authoring_context_inputs(prepared, [NODE])
-    assert str(prepared / POLICY) in context["files"]
-    assert str(prepared / receipt_path({"id": DECISION, "node_id": NODE})) in context["files"]
+    # Evidence is named relative to the workspace so it survives isolated checkouts.
+    receipt = Path(receipt_path({"id": DECISION, "node_id": NODE}))
+    receipt = receipt.relative_to(prepared) if receipt.is_absolute() else receipt
+    assert POLICY in context["files"]
+    assert receipt.as_posix() in context["files"]
 
 
 def test_authority_cannot_be_replaced_after_start_even_with_new_commit(prepared: Path) -> None:
@@ -478,3 +481,213 @@ def test_authority_cannot_be_replaced_after_start_even_with_new_commit(prepared:
     assert relative in check_scope(prepared, task_scope(prepared, relative), start, end)
     with pytest.raises(ValueError, match="receipt absent or changed"):
         validate_resolution(prepared, (prepared / NODE_PATH).read_text(), anchor=start)
+
+
+@pytest.fixture
+def isolated_replay(prepared: Path, monkeypatch: pytest.MonkeyPatch):
+    """Fictional replay with actual isolated layout, process identity and held lease."""
+    import fcntl
+    import hashlib
+    import os
+    import shutil
+    import socket
+
+    policy = json.loads((prepared / POLICY).read_text())
+    artifacts = []
+    for relative in (
+        "build/fictional-decision.json",
+        "literature/.private/Fixture2000/tex/page-0001.tex",
+    ):
+        path = prepared / relative
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text("Fictional bound evidence: " + relative)
+        artifacts.append(
+            {"path": relative, "sha256": hashlib.sha256(path.read_bytes()).hexdigest()}
+        )
+    policy["decisions"][0]["artifacts"] = artifacts
+    (prepared / POLICY).write_text(json_text(policy))
+    snapshot(prepared)
+    attest(prepared)
+    apply(prepared)
+    start = snapshot(prepared)
+    isolated = prepared / ".archon-horizon/session-worktrees" / ("a" * 32)
+    isolated.mkdir(parents=True)
+    for directory in ("HomAlg", "literature", "schema", "horizon"):
+        shutil.copytree(
+            prepared / directory, isolated / directory, ignore=shutil.ignore_patterns(".private")
+        )
+    (isolated / "literature/.private").symlink_to(
+        prepared / "literature/.private", target_is_directory=True
+    )
+    shutil.copytree(
+        prepared / ".archon-horizon/vcs/workspace.git",
+        isolated / ".archon-horizon/vcs/workspace.git",
+    )
+    run, session, task_id = "fictional-run", "fictional-session", "Fixture2000.STMT.1"
+    directory = prepared / f".archon-horizon/runs/{run}/sessions/{session}"
+    directory.mkdir(parents=True)
+    (directory / "meta.json").write_text(
+        json_text(
+            {
+                "role": "horizon",
+                "status": "running",
+                "task_id": task_id,
+                "start_sha": start,
+                "session_ledger": isolated.name,
+            }
+        )
+    )
+    (directory.parent.parent / "process.json").write_text(
+        json_text({"pid": os.getpid(), "host": socket.gethostname()})
+    )
+    (prepared / "config.yaml").write_text("workspace: {session_ledger: true}\n")
+    for mount in ("runs", "inbox"):
+        (isolated / ".archon-horizon" / mount).symlink_to(
+            prepared / ".archon-horizon" / mount, target_is_directory=True
+        )
+    for key, value in {
+        "ROOT": str(isolated),
+        "RUN": run,
+        "SESSION": session,
+        "SESSION_DIR": str(directory),
+        "TASK": task_id,
+    }.items():
+        monkeypatch.setenv("ARCHON_HORIZON_" + key, value)
+    monkeypatch.setenv("HOMALG_SESSION_MAIN_ROOT", str(prepared))
+    lock = prepared / ".archon-horizon/locks/run-policy.lock"
+    lock.parent.mkdir(parents=True, exist_ok=True)
+    with lock.open("a+") as stream:
+        fcntl.flock(stream, fcntl.LOCK_EX)
+        yield isolated, prepared, directory, stream
+
+
+def test_isolated_replay_validation_reads_authenticated_runtime(isolated_replay) -> None:
+    isolated, control, directory, _ = isolated_replay
+    source = (isolated / NODE_PATH).read_text()
+    assert (isolated / ".archon-horizon/runs").is_symlink()
+    assert (isolated / ".archon-horizon/inbox").is_symlink()
+    assert (isolated / "literature/.private").is_symlink()
+    assert not (isolated / "build/fictional-decision.json").exists()
+    result = validate_resolution(isolated, source, evidence=True)
+    assert result["decision_id"] == DECISION
+    # Mutable canonical source is not the isolated session's trusted START input.
+    (control / POLICY).write_text("not the isolated policy")
+    (control / receipt_path({"id": DECISION, "node_id": NODE})).write_text("changed")
+    assert validate_resolution(isolated, source, evidence=True) == result
+    assert json.loads((directory / "meta.json").read_text())["status"] == "running"
+    with pytest.raises(ValueError, match="Draft workers"):
+        apply(isolated)
+    with pytest.raises(ValueError, match="cannot issue"):
+        attest(isolated)
+
+
+@pytest.mark.parametrize(
+    "target", ["meta", "inbox", "receipt", "policy", "build_artifact", "private_artifact"]
+)
+def test_isolated_replay_still_rejects_symlinked_evidence(isolated_replay, target: str) -> None:
+    isolated, control, directory, _ = isolated_replay
+    paths = {
+        "meta": directory / "meta.json",
+        "inbox": control / ".archon-horizon/inbox/local/items/I-0022.yaml",
+        "receipt": isolated / receipt_path({"id": DECISION, "node_id": NODE}),
+        "policy": isolated / POLICY,
+        "build_artifact": control / "build/fictional-decision.json",
+        "private_artifact": control / "literature/.private/Fixture2000/tex/page-0001.tex",
+    }
+    path = paths[target]
+    outside = control.parent / ("fictional-redirect-" + target)
+    outside.write_bytes(path.read_bytes())
+    path.unlink()
+    path.symlink_to(outside)
+    with pytest.raises(ValueError, match="symlink"):
+        validate_resolution(isolated, (isolated / NODE_PATH).read_text(), evidence=True)
+
+
+@pytest.mark.parametrize("change", ["pid", "status", "task", "lease", "root", "session_dir"])
+def test_isolated_replay_requires_live_matching_native_owner(
+    isolated_replay, monkeypatch: pytest.MonkeyPatch, change: str
+) -> None:
+    import fcntl
+
+    isolated, control, directory, stream = isolated_replay
+    if change == "pid":
+        path = directory.parent.parent / "process.json"
+        data = json.loads(path.read_text())
+        data["pid"] = 1
+        path.write_text(json_text(data))
+    elif change in {"status", "task"}:
+        path = directory / "meta.json"
+        data = json.loads(path.read_text())
+        data["status" if change == "status" else "task_id"] = "fictional-other"
+        path.write_text(json_text(data))
+    elif change == "lease":
+        fcntl.flock(stream, fcntl.LOCK_UN)
+    elif change == "root":
+        monkeypatch.setenv("HOMALG_SESSION_MAIN_ROOT", str(control.parent))
+    else:
+        monkeypatch.setenv("ARCHON_HORIZON_SESSION_DIR", str(isolated / "forged-session"))
+    with pytest.raises(ValueError):
+        validate_resolution(isolated, (isolated / NODE_PATH).read_text(), evidence=True)
+
+
+@pytest.mark.parametrize(
+    "target", ["policy", "receipt", "inbox", "build_artifact", "private_artifact"]
+)
+def test_isolated_replay_rejects_changed_bound_inputs(isolated_replay, target: str) -> None:
+    isolated, control, _, _ = isolated_replay
+    if target == "inbox":
+        path = control / ".archon-horizon/inbox/local/items/I-0022.yaml"
+        value = load_yaml(path.read_text())
+        value["body"] = "Fictional forged decision"
+        path.write_text(dump_metadata(value))
+    elif target.endswith("_artifact"):
+        relative = (
+            "build/fictional-decision.json"
+            if target == "build_artifact"
+            else "literature/.private/Fixture2000/tex/page-0001.tex"
+        )
+        path = control / relative
+        if target == "build_artifact":
+            # A matching local copy cannot hide changed canonical historical evidence.
+            shadow = isolated / relative
+            shadow.parent.mkdir(parents=True)
+            shadow.write_bytes(path.read_bytes())
+        path.write_text("Fictional changed artifact")
+    else:
+        relative = POLICY if target == "policy" else receipt_path({"id": DECISION, "node_id": NODE})
+        path = isolated / relative
+        path.write_text(path.read_text() + "\n")
+        # Even a later local commit cannot replace immutable START authority.
+        snapshot(isolated)
+    with pytest.raises(ValueError, match="changed"):
+        validate_resolution(isolated, (isolated / NODE_PATH).read_text(), evidence=True)
+
+
+def test_isolated_replay_rejects_symlinked_canonical_private_directory(isolated_replay) -> None:
+    import shutil
+
+    isolated, control, _, _ = isolated_replay
+    private = control / "literature/.private"
+    outside = control.parent / "fictional-private-redirect"
+    shutil.move(private, outside)
+    private.symlink_to(outside, target_is_directory=True)
+    with pytest.raises(ValueError, match="symlink"):
+        validate_resolution(isolated, (isolated / NODE_PATH).read_text(), evidence=True)
+
+
+def test_dispute_validation_pipeline_supports_only_authenticated_isolation(isolated_replay) -> None:
+    from homalg.validate import validate_repo
+
+    isolated, _, directory, _ = isolated_replay
+    findings, skipped, _ = validate_repo(isolated, ("Fixture2000",), only=("dispute-valid",))
+    assert findings == [] and skipped == []
+    path = directory / "meta.json"
+    metadata = json.loads(path.read_text())
+    metadata["status"] = "completed"
+    path.write_text(json_text(metadata))
+    findings, skipped, _ = validate_repo(isolated, ("Fixture2000",), only=("dispute-valid",))
+    assert not skipped
+    assert any(
+        finding.rule == "dispute-valid" and "live Horizon session" in finding.message
+        for finding in findings
+    )

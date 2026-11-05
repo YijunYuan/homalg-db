@@ -455,6 +455,49 @@ scheduling, isolation and landing, not authoring quality or Codex rate limits. N
 isolated leads (control-plane paths in the canonical root, waiting for shared
 locks, all lanes sharing one supervisor process).
 
+## Separating authoring from review (2026-11-05)
+
+A comparison with the owner's workspaces on the original Horizon, same model and
+effort, showed similar session lengths and token use but two to four times the
+declarations per session-hour there, with complete proofs. In CE statement
+sessions, writers finished early and 55% of the session followed: repeated
+full-document preparation and registration exports under the shared build lock,
+three to six reviewer subagents, registration retries, and closing checks. Review
+subagents used 57% of subagent compute, against 15–36% in the other workspaces.
+Honesty review ran twice per node (registration required the registering
+reviewer's own block), in source-only stages, and again as a closing audit;
+janitor ran in almost every session because the planned queue exceeded a fixed
+threshold.
+
+Changes adopted with the owner: authoring and review run as separate units,
+in-session checks are scoped to the unit and its dependency closure, author units
+are larger (twelve primaries, four per writer), one reviewer writes both the
+fidelity and the honesty block, source-only stages and statement units have no
+closing honesty audit, and janitor runs only for concrete hygiene problems.
+Docstrings keep the source's natural-language proof. The author handoff snapshot
+became portable and scoped: it previously fingerprinted every node, tooling file
+and absolute path, so any other lane's landing invalidated a pending delivery.
+
+Three further defects surfaced while installing this change:
+
+- **In-session statement checks always failed.** An isolated checkout holds only
+  its own scoped export, so every dependency's compiled state was approximate and
+  each statement unit's in-session stage check reported "statement interface is
+  not current and reviewed" for all of its inputs. Leads then spent sessions
+  refreshing full exports. Nodes whose source and import closure are
+  byte-identical to the canonical workspace now use its compiled facts. Repeated
+  YAML parsing (one call parsed every node header three times) is memoized, which
+  halves a stage check.
+- **Interrupted sessions held finished work.** Runs 0024–0026 were reaped before
+  landing. Their preserved checkouts held reviewed locks for seven nodes that
+  nothing would land. `horizon sessions land` now finishes the missed boundary
+  steps with the normal conflict checks.
+- **The critical path was deprioritized.** One session without evidence progress
+  lowered `STMT.PrereqIII_Satellites` to priority `low`, behind every other
+  task, although 12 waiting Chapter III nodes depend directly on its definitions.
+  A task that other unaccepted statements depend on now keeps its priority. Three
+  sessions without progress still block it for a decision.
+
 ## Evidence locations
 
 The paths below identify local records. Ignored reports and private sources are

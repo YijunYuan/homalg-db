@@ -121,8 +121,8 @@ def register_commands(cli: click.Group) -> None:
     )
     @click.option(
         "--statement-batch-size",
-        type=click.IntRange(1, 16),
-        help="Persist maximum independent node groups per native statement task (default: 4).",
+        type=click.IntRange(1, 32),
+        help="Persist maximum independent nodes per native author unit (default: 12).",
     )
     def plan(
         ctx: click.Context,

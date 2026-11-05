@@ -249,7 +249,21 @@ def test_review_subset_cannot_exceed_author_delivery(author):
         )
 
 
-@pytest.mark.parametrize("changed", ["node", "dependency", "toolchain", "scope", "policy"])
+def test_task_scope_growth_keeps_a_portable_delivery_valid(author) -> None:
+    """A delivery is judged by the scope it was made under and its exact inputs.
+
+    Settlement narrows author tasks after delivery, so later scope edits must not
+    invalidate it; changes to the delivered nodes or their dependencies still do.
+    """
+    repo, record, _ = author
+    data = deliver(repo, record)
+    record["write_set"]["files"].append("HomAlg/Fixture2000/Lem_1.lean")
+    path = repo / ".archon-horizon/tasks/items" / f"{record['id']}.yaml"
+    path.write_text(dump_metadata(record))
+    assert workflow.verify(repo, Path("build/handoff.json")) == data
+
+
+@pytest.mark.parametrize("changed", ["node", "dependency", "toolchain", "policy"])
 def test_changes_invalidate_delivery(author, changed: str) -> None:
     repo, record, _ = author
     deliver(repo, record)

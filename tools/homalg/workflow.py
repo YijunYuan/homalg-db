@@ -15,6 +15,7 @@ from homalg.engine import task, tasks
 from homalg.headers import parse_header
 from homalg.io import atomic_create, json_text
 from homalg.leanexport import declaration_map, export_lean, workspace_lock
+from homalg.repository import canonical_root
 from homalg.review import (
     freeze_authoring_batch_inputs,
     freeze_authoring_inputs,
@@ -164,9 +165,15 @@ def _prepare_deliveries(
             snapshots = [freeze_authoring_inputs(repo, selected_groups[0])]
             batch_inputs = None
         key = record["metadata"]["homalg"]["doc"]
-        raw = export_lean(repo, doc=key, out=repo / "build/workflow-export.json", merge=False)
-        # Every group sees the same complete current validation. Only the two
-        # derived-cache rules are deferred to the unchanged final acceptance gates.
+        # Scoped: build and export only this batch's modules. The engine's outer hook
+        # still compiles, exports and validates the whole document after the session.
+        raw = export_lean(
+            repo,
+            doc=key,
+            out=repo / "build/workflow-export.json",
+            merge=False,
+            modules=[f"HomAlg.{node_id}" for node_id in all_ids],
+        )
         findings, skipped, counts = validate_repo(
             repo,
             (key,),
@@ -174,6 +181,15 @@ def _prepare_deliveries(
             export=raw,
             only=tuple(sorted(set(RULES) - DERIVED_CACHE_RULES)),
         )
+        # The batch and its dependency closure: an error in a node this batch builds on
+        # matters here; unrelated nodes are left to the outer hook's full validation.
+        closure = set(all_ids)
+        for snapshot in snapshots:
+            closure.update(snapshot["context"]["node_ids"])
+        batch_files = {f"HomAlg/{node_id.replace('.', '/', 1)}.lean" for node_id in closure} | {
+            f"literature/{key}/reviews/{node_id.split('.', 1)[1]}.md" for node_id in all_ids
+        }
+        findings = [item for item in findings if item.file in batch_files or item.node in closure]
         task_scope = _node_scope(repo, record)
         pending = []
         validation = []
@@ -218,6 +234,7 @@ def _prepare_deliveries(
         common = {
             "schema_version": 1,
             "repo": str(repo),
+            "workspace": canonical_root(repo),
             "task": task_id,
             "contract": contract,
             "created_at": datetime.now(UTC).isoformat(),
@@ -229,6 +246,7 @@ def _prepare_deliveries(
                 "skipped": sorted(set(skipped) | DERIVED_CACHE_RULES),
                 "deferred": sorted(DERIVED_CACHE_RULES),
                 "counts": counts,
+                "scope": "batch",
             },
             "pending_review_renewal": pending,
         }
@@ -258,10 +276,56 @@ def _prepare_deliveries(
             else deliveries[0]
         )
         atomic_create(target, json_text(result))
+        if result["ready_for_review"]:
+            record_handoff(repo, task_id, result)
     return result
 
 
-def verify(repo: Path, handoff: Path, *, author_session: str | None = None) -> dict[str, Any]:
+HANDOFFS = ".archon-horizon/overlay/handoffs"
+
+
+def record_handoff(repo: Path, task_id: str, handoff: dict[str, Any]) -> str:
+    """Keep a durable copy where later sessions and the outer hook can find it.
+
+    The overlay is shared with isolated session checkouts, so the copy outlives the
+    checkout whose build/ directory held the original.
+    """
+    if not re.fullmatch(r"[A-Za-z0-9_.-]+", task_id):
+        raise ValueError("Invalid task id")
+    text = json_text(handoff)
+    digest = hashlib.sha256(text.encode()).hexdigest()[:16]
+    relative = f"{HANDOFFS}/{task_id}/{digest}.json"
+    path = repo / relative
+    path.parent.mkdir(parents=True, exist_ok=True)
+    if not path.exists():
+        atomic_create(path, text)
+    return relative
+
+
+def task_handoffs(repo: Path, task_id: str) -> list[tuple[str, dict[str, Any]]]:
+    """Recorded handoffs of one task, oldest first."""
+    directory = repo / HANDOFFS / task_id
+    if not directory.is_dir():
+        return []
+    items = []
+    for path in directory.glob("*.json"):
+        try:
+            data = json.loads(path.read_text())
+        except (OSError, ValueError):
+            continue
+        items.append((data.get("created_at", ""), path.relative_to(repo).as_posix(), data))
+    return [(relative, data) for _, relative, data in sorted(items)]
+
+
+def deliveries(handoff: dict[str, Any]) -> list[dict[str, Any]]:
+    if handoff.get("kind") == "author-handoff-batch":
+        return [item for item in handoff.get("deliveries", []) if isinstance(item, dict)]
+    return [handoff] if handoff.get("kind") == "author-handoff" else []
+
+
+def verify(
+    repo: Path, handoff: Path, *, author_session: str | None = None, _reads: Any = None
+) -> dict[str, Any]:
     """Check a successful delivery's task and author input freshness, never its truth."""
     repo = repo.resolve()
     path = (repo / handoff).resolve()
@@ -286,23 +350,38 @@ def verify(repo: Path, handoff: Path, *, author_session: str | None = None) -> d
         data = selected[0]
     if author_session is not None and data.get("author_session") != author_session:
         raise ValueError("The selected author differs from the handoff's actual author")
+    workspace = data.get("workspace") or data.get("repo")
     if (
         data.get("schema_version") != 1
         or data.get("kind") != "author-handoff"
-        or data.get("repo") != str(repo)
+        or workspace not in {str(repo), canonical_root(repo)}
         or data.get("ready_for_review") is not True
         or not data.get("author_session", "").strip()
     ):
         raise ValueError("Expected a successful author handoff for this workspace")
+    portable = data.get("author_inputs", {}).get("schema_version") == 2
     with workspace_lock(repo):
         record = task(repo, data["task"])
-        if _contract(record) != data["contract"]:
-            raise ValueError("Author handoff task scope changed")
-        if [node["id"] for node in _nodes(repo, record, tuple(data["node_ids"])).values()] != data[
+        if portable:
+            # Node-level settlement may later narrow the author task; the delivery is
+            # judged against the scope it was made under and its exact inputs.
+            scoped = {
+                "id": data["contract"]["id"],
+                "write_set": data["contract"]["write_set"],
+                "metadata": {"homalg": data["contract"]["homalg"]},
+            }
+            if record["id"] != scoped["id"]:
+                raise ValueError("Author handoff names a different task")
+        else:
+            if _contract(record) != data["contract"]:
+                raise ValueError("Author handoff task scope changed")
+            scoped = record
+        if [node["id"] for node in _nodes(repo, scoped, tuple(data["node_ids"])).values()] != data[
             "node_ids"
         ]:
             raise ValueError("Author handoff node selection changed")
-        if freeze_authoring_inputs(repo, data["node_ids"]) != data["author_inputs"]:
+        current = freeze_authoring_inputs(repo, data["node_ids"], _reads=_reads)
+        if current != data["author_inputs"]:
             raise ValueError("Author handoff is stale; changed inputs need a new delivery/review")
     return data
 
@@ -481,3 +560,64 @@ def next_tasks(repo: Path, key: str, *, proofs: str | None = None) -> dict[str, 
         "running": running,
         "held": held,
     }
+
+
+def list_handoffs(repo: Path, task_id: str, *, copy: Path | None = None) -> dict[str, Any]:
+    """Recorded deliveries a task works from, their freshness, optionally copied to build/.
+
+    A review unit lists the deliveries it was created for; an author unit its own.
+    Copies give registration commands ordinary build/ evidence paths.
+    """
+    import shutil
+
+    repo = repo.resolve()
+    record = task(repo, task_id)
+    info = record["metadata"]["homalg"]
+    if info.get("phase") == "review":
+        entries = [(item["path"], item.get("author_session")) for item in info.get("handoffs", [])]
+    else:
+        entries = [
+            (path, delivery.get("author_session"))
+            for path, handoff in task_handoffs(repo, task_id)
+            for delivery in deliveries(handoff)
+        ]
+    target = None
+    if copy is not None:
+        target = (repo / copy).resolve()
+        build = (repo / "build").resolve()
+        if not target.is_relative_to(build) or target == build:
+            raise ValueError("Copies must go below the local build/ directory")
+        target.mkdir(parents=True, exist_ok=True)
+    items = []
+    for path, author in entries:
+        source = repo / path
+        try:
+            handoff = json.loads(source.read_text())
+        except (OSError, ValueError) as error:
+            items.append(
+                {"path": path, "author_session": author, "fresh": False, "reason": str(error)}
+            )
+            continue
+        batch = handoff.get("kind") == "author-handoff-batch"
+        delivery = next(
+            (item for item in deliveries(handoff) if item.get("author_session") == author),
+            {},
+        )
+        entry = {
+            "path": path,
+            "author_session": author,
+            "node_ids": delivery.get("node_ids", []),
+            "fresh": True,
+            "reason": None,
+        }
+        try:
+            verify(repo, Path(path), author_session=author if batch else None)
+        except (OSError, ValueError, KeyError) as error:
+            entry.update(fresh=False, reason=str(error))
+        if target is not None:
+            destination = target / source.name
+            if not destination.exists():
+                shutil.copyfile(source, destination)
+            entry["copy"] = destination.relative_to(repo).as_posix()
+        items.append(entry)
+    return {"task": task_id, "handoffs": items}

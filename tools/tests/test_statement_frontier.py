@@ -238,8 +238,10 @@ def test_unit_stage_check_preserves_full_review_and_compiled_requirements(fronti
     assert not unit_blockers(frontier_repo, record)
     evaluation = stages.evaluate(frontier_repo, record, refresh_exports=False)
     assert not evaluation["complete"]
+    # An author unit completes on a current compiled delivery; locks are the review
+    # unit's gate.
     assert any(
-        "fresh main declarations" in failure or "current satisfactory statement lock" in failure
+        "fresh main declarations" in failure or "current author handoff" in failure
         for failure in evaluation["failures"]
     )
     record["write_set"]["files"].append(f"HomAlg/{KEY}/Def_2.lean")
@@ -296,18 +298,18 @@ def test_disabling_frontier_holds_units_and_releases_aggregate_dispatch(frontier
 def test_default_native_batch_is_disjoint_and_preserves_registered_scope(frontier_repo):
     repo = frontier_repo
     result = planning.plan(repo, KEY, no_claim=True, statement_frontier=True)
-    assert result["statement_batch_size"] == 4
+    assert result["statement_batch_size"] == planning.DEFAULT_STATEMENT_BATCH
     identifier = next(value for value in result["created_tasks"] if ".STMT.UnitBatch_" in value)
     path = repo / ".archon-horizon/tasks/items" / f"{identifier}.yaml"
     record = load_yaml(path.read_text())
     info = record["metadata"]["homalg"]
-    assert {group["primary"] for group in info["author_groups"]} >= {
-        f"{KEY}.Def_1",
-        f"{KEY}.Def_2",
-    }
-    assert len(info["author_groups"]) <= 4
+    assert info["phase"] == "author"
     all_nodes = [node for group in info["author_groups"] for node in group["node_ids"]]
-    assert len(all_nodes) == len(set(all_nodes))
+    assert {f"{KEY}.Def_1", f"{KEY}.Def_2"} <= set(all_nodes)
+    assert len(all_nodes) == len(set(all_nodes)) == len(info["node_ids"])
+    # Contiguous groups of at most AUTHOR_GROUP_SIZE primaries, one writer each.
+    primaries = info["primary_nodes"]
+    assert len(info["author_groups"]) == -(-len(primaries) // planning.AUTHOR_GROUP_SIZE)
     assert "Dispatch these independent groups concurrently" in record["objective"]
     assert record["metadata"]["roadmap_status_sync"] is False
     record["status"] = "blocked"

@@ -95,26 +95,17 @@ def test_grouped_capture_rejects_same_byte_private_replacement_but_keeps_no_cach
     assert review.freeze_authoring_batch_inputs(repo, GROUPS) == before
 
 
-def test_grouped_capture_rejects_new_local_package_source(repo, monkeypatch):
-    context = review.authoring_context_inputs
-    calls = 0
-    dependency = repo / ".lake/packages/fictional/Added.lean"
-
-    def add_after_first_author(*args, **kwargs):
-        nonlocal calls
-        captured = context(*args, **kwargs)
-        calls += 1
-        if calls == 2:
-            dependency.parent.mkdir(parents=True)
-            dependency.write_text("-- New fictional local package input\n")
-        return captured
-
-    monkeypatch.setattr(review, "authoring_context_inputs", add_after_first_author)
-    with pytest.raises(ValueError, match="changed"):
-        review.freeze_authoring_batch_inputs(repo, GROUPS)
-    monkeypatch.setattr(review, "authoring_context_inputs", context)
+def test_package_revisions_bind_snapshots_but_stray_package_files_do_not(repo):
+    """Packages are pinned by the manifest; a delivery binds those revisions."""
+    before = review.freeze_authoring_batch_inputs(repo, GROUPS)
+    stray = repo / ".lake/packages/fictional/Added.lean"
+    stray.parent.mkdir(parents=True)
+    stray.write_text("-- Stray local package file\n")
+    assert review.freeze_authoring_batch_inputs(repo, GROUPS) == before
+    manifest = repo / "lake-manifest.json"  # the baseline fixture copy has none yet
+    manifest.write_text('{"packages": [{"name": "mathlib", "rev": "fictional"}]}\n')
     snapshots, combined = review.freeze_authoring_batch_inputs(repo, GROUPS)
-    assert str(dependency) in combined["compilation"]["files"]
+    assert combined != before[1]
     assert snapshots == [review.freeze_authoring_inputs(repo, group) for group in GROUPS]
 
 

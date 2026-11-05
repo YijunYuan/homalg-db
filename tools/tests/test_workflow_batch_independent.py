@@ -74,8 +74,10 @@ def test_batch_new_invocation_rebuilds_and_old_bundle_stays_stale(author):
     workflow.prepare_batch(repo, record["id"], authors=groups, out=Path("build/first.json"))
     path = repo / "HomAlg/Fixture2000/Lem_1.lean"
     path.write_text(path.read_text() + "\n-- Changed author's explanatory comment.\n")
+    # Each delivery binds only its own closure: the unchanged author stays valid.
+    workflow.verify(repo, Path("build/first.json"), author_session=groups[0]["author_session"])
     with pytest.raises(ValueError, match="stale"):
-        workflow.verify(repo, Path("build/first.json"), author_session=groups[0]["author_session"])
+        workflow.verify(repo, Path("build/first.json"), author_session=groups[1]["author_session"])
     current = workflow.prepare_batch(
         repo, record["id"], authors=groups, out=Path("build/second.json")
     )

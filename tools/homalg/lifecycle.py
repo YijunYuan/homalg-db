@@ -303,10 +303,39 @@ def progress_made(
     )
 
 
+def gates_others(record: dict, state: dict) -> bool:
+    """Whether another unaccepted node's statement depends on a node this task owns.
+
+    Such a task is on the critical path: deprioritizing it after one session
+    without evidence progress would hold every dependent node behind all other work.
+    """
+    info = record.get("metadata", {}).get("homalg", {})
+    owned = set(info.get("primary_nodes") or info.get("node_ids") or [])
+    if not owned:
+        return False
+    return any(
+        node["id"] not in owned
+        and not node["authored"].get("fidelity", {}).get("reviewed")
+        and owned & set(node["authored"].get("deps", {}).get("statement", []))
+        for node in state.get("nodes", [])
+    )
+
+
 def update_attempts(
-    repo: Path, record: dict, evaluation: dict, progressed: bool, token: str
+    repo: Path,
+    record: dict,
+    evaluation: dict,
+    progressed: bool,
+    token: str,
+    *,
+    keep_priority: bool = False,
 ) -> dict:
-    """Make repeated hook invocations idempotent and preserve human-blocked tasks."""
+    """Make repeated hook invocations idempotent and preserve human-blocked tasks.
+
+    A session without evidence progress lowers the task's priority, except for a
+    task that other unaccepted nodes depend on (``keep_priority``). Three such
+    sessions still block the task for a decision.
+    """
     path = repo / ".archon-horizon/tasks/items" / f"{record['id']}.yaml"
     current = parse_metadata(path.read_text())
     info = current["metadata"]["homalg"]
@@ -320,7 +349,7 @@ def update_attempts(
     if current.get("status") == "blocked" and not complete:
         target = "blocked"
     args = ["task", "set", current["id"], "--status", target, "--author", "homalg", "--json"]
-    if not complete and not progressed:
+    if not complete and not progressed and not keep_priority:
         args.extend(("--priority", "low"))
     engine.horizon(repo, *args)
     if attempts >= 3 and not complete:
@@ -480,7 +509,16 @@ def after_session(repo: Path, task_id: str, session: Path, since: str, until: st
                 repo, record, state, prior_overlay, since, session, private_start
             )
             token = f"{session}:{since}:{until}"
-            result.update(update_attempts(repo, record, evaluation, progressed, token))
+            result.update(
+                update_attempts(
+                    repo,
+                    record,
+                    evaluation,
+                    progressed,
+                    token,
+                    keep_priority=gates_others(record, state),
+                )
+            )
             plan_path = repo / f".archon-horizon/overlay/plan-{key}.json"
             prior_plan = json.loads(plan_path.read_text()) if plan_path.exists() else {}
             result["plan"] = _timed_call(

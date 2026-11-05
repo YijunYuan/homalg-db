@@ -206,7 +206,15 @@ def test_review_lock_requires_fresh_export_and_locks_all_main_declarations(
         now=datetime(2026, 10, 28, tzinfo=UTC),
     )
     after = parse_header(path.read_text())
-    assert calls == [{"doc": "Fixture2000"}]
+    # Registration exports only the registered nodes' modules, outside the canonical file.
+    assert calls == [
+        {
+            "doc": "Fixture2000",
+            "out": repo.resolve() / "build/registration-export.json",
+            "merge": False,
+            "modules": ["HomAlg.Fixture2000.Thm_1"],
+        }
+    ]
     assert set(lock["decl_hashes"]) == set(before.metadata["decls"])
     assert lock["kind"] == "agent"
     assert after.sections == before.sections

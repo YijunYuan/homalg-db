@@ -12,7 +12,7 @@ from homalg.cli import cli
 from homalg.io import atomic_write_with_receipt, json_text
 from homalg.nodeio import header_mapping, node_path, replace_header
 from homalg.review_policy import valid_agent_review
-from homalg.schemas import SchemaStore
+from homalg.schemas import SchemaStore, load_yaml
 
 IDS = ["Fixture2000.Thm_1", "Fixture2000.Lem_1"]
 IDENTITY = {
@@ -599,14 +599,13 @@ def source_context(repo: Path) -> tuple[Path, Path, Path]:
 @pytest.mark.parametrize(
     "target",
     [
-        "taxonomy/tags.yaml",
         "literature/Fixture2000/inventory.yaml",
         "docs/fixtures/Fixture2000.md",
         "private-page",
         "private-manifest",
     ],
 )
-def test_context_inputs_bind_taxonomy_inventory_and_private_source(batch, target) -> None:
+def test_context_inputs_bind_inventory_and_private_source(batch, target) -> None:
     repo, calls, _ = batch
     page, _, manifest = source_context(repo)
     path = {"private-page": page, "private-manifest": manifest}.get(target, repo / target)
@@ -615,7 +614,13 @@ def test_context_inputs_bind_taxonomy_inventory_and_private_source(batch, target
         path.write_text("[]\n")
     frozen = review.freeze_fidelity_inputs(repo, IDS)
     delivery = review.freeze_authoring_inputs(repo, IDS)
-    path.write_text(path.read_text() + "\n# Changed input\n")
+    if target.endswith("inventory.yaml"):
+        # The inventory binds the node's own pages, not unrelated entries or comments.
+        data = load_yaml(path.read_text()) or {}
+        data.setdefault("pages", {})["0001"] = {"complete": False, "items": []}
+        path.write_text(json_text(data))
+    else:
+        path.write_text(path.read_text() + "\n# Changed input\n")
     assert (
         review.freeze_authoring_inputs(repo, IDS) != delivery
         if target != "private-manifest"
@@ -624,6 +629,14 @@ def test_context_inputs_bind_taxonomy_inventory_and_private_source(batch, target
     with pytest.raises(ValueError, match="stale"):
         review.review_fidelity_batch(repo, IDS, snapshot=frozen, **IDENTITY)
     assert calls == []
+
+
+def test_append_only_taxonomy_does_not_invalidate_a_delivery(batch) -> None:
+    repo, _, _ = batch
+    delivery = review.freeze_authoring_inputs(repo, IDS)
+    path = repo / "taxonomy/tags.yaml"
+    path.write_text(path.read_text() + "\n# Appended tag elsewhere\n")
+    assert review.freeze_authoring_inputs(repo, IDS) == delivery
 
 
 def test_author_source_scope_ignores_distant_transcription_updates_but_final_snapshot_is_strict(
@@ -644,7 +657,7 @@ def test_author_source_scope_ignores_distant_transcription_updates_but_final_sna
     data["pages"]["0002"]["status"] = "transcribed"
     manifest.write_text(json_text(data))
     assert review.freeze_authoring_inputs(repo, IDS) != delivery
-    assert str(page) in frozen["context"]["files"]
+    assert "literature/.private/Fixture2000/tex/page-0002.tex" in frozen["context"]["files"]
 
 
 def test_source_context_uses_printed_page_offset_and_local_import_dependencies(batch) -> None:

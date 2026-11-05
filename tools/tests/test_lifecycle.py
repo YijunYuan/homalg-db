@@ -62,6 +62,43 @@ def test_three_stalled_sessions_block_and_progress_resets_attempts(
     assert lifecycle.update_attempts(repo, task, {"complete": True}, True, "5")["status"] == "done"
 
 
+def test_a_task_others_depend_on_keeps_its_priority_without_progress(
+    repo: Path, task: dict, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    priorities = []
+    original = lifecycle.engine.horizon
+
+    def horizon(repo, *args):
+        if "--priority" in args:
+            priorities.append(args[args.index("--priority") + 1])
+        return original(repo, *args)
+
+    monkeypatch.setattr(lifecycle.engine, "horizon", horizon)
+    task["metadata"]["homalg"]["node_ids"] = ["Fixture2000.Def_1"]
+    consumer = {
+        "id": "Fixture2000.Thm_1",
+        "authored": {"deps": {"statement": ["Fixture2000.Def_1"]}},
+    }
+    state = {"nodes": [consumer]}
+    assert lifecycle.gates_others(task, state)
+    reviewed = {
+        **consumer,
+        "authored": {**consumer["authored"], "fidelity": {"reviewed": {"by": "fictional"}}},
+    }
+    assert not lifecycle.gates_others(task, {"nodes": [reviewed]})
+    kept = lifecycle.update_attempts(
+        repo, task, {"complete": False}, False, "1", keep_priority=True
+    )
+    assert kept == {"attempts": 1, "status": "queued"} and priorities == []
+    lifecycle.update_attempts(repo, task, {"complete": False}, False, "2")
+    assert priorities == ["low"]
+    # The three-session stall still blocks a critical-path task for a decision.
+    blocked = lifecycle.update_attempts(
+        repo, task, {"complete": False}, False, "3", keep_priority=True
+    )
+    assert blocked["status"] == "blocked"
+
+
 def test_progress_counts_status_and_session_attempt_not_unrelated_prose(
     repo: Path, task: dict, monkeypatch: pytest.MonkeyPatch
 ) -> None:

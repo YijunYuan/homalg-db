@@ -118,7 +118,66 @@ check lock. A fatal engine stop such as a usage limit stops every lane after its
 current session. `--resume` continues one run only; to restart lanes, run
 `horizon run '*' --lanes N` again, which re-queues orphaned `running` tasks when
 no run process is alive. An interrupted isolated session's unlanded checkout
-stays under `session-worktrees/` for recovery.
+stays under `session-worktrees/` for recovery. Land it before restarting lanes,
+while no run is live:
+
+```bash
+horizon sessions list                      # checkouts, owning session, landed or not
+horizon sessions land ID --dry-run         # files that would land
+horizon sessions land ID                   # conflict-checked landing + after_session hooks
+```
+
+The command lands the checkout with the same conflict checks as a normal session
+end and then runs the `after_session` hooks, which judge and settle the task. A
+checkout that already landed only gets the hooks it missed. A task left `running`
+returns to `queued` first; its status is never set to `done` by recovery. The
+owner is the session that recorded the checkout id; for older sessions it is the
+unfinished session with the same start commit whose task scope covers every
+changed file. An unknown or ambiguous owner is named with `--session RUN/SESSION`.
+
+## Author and review units
+
+With the statement frontier enabled (`homalg plan KEY --statement-frontier`),
+statement work runs as two kinds of unit:
+
+- **Author units** (`phase: author`, created by planning for ready nodes, up to
+  `--statement-batch-size` primaries, default 12). The lead dispatches one
+  node-writer per author group of up to four contiguous primaries, collects their
+  isolated deliveries, runs scoped checks (`homalg validate --file`, `horizon
+  check` on the unit's modules) and `homalg workflow prepare[-batch]`. Preparation
+  builds and exports only the unit's modules and validates the unit with its
+  dependency closure; the engine's outer hook still validates the whole document.
+  A ready handoff is recorded under `.archon-horizon/overlay/handoffs/<task>/`. The
+  unit is complete when every node it owns has a current compiled delivery.
+- **Review units** (`phase: review`, priority `urgent`, created by planning from
+  current deliveries, up to 16 primaries, keeping each author delivery whole). The
+  lead copies the deliveries with `homalg workflow handoffs TASK --copy DIR`,
+  dispatches source-fidelity reviewers (one reviewer writes both the fidelity and,
+  where required, the honesty block for a node), repairs mismatches through a new
+  author session, and registers per reviewer. Review units carry the ordinary
+  statement gate: current satisfactory locks and full compiled evidence.
+
+A delivery binds the nodes' import and dependency closure, the toolchain and
+policy files, and the selected pages of the inventory and transcription, all named
+relative to the workspace. Other nodes, chapters, taxonomy additions or the
+checkout it was made in do not invalidate it; any input it depends on does, and
+its nodes then return to authoring.
+
+Each primary node is in one derived state: settled, active (an open task covers
+it), awaiting review, parked (an open dispute on a delivered node, or two failed
+reviews) or needing authoring. A node whose review failed goes back to authoring
+with its review comments; a second failure parks it and needs a decision. Planning
+never sends a node with an open dispute to review; its author unit delivers the
+statement and, where docs/AGENT_PROOF_ERRATA.md applies, adjudicates the typo.
+
+A session without evidence progress lowers its task's priority, except for a task
+that other unaccepted statements depend on: such a task is on the critical path and
+keeps its priority. Three sessions without progress still block it for a decision.
+
+Upgrading a running document: `homalg plan KEY --statement-batch-size 12`, then
+`homalg workflow settle KEY --replan --apply` on an idle engine. Replanning cancels
+queued or blocked statement units planned before this split and hands their
+unsettled nodes back to planning; accepted nodes stay accepted.
 
 ## Node-level settlement
 
