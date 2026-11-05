@@ -1,6 +1,8 @@
 """Offline draft 2020-12 schemas and the project's restricted YAML 1.2 reader."""
 
+import copy
 import json
+from functools import lru_cache
 from pathlib import Path
 from typing import Any
 
@@ -20,7 +22,18 @@ class YamlError(ValueError):
 
 
 def load_yaml(text: str) -> Any:
-    """Read safe YAML without anchors, aliases, custom tags, merges or duplicates."""
+    """Read safe YAML without anchors, aliases, custom tags, merges or duplicates.
+
+    The pure-Python reader dominates planning and stage checks, which read the same
+    node headers and task files several times per call. Parsing is a pure function
+    of the text, so results are memoized; every caller gets its own deep copy and
+    may mutate it freely. Errors are not cached.
+    """
+    return copy.deepcopy(_load_yaml(text))
+
+
+@lru_cache(maxsize=2048)
+def _load_yaml(text: str) -> Any:
     yaml = YAML(typ="safe", pure=True)
     yaml.version = (1, 2)
     yaml.allow_duplicate_keys = False

@@ -61,9 +61,10 @@ An inventory must account for unnumbered items and footnotes as well as numbered
 theorems. A paper without sections beneath its chapter entries is inventoried by
 chapter; `new-node` then requires `--chapter` and no `--section`.
 
-`homalg plan KEY --statement-frontier --statement-batch-size 4` enables persisted
-node statement units with bounded independent author groups (size 1–16, default
-4). `--statement-node NODE` restricts the selected primaries; `workflow next`
+`homalg plan KEY --statement-frontier --statement-batch-size 12` enables persisted
+node statement units (size 1–32, default 12). Authoring and independent review run
+as separate author and review units; see
+[PARALLEL_WORKFLOW.md](PARALLEL_WORKFLOW.md#author-and-review-units). `--statement-node NODE` restricts the selected primaries; `workflow next`
 reports current ready work and local blockers without dispatching. Existing task
 scopes/holds and chapter acceptance requirements remain intact. The native lead
 fans out independent groups; a source or construction issue holds its actual

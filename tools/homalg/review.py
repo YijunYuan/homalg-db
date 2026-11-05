@@ -81,6 +81,45 @@ class _AuthoringContextReads:
         return self.yaml[path]
 
 
+TOOLCHAIN_FILES = (
+    "lean-toolchain",
+    "lakefile.toml",
+    "lake-manifest.json",
+    "horizon/review-policy.yaml",
+)
+
+
+def _portable_name(repo: Path, path: Path) -> str:
+    """Name evidence relative to its workspace so it survives an isolated checkout."""
+    private = (repo / "literature/.private").resolve()
+    for base, prefix in ((private, "literature/.private/"), (repo, "")):
+        try:
+            return prefix + path.resolve().relative_to(base).as_posix()
+        except ValueError:
+            continue
+    try:
+        return path.relative_to(repo).as_posix()
+    except ValueError:
+        return str(path.resolve())
+
+
+def _scoped_compilation(repo: Path, closure: list[str]) -> dict[str, Any]:
+    """Exactly what a statement's compilation depends on inside this repository.
+
+    The node files of its import/dependency closure plus the pinned toolchain and
+    package manifest. Other nodes, tooling and generated roots do not affect it.
+    """
+    files: dict[str, Any] = {}
+    for node_id in closure:
+        path = node_path(repo, node_id)
+        name = path.relative_to(repo).as_posix() if path.is_relative_to(repo) else str(path)
+        files[name] = authoring_source_fingerprint(path.read_text()) if path.is_file() else None
+    for name in TOOLCHAIN_FILES:
+        path = repo / name
+        files[name] = hashlib.sha256(path.read_bytes()).hexdigest() if path.is_file() else None
+    return {"files": files}
+
+
 def authoring_context_inputs(
     repo: Path,
     node_ids: list[str] | tuple[str, ...] | None = None,
@@ -135,14 +174,19 @@ def authoring_context_inputs(
             for name in re.findall(r"\bHomAlg\.\w+\.\w+\b", line)
         )
     paths = decision_paths
-    for directory in ("taxonomy", "schema"):
-        for suffix in ("*.yaml", "*.yml"):
-            paths.update((repo / directory).rglob(suffix))
-    for key in pages:
-        paths.add(repo / "literature" / key / "inventory.yaml")
+    # Append-only taxonomy cannot invalidate an authored statement; schemas can.
+    for suffix in ("*.yaml", "*.yml", "*.json"):
+        paths.update((repo / "schema").rglob(suffix))
+    selections = {}
+    for key, selected in pages.items():
+        # Foundations, PDF identity and early review; written only by guarded commands.
+        paths.add(repo / "literature" / key / "document.yaml")
+        inventory = repo / "literature" / key / "inventory.yaml"
+        paths.add(inventory)
+        # Only the node's own pages: inventorying other chapters is unrelated work.
+        selections[str(inventory)] = sorted(selected)
         paths.add(repo / "docs/fixtures" / f"{key}.md")
     private = (repo / "literature/.private").resolve()
-    selections = {}
     for key, selected in pages.items():
         directory = private / key
         if not directory.resolve().is_relative_to(private):
@@ -155,13 +199,13 @@ def authoring_context_inputs(
         selections[str(manifest)] = sorted(selected)
     files = {}
     for path in sorted(paths):
-        name = str(path.resolve())
+        name = _portable_name(repo, path)
         if not path.exists():
             files[name] = None
             continue
         fingerprint = file_fingerprint(path)
         if str(path) in selections:
-            data = load_yaml(path.read_text()) if _reads is None else _reads.document(path)
+            data = (load_yaml(path.read_text()) if _reads is None else _reads.document(path)) or {}
             projection = {key: value for key, value in data.items() if key != "pages"}
             projection["pages"] = {
                 f"{number:04}": data.get("pages", {}).get(f"{number:04}")
@@ -182,46 +226,58 @@ def authoring_context_inputs(
     }
 
 
+def _authoring_snapshot(
+    repo: Path, context: dict[str, Any], compilation: dict[str, Any] | None = None
+) -> dict[str, Any]:
+    from homalg.repository import canonical_root
+
+    return {
+        "schema_version": 2,
+        "kind": "authoring-input-snapshot",
+        "workspace": canonical_root(repo),
+        "compilation": compilation or _scoped_compilation(repo, context["node_ids"]),
+        "context": context
+        | {
+            "files": {
+                name: value.get("selected_sha256", value["sha256"]) if value else None
+                for name, value in context["files"].items()
+            }
+        },
+    }
+
+
 def freeze_authoring_inputs(
-    repo: Path, node_ids: list[str] | tuple[str, ...] | None = None
+    repo: Path,
+    node_ids: list[str] | tuple[str, ...] | None = None,
+    *,
+    _reads: _AuthoringContextReads | None = None,
 ) -> dict[str, Any]:
     """Stable delivery fingerprint, scoped source context, no independent review reports.
 
-    Only valid agent locks are excluded. Unrelated transcription-manifest pages do
-    not invalidate delivery; selected pages, PDF identity and top-level evidence do.
+    Only valid agent locks are excluded. The snapshot covers the nodes' import and
+    dependency closure, the toolchain, and the selected pages of the inventory and
+    transcription, named relative to the workspace. Unrelated nodes, chapters and
+    checkouts therefore do not invalidate a delivery; any change it depends on does.
     """
-    from homalg.leanexport import compilation_inputs, workspace_lock
+    from homalg.leanexport import workspace_lock
 
     repo = repo.resolve()
+    if _reads is not None:
+        # Read-only comparison inside one planning sweep, whose own input guard
+        # rejects concurrent edits; parsed sources are shared across deliveries.
+        context = authoring_context_inputs(repo, node_ids, _reads=_reads)
+        return _authoring_snapshot(repo, context)
     with workspace_lock(repo):
-        inputs = compilation_inputs(repo)
         context = authoring_context_inputs(repo, node_ids)
-        files = {}
-        for name, fingerprint in inputs["files"].items():
-            path = Path(name)
-            if path.parent.parent == repo / "HomAlg" and path.suffix == ".lean":
-                files[name] = authoring_source_fingerprint(path.read_text())
-            else:
-                files[name] = fingerprint["sha256"]
-        # A writer must not change the inputs while the normalized snapshot is read.
+        compilation = _scoped_compilation(repo, context["node_ids"])
+        # A writer must not change the inputs while the normalized snapshot is read;
+        # the raw context also binds file identity, so even a restored edit counts.
         if (
-            compilation_inputs(repo) != inputs
-            or authoring_context_inputs(repo, node_ids) != context
+            authoring_context_inputs(repo, node_ids) != context
+            or _scoped_compilation(repo, context["node_ids"]) != compilation
         ):
             raise ValueError("Authoring inputs changed while freezing the delivery")
-        return {
-            "schema_version": 1,
-            "kind": "authoring-input-snapshot",
-            "repo": str(repo),
-            "compilation": inputs | {"files": files},
-            "context": context
-            | {
-                "files": {
-                    name: value.get("selected_sha256", value["sha256"]) if value else None
-                    for name, value in context["files"].items()
-                }
-            },
-        }
+        return _authoring_snapshot(repo, context, compilation)
 
 
 def freeze_authoring_batch_inputs(
@@ -229,52 +285,41 @@ def freeze_authoring_batch_inputs(
 ) -> tuple[list[dict[str, Any]], dict[str, Any]]:
     """Capture exact author snapshots together, sharing only operation-local reads.
 
-    Each group keeps its own dependency/source-page projection. Fresh compilation
-    and union-context reads guard the whole capture; no parsed object or fingerprint
-    survives this call. The caller still rechecks the union after its scope checks.
+    Each group keeps its own dependency/source-page projection. Union-context reads
+    guard the whole capture; no parsed object or fingerprint survives this call.
+    The caller still rechecks the union after its scope checks.
     """
-    from homalg.leanexport import compilation_inputs, workspace_lock
+    from homalg.leanexport import workspace_lock
 
     if not groups or any(not group for group in groups):
         raise ValueError("An author batch requires nonempty node groups")
     repo = repo.resolve()
     union = sorted({node_id for group in groups for node_id in group})
     with workspace_lock(repo):
-        inputs = compilation_inputs(repo)
         reads = _AuthoringContextReads()
         context = authoring_context_inputs(repo, union, _reads=reads)
+        compilation = _scoped_compilation(repo, context["node_ids"])
         contexts = [authoring_context_inputs(repo, group, _reads=reads) for group in groups]
-        files = {
-            name: authoring_source_fingerprint(Path(name).read_text())
-            if Path(name).parent.parent == repo / "HomAlg" and Path(name).suffix == ".lean"
-            else fingerprint["sha256"]
-            for name, fingerprint in inputs["files"].items()
-        }
         if (
-            compilation_inputs(repo) != inputs
-            or authoring_context_inputs(repo, union, _reads=_AuthoringContextReads()) != context
+            authoring_context_inputs(repo, union, _reads=_AuthoringContextReads()) != context
+            or _scoped_compilation(repo, context["node_ids"]) != compilation
         ):
             raise ValueError("Authoring inputs changed while freezing the delivery")
-
-        def snapshot(selected: dict[str, Any]) -> dict[str, Any]:
-            return {
-                "schema_version": 1,
-                "kind": "authoring-input-snapshot",
-                "repo": str(repo),
-                "compilation": inputs | {"files": files},
-                "context": selected
-                | {
-                    "files": {
-                        name: value.get("selected_sha256", value["sha256"]) if value else None
-                        for name, value in selected["files"].items()
-                    }
-                },
+        files = compilation["files"]
+        snapshots = []
+        for selected in contexts:
+            owned = {
+                f"HomAlg/{node_id.replace('.', '/', 1)}.lean" for node_id in selected["node_ids"]
             }
-
+            subset = {
+                name: value
+                for name, value in files.items()
+                if name in owned or name in TOOLCHAIN_FILES
+            }
+            snapshots.append(_authoring_snapshot(repo, selected, {"files": subset}))
+        union_snapshot = _authoring_snapshot(repo, context, compilation)
         # Deliveries are independent objects even where their immutable values agree.
-        return [copy.deepcopy(snapshot(selected)) for selected in contexts], copy.deepcopy(
-            snapshot(context)
-        )
+        return [copy.deepcopy(item) for item in snapshots], copy.deepcopy(union_snapshot)
 
 
 def review_blocks(text: str) -> dict[str, dict[str, str]]:
@@ -684,7 +729,15 @@ def _review_many(
         ):
             raise ValueError("The node or report changed during review")
         key = ids[0].split(".", 1)[0]
-        raw = export_lean(repo, doc=key)
+        # Scoped to the batch: the lock records only these declarations' hashes. The
+        # outer hook refreshes the canonical export and nodes.json afterwards.
+        raw = export_lean(
+            repo,
+            doc=key,
+            out=repo / "build/registration-export.json",
+            merge=False,
+            modules=[f"HomAlg.{node_id}" for node_id in ids],
+        )
         exported_declarations = declaration_map(raw)
         _assert_snapshot(repo, ids, frozen)
         export_path = repo / "literature" / key / "nodes.json"

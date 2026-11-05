@@ -1,5 +1,6 @@
 """Locate a checkout and enumerate its authored document/node files."""
 
+import os
 import re
 from pathlib import Path
 
@@ -31,3 +32,19 @@ def documents(repo: Path, selected: tuple[str, ...] = ()) -> list[str]:
 def node_paths(repo: Path, keys: list[str]) -> list[Path]:
     """Enumerate flat node files in stable document/name order."""
     return [path for key in sorted(keys) for path in sorted((repo / "HomAlg" / key).glob("*.lean"))]
+
+
+def canonical_root(repo: Path) -> str:
+    """The main workspace path, also from inside an engine isolated session checkout.
+
+    An isolated session works in ``<root>/.archon-horizon/session-worktrees/<id>``
+    with ``HOMALG_SESSION_MAIN_ROOT`` naming ``<root>``. Evidence recorded there must
+    stay valid after the checkout lands and is reclaimed.
+    """
+    repo = repo.resolve()
+    main = os.environ.get("HOMALG_SESSION_MAIN_ROOT")
+    if main:
+        root = Path(main).resolve()
+        if repo.parent == root / ".archon-horizon" / "session-worktrees":
+            return str(root)
+    return str(repo)

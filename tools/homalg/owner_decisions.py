@@ -130,15 +130,24 @@ def receipt_path(profile: dict[str, Any]) -> str:
 
 
 def _check_sources(repo: Path, profile: dict[str, Any]) -> None:
+    control = repo
+    if os.environ.get("HOMALG_SESSION_MAIN_ROOT"):
+        from homalg.workspaces import _control_root, _native_owner
+
+        # Only an authenticated native session may read its shared runtime evidence.
+        # Policies and receipts remain bound to the local checkout and immutable START.
+        _native_owner(repo)
+        control, _ = _control_root(repo)
     for item in profile.get("artifacts", []):
-        path = _safe_file(repo, item["path"])
+        # Historical private/build evidence is shared, and bound by the trusted hash.
+        path = _safe_file(control, item["path"])
         if hashlib.sha256(path.read_bytes()).hexdigest() != item["sha256"]:
             raise ValueError(f"Recorded owner decision artifact changed: {item['path']}")
     for item in profile["evidence"]:
         identifier = item["id"]
         if not re.fullmatch(r"I-[0-9]{4,}", identifier):
             raise ValueError("Invalid owner decision inbox reference")
-        path = _safe_file(repo, f".archon-horizon/inbox/local/items/{identifier}.yaml")
+        path = _safe_file(control, f".archon-horizon/inbox/local/items/{identifier}.yaml")
         value = load_yaml(path.read_text())
         if value.get("id") != identifier or digest(evidence_projection(value)) != item["sha256"]:
             raise ValueError(f"Recorded owner decision evidence changed: {identifier}")
@@ -245,11 +254,12 @@ def record(
 
 def _authority(repo: Path) -> tuple[str, bool]:
     if os.environ.get("ARCHON_HORIZON_SESSION"):
-        from homalg.workspaces import _native_owner
+        from homalg.workspaces import _control_root, _native_owner
 
         owner = _native_owner(repo)
+        control, _ = _control_root(repo)
         path = _safe_file(
-            repo, f".archon-horizon/runs/{owner['run']}/sessions/{owner['session']}/meta.json"
+            control, f".archon-horizon/runs/{owner['run']}/sessions/{owner['session']}/meta.json"
         )
         return json.loads(path.read_text())["start_sha"], True
     ledger = (repo / ".archon-horizon/vcs/workspace.git").is_dir()

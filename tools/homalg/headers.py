@@ -5,8 +5,10 @@ This is an independent implementation; see docs/IMPLEMENTATION.md for provenance
 Offsets are Python character offsets; diagnostics use one-based source lines.
 """
 
+import copy
 import re
 from dataclasses import dataclass
+from functools import lru_cache
 from typing import Any, NamedTuple
 
 from homalg.schemas import YamlError, load_yaml
@@ -219,7 +221,15 @@ class Header:
 
 
 def parse_header(text: str) -> Header:
-    """Parse the first module comment, rejecting ambiguous or unsafe YAML headers."""
+    """Parse the first module comment, rejecting ambiguous or unsafe YAML headers.
+
+    Memoized on the exact text like ``load_yaml``; each caller gets a deep copy.
+    """
+    return copy.deepcopy(_parse_header(text))
+
+
+@lru_cache(maxsize=2048)
+def _parse_header(text: str) -> Header:
     spans = lex(text)
     comment = next((span for span in spans if span.kind == "moddoc"), None)
     if comment is None:

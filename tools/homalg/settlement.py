@@ -274,9 +274,21 @@ def plan_settlement(
         for primary in primary_ids
         if primary in scoped
     }
+    review_failed = {}
+    if info.get("phase") == "review":
+        # Remember which delivery failed, so the node goes back to its author instead
+        # of being sent to review again unchanged.
+        for primary in released:
+            entry = next(
+                (item for item in info.get("handoffs", []) if primary in item.get("node_ids", [])),
+                None,
+            )
+            if entry is not None:
+                review_failed[primary] = Path(entry["path"]).stem
     return {
         **outcome,
         "applicable": True,
+        "review_failed": review_failed,
         "retained": sorted(keep),
         "released": released,
         "released_files": released_files,
@@ -305,6 +317,8 @@ def apply_settlement(
         "released_files": plan["released_files"],
         "failures": plan["failures"],
     }
+    if plan.get("review_failed"):
+        entry["review_failed"] = plan["review_failed"]
     if interval:
         entry["interval"] = list(interval)
     guidance = objective_extension(repo, current)
@@ -396,6 +410,7 @@ def ensure_units(
             "attempts": 0,
             "pages": node.get("source", {}).get("pages", info.get("pages", [])),
             "granularity": "node",
+            "phase": "author",
             "kind_group": "definitions" if node.get("kind") in DEFINITION_KINDS else "theorems",
             "node_ids": group,
             "primary_nodes": [primary],
@@ -437,6 +452,48 @@ def _record_closure(repo: Path, task_id: str, evaluation: dict[str, Any]) -> Non
     atomic_write(path, dump_metadata(current))
 
 
+def _legacy_unit(record: dict[str, Any]) -> bool:
+    info = record.get("metadata", {}).get("homalg", {})
+    return (
+        info.get("granularity") == "node"
+        and info.get("stage") == "STMT"
+        and info.get("phase") is None
+        and record.get("status") in {"queued", "blocked"}
+    )
+
+
+def _record_replan(repo: Path, record: dict[str, Any], headers: dict[str, dict]) -> None:
+    """Release every primary of a legacy unit to planning, keeping its guidance."""
+    path = repo / ".archon-horizon/tasks/items" / f"{record['id']}.yaml"
+    current = parse_metadata(path.read_text())
+    info = current["metadata"]["homalg"]
+    primary_ids = primaries(current, headers)
+    released = {
+        primary: [
+            node_id
+            for node_id in info.get("node_ids", [])
+            if _primary_of(node_id, set(primary_ids), headers) == primary
+        ]
+        or [primary]
+        for primary in primary_ids
+    }
+    entry: dict[str, Any] = {
+        "at": datetime.now(UTC).isoformat(),
+        "actor": "homalg",
+        "replanned": True,
+        "retained": [],
+        "released": released,
+        "released_files": [],
+        "failures": {},
+    }
+    guidance = objective_extension(repo, current)
+    refs = list(current.get("inbox_refs") or [])
+    if guidance or refs:
+        entry["inherit"] = {"source": record["id"], "guidance": guidance, "inbox_refs": refs}
+    info["settlements"] = [*info.get("settlements", []), entry]
+    atomic_write(path, dump_metadata(current))
+
+
 def settle_document(
     repo: Path,
     key: str,
@@ -444,8 +501,14 @@ def settle_document(
     task_ids: tuple[str, ...] = (),
     apply: bool = False,
     refresh_export: bool = False,
+    replan: bool = False,
 ) -> dict[str, Any]:
     """Close tasks already satisfied by current evidence and settle partial statement units.
+
+    ``replan`` additionally cancels the remaining queued or blocked statement units
+    planned before authoring and review were separated, handing their unsettled
+    nodes back to planning, which recreates them as larger author units. Accepted
+    nodes stay accepted; guidance and inbox references carry over.
 
     Without ``task_ids`` only plain generated tasks are considered: a task whose
     objective was extended may carry obligations its stage gate does not capture,
@@ -504,6 +567,10 @@ def settle_document(
             name: value for name, value in plan.items() if name not in {"narrowed", "evaluation"}
         }
         if not plan["applicable"]:
+            if replan and _legacy_unit(record):
+                actions.append({"task": record["id"], "action": "replan", **summary})
+                plans[record["id"]] = record
+                continue
             actions.append({"task": record["id"], "action": "none", **summary})
             continue
         actions.append({"task": record["id"], "action": "settle", **summary})
@@ -517,6 +584,9 @@ def settle_document(
             elif item["action"] == "settle":
                 apply_settlement(repo, plans[item["task"]])
                 _set_status(repo, item["task"], "done")
+            elif item["action"] == "replan":
+                _record_replan(repo, plans[item["task"]], headers)
+                _set_status(repo, item["task"], "cancelled")
         prior_plan = repo / f".archon-horizon/overlay/plan-{key}.json"
         prior = json.loads(prior_plan.read_text()) if prior_plan.exists() else {}
         result = planning.plan(repo, key, advance=True, no_claim=prior.get("no_claim", False))

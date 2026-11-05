@@ -13,6 +13,7 @@ from homalg.engine import task
 from homalg.io import atomic_create, json_text
 from homalg.leanexport import declaration_map, export_lean, file_fingerprint, workspace_lock
 from homalg.nodeio import header_mapping, replace_header
+from homalg.repository import canonical_root
 from homalg.review_policy import agent_review_record
 from homalg.schemas import SchemaStore
 
@@ -124,18 +125,33 @@ def _binding(repo: Path, handoff: dict, cohorts: list[Cohort]) -> tuple[dict, li
         "approval",
         "task_complete",
     }
-    optional = {"created_at", "validation", "pending_review_renewal"}
+    optional = {"created_at", "validation", "pending_review_renewal", "workspace", "recorded"}
     _fields(handoff, common | {"deliveries"}, optional)
     _version(handoff, "author-handoff-batch")
+    workspace = handoff.get("workspace") or handoff.get("repo")
     if (
-        handoff.get("repo") != str(repo)
+        workspace not in {str(repo), canonical_root(repo)}
         or handoff.get("ready_for_review") is not True
         or handoff.get("approval") is not False
         or handoff.get("task_complete") is not False
     ):
         raise ValueError("Expected a successful author handoff batch for this repository")
     record = task(repo, handoff["task"])
-    if workflow._contract(record) != handoff.get("contract"):
+    portable = all(
+        isinstance(item, dict) and item.get("author_inputs", {}).get("schema_version") == 2
+        for item in handoff.get("deliveries") or [{}]
+    )
+    if portable:
+        # Settlement may narrow the author task later; judge the delivery by its own scope.
+        contract = handoff.get("contract") or {}
+        if record["id"] != contract.get("id"):
+            raise ValueError("Author handoff names a different task")
+        record = {
+            "id": contract["id"],
+            "write_set": contract["write_set"],
+            "metadata": {"homalg": contract["homalg"]},
+        }
+    elif workflow._contract(record) != handoff.get("contract"):
         raise ValueError("Author handoff task scope changed")
     deliveries = handoff.get("deliveries")
     if not isinstance(deliveries, list) or not deliveries:
@@ -161,11 +177,13 @@ def _binding(repo: Path, handoff: dict, cohorts: list[Cohort]) -> tuple[dict, li
         if delivery is None:
             raise ValueError("Cohort author is absent from the actual handoff")
         _fields(
-            delivery, common | {"author_session", "node_ids", "author_inputs", "compiled"}, optional
+            delivery,
+            common | {"author_session", "node_ids", "author_inputs", "compiled"},
+            optional,
         )
         _version(delivery, "author-handoff")
         if (
-            any(delivery.get(key) != handoff[key] for key in ("repo", "task", "contract"))
+            any(delivery.get(key) != handoff.get(key) for key in ("repo", "task", "contract"))
             or delivery.get("ready_for_review") is not True
             or delivery.get("approval") is not False
             or delivery.get("task_complete") is not False
@@ -322,7 +340,13 @@ def register(repo: Path, snapshot_path: Path, *, now: datetime | None = None) ->
             )
 
         guard()
-        raw = export_lean(repo, doc=ids[0].split(".", 1)[0])
+        raw = export_lean(
+            repo,
+            doc=ids[0].split(".", 1)[0],
+            out=repo / "build/registration-export.json",
+            merge=False,
+            modules=[f"HomAlg.{node_id}" for node_id in ids],
+        )
         export_path = repo / "literature" / ids[0].split(".", 1)[0] / "nodes.json"
         exported_files = {str(export_path): file_fingerprint(export_path)}
         exported = declaration_map(raw)

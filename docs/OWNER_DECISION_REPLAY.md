@@ -47,6 +47,16 @@ and remain owner-sensitive in PR classification. A receipt must be present in th
 PR base before a PR can use it to resolve a node. These are cooperative repository
 and process boundaries, not cryptographic authentication of the owner's identity.
 
+An isolated native session may validate an existing resolution. Its actual live
+parent, task identity and held run lease are checked before reading session-start
+metadata, inbox evidence and hash-bound historical artifacts from the canonical
+control directory. This includes private source pages and ignored build evidence
+that are shared or absent in the isolated checkout. Policies and receipts still
+come from the isolated source checkout and its immutable start commit. Shared
+runtime mounts do not authorize symlinked
+evidence files, a different control directory, or replay writes from the isolated
+session; the ordinary no-symlink checks and replay restrictions remain in force.
+
 Replay retains the original dispute fields and history, adds a separately typed
 resolution with the actual agent/session and receipt digest, removes its active
 docstring dispute marker, and invalidates any existing agent fidelity lock. It

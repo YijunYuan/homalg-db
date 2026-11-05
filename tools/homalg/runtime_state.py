@@ -2,6 +2,7 @@
 
 import hashlib
 import json
+import re
 from pathlib import Path
 from typing import Any
 
@@ -12,7 +13,7 @@ from homalg.headers import parse_header
 from homalg.io import atomic_write, json_text
 from homalg.leanexport import export_lean
 from homalg.leantext import sorry_count
-from homalg.repository import documents, node_paths
+from homalg.repository import canonical_root, documents, node_paths
 from homalg.review import lock_changes
 from homalg.roots import generate_roots
 from homalg.schemas import SchemaStore
@@ -57,17 +58,70 @@ def refresh(repo: Path, key: str) -> None:
     export_lean(repo, doc=key)
 
 
-def document_state(repo: Path, key: str) -> dict[str, Any]:
-    """Compute the same status function as indexing, degrading individual stale nodes explicitly."""
-    all_nodes: dict[str, dict[str, Any]] = {}
+NAME = r"[A-Za-z][A-Za-z0-9_]*"
+LOCAL_IMPORT = re.compile(rf"(?m)^import\s+HomAlg\.({NAME})\.({NAME})\s*$")
+
+
+def _exported(root: Path) -> dict[str, dict[str, Any]]:
     raw: dict[str, dict[str, Any]] = {}
     for path in sorted(
-        (repo / "build").glob("lean-export*.json"), key=lambda path: path.stat().st_mtime_ns
+        (root / "build").glob("lean-export*.json"), key=lambda path: path.stat().st_mtime_ns
     ):
         data = json.loads(path.read_text())
         for module in data.get("modules", []):
             for declaration in module["decls"]:
                 raw[declaration["name"]] = declaration
+    return raw
+
+
+class _CanonicalExport:
+    """Compiled facts of the canonical workspace, for an isolated session checkout.
+
+    A checkout holds only its own scoped export. A node whose source and whole local
+    import closure are byte-identical to the canonical workspace compiles to the
+    same declarations there, so its canonical export entry is current here too.
+    Anything the session changed, or that imports a change, stays approximate.
+    """
+
+    def __init__(self, repo: Path):
+        self.repo = repo
+        self.main = Path(canonical_root(repo))
+        self.raw = _exported(self.main) if self.main != repo.resolve() else {}
+        self._same: dict[str, bool] = {}
+
+    def _identical(self, node_id: str, trail: frozenset[str] = frozenset()) -> bool:
+        if node_id not in self._same:
+            if node_id in trail:
+                return False
+            doc, local = node_id.split(".", 1)
+            mine = self.repo / "HomAlg" / doc / f"{local}.lean"
+            theirs = self.main / "HomAlg" / doc / f"{local}.lean"
+            try:
+                text = mine.read_bytes()
+                same = theirs.read_bytes() == text
+            except OSError:
+                same = False
+            if same:
+                imports = {
+                    f"{d}.{n}" for d, n in LOCAL_IMPORT.findall(text.decode(errors="replace"))
+                }
+                same = all(self._identical(item, trail | {node_id}) for item in imports)
+            self._same[node_id] = same
+        return self._same[node_id]
+
+    def declarations(self, node_id: str, names: list[str]) -> dict[str, dict[str, Any]] | None:
+        if not self.raw or not names or not all(name in self.raw for name in names):
+            return None
+        if not self._identical(node_id):
+            return None
+        return {name: self.raw[name] for name in names}
+
+
+def document_state(repo: Path, key: str) -> dict[str, Any]:
+    """Compute the same status function as indexing, degrading individual stale nodes explicitly."""
+    all_nodes: dict[str, dict[str, Any]] = {}
+    raw = _exported(repo)
+    canonical = _CanonicalExport(repo)
     for doc in documents(repo):
         path = repo / "literature" / doc / "nodes.json"
         existing = (
@@ -95,6 +149,11 @@ def document_state(repo: Path, key: str) -> dict[str, Any]:
                     "deps_diff": {"verified_not_declared": [], "declared_not_verified": []},
                 }
             available = current and all(name in raw for name in authored["decls"])
+            if current and not available:
+                shared = canonical.declarations(authored["id"], authored["decls"])
+                if shared is not None:
+                    raw.update(shared)
+                    available = True
             all_nodes[authored["id"]] = {
                 "id": authored["id"],
                 "authored": authored,

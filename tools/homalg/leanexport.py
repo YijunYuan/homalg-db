@@ -358,7 +358,12 @@ def merge_document(
 
 
 def export_lean(
-    repo: Path, doc: str | None = None, out: Path | None = None, *, merge: bool = True
+    repo: Path,
+    doc: str | None = None,
+    out: Path | None = None,
+    *,
+    merge: bool = True,
+    modules: list[str] | tuple[str, ...] | None = None,
 ) -> dict[str, Any]:
     """Build selected modules, export authoritative JSON, and merge local derived records.
 
@@ -368,19 +373,36 @@ def export_lean(
     malformed input, duplicate declarations, invalid exports or concurrent edits.
     All generated JSON files are replaced atomically after validation succeeds.
     ``merge=False`` leaves committed node files untouched for validation/freshness checks.
+    ``modules`` builds and exports only those node modules (and what they import):
+    a scoped export for one batch. It never merges or replaces the canonical export.
     """
     repo = repo.resolve()
     suffix = f"-{doc}" if doc else ""
     target = out or Path(f"build/lean-export{suffix}.json")
     if not target.is_absolute():
         target = repo / target
+    if modules is not None:
+        if merge or out is None or not doc:
+            raise ValueError("A scoped export needs a document, merge=False and its own output")
+        if target == repo / f"build/lean-export{suffix}.json":
+            raise ValueError("A scoped export must not replace the canonical document export")
     with workspace_lock(repo):
         before = compilation_inputs(repo)
         keys = documents(repo, (doc,) if doc else ())
         schemas = SchemaStore(repo / "schema")
-        modules_file = repo / f"build/modules{suffix}.txt"
-        modules = module_list(repo, keys)
-        constants_file = repo / f"build/check-constants{suffix}.txt"
+        scoped = modules is not None
+        tag = f"{suffix}-scoped" if scoped else suffix
+        modules_file = repo / f"build/modules{tag}.txt"
+        available = set(module_list(repo, keys))
+        if scoped:
+            requested = sorted(dict.fromkeys(modules))
+            unknown = [name for name in requested if name not in available]
+            if not requested or unknown:
+                raise ValueError(f"Scoped export modules are not document nodes: {unknown}")
+            modules = requested
+        else:
+            modules = sorted(available)
+        constants_file = repo / f"build/check-constants{tag}.txt"
         atomic_write(
             constants_file, "".join(f"{name}\n" for name in check_constants(repo, keys, schemas))
         )
