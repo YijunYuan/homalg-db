@@ -6,12 +6,12 @@ agent's application of a bounded prior owner instruction. It is neither a human
 confirmation nor a new adjudication, independent review, or completed formal proof.
 The ordinary guarded human commands remain unchanged.
 
-`horizon/owner-decision-replays.json` contains only four specifically adopted CE1956
+`horizon/owner-decision-replays.json` contains only five specifically adopted CE1956
 corrections: the Chapter I p. 4 quotient target, p. 13 principal ideal domain wording,
-Exercise I.6's `n > 1` hypothesis, and Chapter III p. 50's two corrected proof
-summands. The first three bind the immutable relay projections of I-0022/23/24;
-the fourth binds I-0034, the actual decision artifact and the reviewed source page
-hashes. Inbox authorship is not evidence of a human signature: the separate receipt
+Exercise I.6's `n > 1` hypothesis, Chapter III p. 50's two corrected proof summands,
+and the Chapter I p. 15 coordinate remainder in Proposition 6.1's proof. The first
+three bind the immutable relay projections of I-0022/23/24; the last two bind their
+relay item, the actual decision artifact and the reviewed source page hashes. Inbox authorship is not evidence of a human signature: the separate receipt
 truthfully identifies the outer operator attesting to the prior instruction.
 
 At an idle administrative boundary, after installing the reviewed profile into the
@@ -63,6 +63,16 @@ docstring dispute marker, and invalidates any existing agent fidelity lock. It
 cannot replace a human or legacy human lock. Draft workers cannot perform replay.
 An idle outer replay is also supported and leaves its node edit for the normal
 integration commit; it does not manufacture a human ledger action.
+
+A profile may carry the adopted correction itself in its `correction` field: the
+erratum deviation and, for a proof dispute, a Formalization-notes paragraph with
+explicitly labelled corrected displays (`\tag{..., corrected}`). This covers an
+owner decision made before any session wrote the correction. The binding is computed
+over the node with that correction applied; attestation does not edit the node, and
+the replay writes exactly the pinned text before resolving the dispute. The owner
+therefore does not need a guarded terminal command, and no idle boundary is needed
+between authoring the correction and replaying it. Any other change to the pinned
+text or to the literal source makes the receipt stale.
 
 The fourth profile binds the complete literal proof and the two explicitly labelled
 corrected displays in Formalization notes. Those displays are not a replacement

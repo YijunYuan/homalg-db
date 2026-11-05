@@ -37,7 +37,13 @@ document after the session:
 
 A node you cannot deliver stays out of the handoff with a node comment explaining
 why; do not mark the task done, the outer hook accepts the delivered nodes. A
-suspected false statement goes through homalg dispute open --kind statement. For a
-node with an open proof dispute eligible under docs/AGENT_PROOF_ERRATA.md, deliver
-its statement first, then follow that route. Never edit generated blueprint/. Do not
+suspected false statement goes through homalg dispute open --kind statement. If a
+node's open dispute has a recorded owner decision (an entry naming the node in
+horizon/owner-decision-replays.json with a receipt under
+literature/<doc>/owner-decisions/), do not ask again: run homalg dispute
+replay-owner-decision NODE --decision ID --by ACTUAL_AGENT --session ACTUAL_SESSION
+as docs/OWNER_DECISION_REPLAY.md describes, then update any prose that still calls
+the dispute open. For a node with an open proof dispute eligible under
+docs/AGENT_PROOF_ERRATA.md, deliver its statement first, then follow that route.
+Never edit generated blueprint/. Do not
 run make test/validate/site, homalg after-session or homalg plan --advance.

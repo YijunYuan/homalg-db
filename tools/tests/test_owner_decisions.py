@@ -691,3 +691,128 @@ def test_dispute_validation_pipeline_supports_only_authenticated_isolation(isola
         finding.rule == "dispute-valid" and "live Horizon session" in finding.message
         for finding in findings
     )
+
+
+CORRECTED_NOTE = (
+    "### Owner-adopted proof erratum\n\n"
+    "Fictional corrected proof display:\n"
+    "\\[\n\\tag{1, corrected}x=y\n\\]\n"
+    "The rest of the literal Proof is unchanged."
+)
+
+
+@pytest.fixture
+def pinned(repo: Path, monkeypatch: pytest.MonkeyPatch) -> Path:
+    """A fictional proof dispute whose adopted correction exists only in the profile."""
+    import homalg.workspaces
+    from homalg.disputes import _docstring_marker
+    from homalg.owner_decisions import apply_correction
+
+    @contextmanager
+    def isolated_lock(*args, **kwargs):
+        yield lambda: None
+
+    monkeypatch.setattr(homalg.workspaces, "_integration_lock", isolated_lock)
+    path = repo / "HomAlg/Fixture2000/Thm_1.lean"
+    source = path.read_text()
+    metadata = header_mapping(source)
+    metadata["dispute"] = {
+        "status": "open",
+        "kind": "proof",
+        "reason": "Fictional fixture proof slip",
+        "inbox": "I-0011",
+        "opened_by": "fixture-author",
+        "on": "2026-11-05",
+    }
+    schemas = SchemaStore(repo / "schema")
+    source = replace_header(source, metadata, schemas)
+    source = _docstring_marker(source, metadata["decls"][0], "PROOF-DISPUTED:")
+    path.write_text(source)
+    evidence = {
+        "id": "I-0023",
+        "provider": "local",
+        "kind": "operator",
+        "body": "Fictional fixture relay only",
+        "author": "fixture-operator",
+        "created_at": "2026-11-05T00:00:00Z",
+    }
+    item = repo / ".archon-horizon/inbox/local/items/I-0023.yaml"
+    item.parent.mkdir(parents=True)
+    item.write_text(dump_metadata(evidence))
+    profile = {
+        "id": "fictional-pinned-correction",
+        "node_id": "Fixture2000.Thm_1",
+        "owner": "fictional-owner",
+        "instruction": "Fictional instruction, no real approval",
+        "evidence": [{"id": "I-0023", "sha256": digest(evidence_projection(evidence))}],
+        "correction": {
+            "deviation": {
+                "kind": "erratum",
+                "what": "Fictional corrected proof sentence",
+                "why": "Fictional adopted owner direction, exercised only in tests",
+            },
+            "note": CORRECTED_NOTE,
+        },
+    }
+    corrected = apply_correction(source, profile, schemas)
+    profile["binding_sha256"] = digest(
+        source_binding(corrected, read_document(repo, "Fixture2000"), metadata["dispute"])
+    )
+    (repo / "horizon").mkdir()
+    (repo / POLICY).write_text(json_text({"schema_version": 1, "decisions": [profile]}))
+    subprocess.run(
+        ["git", "init", "--bare", "-q", str(repo / ".archon-horizon/vcs/workspace.git")], check=True
+    )
+    git(repo, "config", "user.name", "Fictional Fixture")
+    git(repo, "config", "user.email", "fixture@example.invalid")
+    snapshot(repo)
+    return repo
+
+
+def test_pinned_correction_is_attested_before_and_written_by_replay(pinned: Path) -> None:
+    repo, node = pinned, "Fixture2000.Thm_1"
+    path = repo / "HomAlg/Fixture2000/Thm_1.lean"
+    before = path.read_text()
+    receipt = record(
+        repo,
+        "fictional-pinned-correction",
+        by="fixture-operator",
+        session="outer-fixture",
+        attest_existing=True,
+    )
+    # Attestation binds the corrected content but never edits the node itself.
+    assert path.read_text() == before
+    start = git(repo, "rev-parse", "HEAD")
+    result = replay(
+        repo, node, decision="fictional-pinned-correction", by="fixture-agent", session="native"
+    )
+    assert result["resolution"]["decision_id"] == receipt["decision_id"]
+    source = path.read_text()
+    header = parse_header(source)
+    fidelity = header.metadata["fidelity"]
+    assert fidelity["status"] == "deviates" and "reviewed" not in fidelity
+    assert fidelity["deviations"][-1]["what"] == "Fictional corrected proof sentence"
+    assert CORRECTED_NOTE in header.sections["Formalization notes"]
+    assert header.sections["Proof"] == parse_header(before).sections["Proof"]
+    assert "PROOF-DISPUTED:" not in source
+    assert validate_resolution(repo, source, anchor=start)["decision_id"] == receipt["decision_id"]
+    # Replaying again is a no-op; editing the pinned correction makes it stale.
+    replay(repo, node, decision="fictional-pinned-correction", by="fixture-agent", session="native")
+    assert path.read_text() == source
+    # The outer hook's scope check accepts the replay within the unit's node scope.
+    identifier = "Fixture2000.STMT.Unit_Thm_1"
+    task_file = repo / f".archon-horizon/tasks/items/{identifier}.yaml"
+    task_file.parent.mkdir(parents=True, exist_ok=True)
+    task_file.write_text(
+        dump_metadata(
+            {
+                "id": identifier,
+                "metadata": {"homalg": {"doc": "Fixture2000", "stage": "STMT"}},
+                "write_set": {"files": ["HomAlg/Fixture2000/Thm_1.lean"]},
+            }
+        )
+    )
+    assert check_scope(repo, identifier, start, snapshot(repo)) == []
+    tampered = source.replace("x=y", "x=z")
+    with pytest.raises(ValueError, match="stale"):
+        validate_resolution(repo, tampered, anchor=start)
