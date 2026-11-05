@@ -173,9 +173,16 @@ an implemented statement.
 
 Inspect processes with `horizon ps`. Wait for a run before making guarded changes;
 if necessary stop a specific run with `horizon ps --kill RUN`, then resume with
-`horizon run --resume latest`. The fork's optional per-session ledger mode supports
-disjoint workspaces/scopes with serialized landing; serial execution is the
-default. See the fork's `docs/HOMALG.md` for concurrency and conflict recovery.
+`horizon run --resume latest`. Lanes of one `--lanes` run share one process, so
+killing any of them stops all; restart lanes with `horizon run '*' --lanes N`.
+
+With `workspace.session_ledger: true`, `horizon run '*'` runs
+`scheduler.max_parallel_sessions` lanes concurrently over one queue; `--lanes N`
+overrides the count. Most sessions run in isolated session checkouts and land
+through the serialized boundary; private-transcription tasks and disputed
+statement units run alone in the canonical workspace. See
+[PARALLEL_WORKFLOW.md](PARALLEL_WORKFLOW.md#concurrent-lanes) and the fork's
+`docs/HOMALG.md` for concurrency and conflict recovery.
 
 ## Publication boundary
 

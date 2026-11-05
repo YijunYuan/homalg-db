@@ -155,6 +155,11 @@ def check_scope(repo: Path, task_id: str, since: str, until: str) -> list[str]:
     record = task(repo, task_id)
     key = record["metadata"]["homalg"]["doc"]
     scopes = set(record.get("write_set", {}).get("files", record.get("scope", {}).get("files", [])))
+    # A settlement narrows a unit after its own session; re-auditing that exact
+    # interval keeps the scope the session actually held.
+    from homalg.settlement import released_scope
+
+    scopes |= released_scope(record, since, until)
     if any("*" in path or "?" in path or ".." in Path(path).parts for path in scopes):
         raise ValueError("HomAlg tasks must have explicit, repository-relative file scopes")
     schemas = SchemaStore(repo / "schema")

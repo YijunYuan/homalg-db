@@ -17,7 +17,7 @@ from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 
-from homalg import engine, planning, publishing, scope, stages
+from homalg import engine, planning, publishing, scope, settlement, stages
 from homalg.claims import claim_view, instant, load_status_history
 from homalg.collaboration import Client, append_merge_records, main_claim, policy_for
 from homalg.documents import dump_metadata, parse_metadata
@@ -452,6 +452,30 @@ def after_session(repo: Path, task_id: str, session: Path, since: str, until: st
             )
             if not report["ok"]:
                 evaluation["complete"] = False
+            settled = None
+            if (
+                report["ok"]
+                and not evaluation["complete"]
+                and settlement.auto_eligible(repo, record)
+            ):
+                settled = _timed_call(
+                    timings,
+                    "settlement",
+                    lambda: settlement.plan_settlement(
+                        repo,
+                        record,
+                        evaluation,
+                        lambda narrowed: stages.evaluate(repo, narrowed, refresh_exports=False),
+                    ),
+                )
+                result["settlement"] = {
+                    name: value
+                    for name, value in settled.items()
+                    if name not in {"narrowed", "evaluation"}
+                }
+                if settled["applicable"]:
+                    settlement.apply_settlement(repo, settled, interval=(since, until))
+                    evaluation = settled["evaluation"]
             progressed = progress_made(
                 repo, record, state, prior_overlay, since, session, private_start
             )
@@ -466,6 +490,18 @@ def after_session(repo: Path, task_id: str, session: Path, since: str, until: st
                     repo, key, advance=True, no_claim=prior_plan.get("no_claim", False)
                 ),
             )
+            if settled and settled["applicable"]:
+                result["released_units"] = _timed_call(
+                    timings,
+                    "released_units",
+                    lambda: settlement.ensure_units(
+                        repo,
+                        key,
+                        settled["released"],
+                        source=engine.task(repo, task_id),
+                        login=engine.settings(repo).get("login") or "",
+                    ),
+                )
             for operation, action in (
                 ("publish", lambda: publishing.publish_status(repo, key, session=session)),
                 ("backup", lambda: backup(repo, session=session)),

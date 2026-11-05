@@ -8,6 +8,7 @@ from functools import partial
 from pathlib import Path
 from typing import Any
 
+from homalg import settlement
 from homalg.blueprint import source_order, source_rank
 from homalg.claims import claim_view, load_status_history
 from homalg.documents import dump_metadata, parse_metadata, read_document, write_metadata
@@ -379,9 +380,18 @@ def statement_units(
     # Registered scopes never grow or get duplicated by a later frontier sweep.
     # Preserve held/cancelled units too: batching cannot bypass an operator hold.
     by_primary = {candidate["node_ids"][0]: candidate for candidate in candidates}
+    records = tasks(repo, key)
+    # A settlement explicitly hands released primaries back to the frontier. A
+    # cancelled unit keeps holding every other primary, but not those.
+    released = {
+        primary
+        for record in records
+        for entry in record.get("metadata", {}).get("homalg", {}).get("settlements", [])
+        for primary in entry.get("released", {})
+    }
     reserved = set()
     preserved = []
-    for record in tasks(repo, key):
+    for record in records:
         info = record.get("metadata", {}).get("homalg", {})
         if info.get("granularity") != "node":
             continue
@@ -390,7 +400,12 @@ def statement_units(
             for identifier in info.get("node_ids", [])
             if identifier in frontier.headers and "aux" not in frontier.headers[identifier].metadata
         ]
-        reserved.update(primary)
+        if record.get("status") == "cancelled":
+            reserved.update(identifier for identifier in primary if identifier not in released)
+            if any(identifier in released for identifier in primary):
+                continue
+        else:
+            reserved.update(primary)
         if primary and all(identifier in by_primary for identifier in primary):
             preserved.append(
                 {
@@ -422,12 +437,23 @@ def statement_units(
             )
         return result
 
+    def disputed(candidate: dict[str, Any]) -> bool:
+        # An open dispute refuses the statement lock until adjudication; batching
+        # it would hold every independent sibling behind that one decision.
+        return any(
+            frontier.headers[identifier].metadata.get("dispute", {}).get("status") == "open"
+            for identifier in candidate["node_ids"]
+            if identifier in frontier.headers
+        )
+
     batches = []
     while ready:
         selected = [ready.pop(0)]
         for candidate in list(ready):
-            if len(selected) >= batch_size:
+            if len(selected) >= batch_size or disputed(selected[0]):
                 break
+            if disputed(candidate):
+                continue
             if (
                 candidate["metadata"]["homalg"]["chapter"]
                 != selected[0]["metadata"]["homalg"]["chapter"]
@@ -483,10 +509,10 @@ def statement_units(
     return [*preserved, *batches, *held]
 
 
-def create_task(
+def render_objective(
     repo: Path, record: dict[str, Any], *, login: str, document: dict[str, Any]
-) -> None:
-    """Create through the engine CLI, then add only the documented HomAlg metadata."""
+) -> str:
+    """Render the generated objective exactly as task creation would."""
     info = record["metadata"]["homalg"]
     template = (repo / "horizon/tasks" / f"{TEMPLATES[info['stage']]}.md").read_text()
     fields = {
@@ -504,15 +530,41 @@ def create_task(
     }
     objective = template.format_map(fields)
     if info.get("author_groups"):
-        objective += "\nNative parallel author groups (each group has one actual author):\n"
+        objective += AUTHOR_GROUPS_HEADER
         objective += "\n".join(
             f"- {group['primary']}: {', '.join(group['node_ids'])}"
             for group in info["author_groups"]
         )
-        objective += (
-            "\nDispatch these independent groups concurrently in isolated native-owned workers. "
-            "Keep independent review and canonical acceptance coordinated.\n"
-        )
+        objective += AUTHOR_GROUPS_FOOTER
+    return objective
+
+
+AUTHOR_GROUPS_HEADER = "\nNative parallel author groups (each group has one actual author):\n"
+AUTHOR_GROUPS_FOOTER = (
+    "\nDispatch these independent groups concurrently in isolated native-owned workers. "
+    "Keep independent review and canonical acceptance coordinated.\n"
+)
+
+
+def create_task(
+    repo: Path,
+    record: dict[str, Any],
+    *,
+    login: str,
+    document: dict[str, Any],
+    guidance: str = "",
+    inbox_refs: tuple[str, ...] | list[str] = (),
+) -> None:
+    """Create through the engine CLI, then add only the documented HomAlg metadata.
+
+    ``guidance`` carries obligations a settled source task attached to released
+    nodes; it is appended verbatim and makes the objective non-generated.
+    """
+    info = record["metadata"]["homalg"]
+    objective = render_objective(repo, record, login=login, document=document)
+    generated = objective
+    if guidance.strip():
+        objective += "\n\n" + guidance.strip() + "\n"
     args = [
         "task",
         "add",
@@ -534,9 +586,18 @@ def create_task(
     if info.get("granularity") == "node":
         args.extend(("--priority", "high"))
     horizon(repo, *args)
+    if inbox_refs:
+        refs = ["task", "set", record["id"], "--author", "homalg", "--json"]
+        for ref in dict.fromkeys(inbox_refs):
+            refs.extend(("--inbox-ref", ref))
+        horizon(repo, *refs)
     path = repo / ".archon-horizon/tasks/items" / f"{record['id']}.yaml"
     saved = parse_metadata(path.read_text())
-    saved.setdefault("metadata", {})["homalg"] = info
+    stored = dict(info)
+    if objective == generated:
+        # Lets settlement tell a plain generated objective from one later extended.
+        stored["objective_sha256"] = hashlib.sha256(objective.encode()).hexdigest()
+    saved.setdefault("metadata", {})["homalg"] = stored
     if record.get("metadata", {}).get("roadmap_status_sync") is False:
         saved["metadata"]["roadmap_status_sync"] = False
     atomic_write(path, dump_metadata(saved))
@@ -697,13 +758,27 @@ def plan(
             "attempts": 0,
         }
         atomic_write(path, dump_metadata(saved))
-    existing = {record["id"] for record in tasks(repo, key)}
+    current_tasks = tasks(repo, key)
+    existing = {record["id"] for record in current_tasks}
+    inherited = settlement.inheritance(current_tasks)
     created = []
     for record in proposals:
         if proofs == "deferred" and record["metadata"]["homalg"]["stage"] == "PROOF":
             continue
         if record["id"] not in existing:
-            create_task(repo, record, login=login, document=document)
+            sources = [
+                inherited[identifier]
+                for identifier in record.get("node_ids", [])
+                if identifier in inherited
+            ]
+            create_task(
+                repo,
+                record,
+                login=login,
+                document=document,
+                guidance=settlement.guidance_text(sources),
+                inbox_refs=[ref for source in sources for ref in source.get("inbox_refs", [])],
+            )
             created.append(record["id"])
     if unit_options or prior.get("statement_frontier") or prior.get("statement_nodes"):
         reconcile_frontier_holds(
@@ -760,6 +835,26 @@ def plan(
     }
     atomic_write(overlay, json_text(state))
     return {**state, "created_tasks": created}
+
+
+def disputed_exclusive(frontier: StatementFrontier, info: dict[str, Any]) -> str | None:
+    """Run a unit alone in the canonical workspace while one of its nodes is disputed.
+
+    Dispute adjudication, typed errata and owner-decision replay are guarded native
+    operations bound to the canonical workspace; concurrent lanes run every other
+    unit in isolated session checkouts. Only units with an open dispute are marked.
+    """
+    if info.get("granularity") != "node":
+        return None
+    disputed = sorted(
+        identifier
+        for identifier in info.get("node_ids", [])
+        if identifier in frontier.headers
+        and frontier.headers[identifier].metadata.get("dispute", {}).get("status") == "open"
+    )
+    if not disputed:
+        return None
+    return "open dispute on " + ", ".join(disputed) + "; adjudication needs the canonical workspace"
 
 
 def reconcile_frontier_holds(
@@ -826,6 +921,12 @@ def reconcile_frontier_holds(
         else:
             metadata.pop("dispatch_hold", None)
             info.pop("frontier_dispatch_hold", None)
+        exclusive = disputed_exclusive(frontier, info) if frontier is not None else None
+        if exclusive:
+            metadata["exclusive"] = exclusive
+            info["frontier_exclusive"] = True
+        elif info.pop("frontier_exclusive", None):
+            metadata.pop("exclusive", None)
         path = repo / ".archon-horizon/tasks/items" / f"{record['id']}.yaml"
         updates.append((path, dump_metadata(record)))
     facts.assert_current()

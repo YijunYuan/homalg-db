@@ -76,6 +76,81 @@ prose, DAG annotations, comments, metadata, generated-data freshness, blueprint
 synchronization, review or final validation. Deferred formal proofs leave all
 these obligations in place.
 
+## Concurrent lanes
+
+`horizon run '*' --lanes N` runs N native sessions at once over one shared task
+queue. It requires `workspace.session_ledger: true`; without `--lanes`, an
+isolated workspace uses `scheduler.max_parallel_sessions` lanes. Each lane is an
+ordinary sequential run with its own run log. A coordinator inside the run
+process hands every lane the highest-priority queued task whose write set does
+not overlap a task still active in another lane, and marks it `running` before
+the agent starts. A lane with nothing to start waits while another lane is
+active, because that session's outer hook may create new ready units. When no
+lane is active and nothing is runnable, every lane stops.
+
+Most sessions run in an isolated session checkout under
+`.archon-horizon/session-worktrees/<id>/`. That checkout is the lead's canonical
+source tree: native draft workers, collection, `horizon check`, exports, review
+registration and stage checks operate on it, and the engine lands its exact
+changed files after the lead returns. The build cache, check lock, task/inbox
+stores and private literature are shared mounts. `hgraph/` and `blueprint/` are
+session-local copies, so regenerating them inside a session never overwrites the
+canonical projection; boundary hooks regenerate the canonical view after every
+landing. Tracked files that every session regenerates (the Lean root import files
+and each document's `nodes.json`) are listed in `workspace.session_generated`; an
+isolated session never lands them, and the after-session hook regenerates them
+from the combined canonical sources. A landed session's `build/` evidence is archived to
+`build/session-evidence/<id>/`, where `<id>` is the session ledger id recorded in
+the session's `meta.json`.
+
+Some work must run alone in the canonical workspace: private transcription and
+other tasks whose scope the isolated landing refuses, and statement units with an
+open dispute, which planning marks `exclusive` because dispute adjudication,
+typed errata and owner-decision replay are canonical-workspace operations. An
+exclusive task starts only when every other lane is idle, and no lane starts
+anything while it runs. When the highest-priority runnable task is exclusive,
+lanes finish their current sessions instead of starting lower-priority work.
+Raise a transcription task's priority to schedule it sooner.
+
+Landing, outer hooks, task-state writes and claims are serialized under the
+workspace boundary lock; builds and exports remain serialized by the shared
+check lock. A fatal engine stop such as a usage limit stops every lane after its
+current session. `--resume` continues one run only; to restart lanes, run
+`horizon run '*' --lanes N` again, which re-queues orphaned `running` tasks when
+no run process is alive. An interrupted isolated session's unlanded checkout
+stays under `session-worktrees/` for recovery.
+
+## Node-level settlement
+
+A statement unit batches independent primaries so their shared checks run once.
+When the exact stage evaluation fails only on some primaries, the outer hook
+narrows the unit to the primaries that already pass and re-runs the identical
+evaluation on the narrowed unit. If it passes, the narrowed unit is accepted and
+the remaining primaries are released to the frontier, which creates a unit for
+each as soon as its statement interfaces are accepted. Settlement refuses when a
+failure cannot be attributed to one scoped primary (document validation, export
+freshness, foundations, cycles), when the narrowed unit fails on its own, or when
+nothing would remain. Planning never batches a node with an open dispute together
+with other nodes.
+
+Automatic settlement applies only to units whose objective is still the generated
+one. A lead or coordinator who extends an objective may attach obligations a stage
+gate cannot see, such as construction certificates. Such a task settles or closes
+only when the operator names it:
+
+```sh
+homalg workflow settle KEY                         # dry run over plain units
+homalg workflow settle KEY --task TASK [--task ...] --apply   # idle engine only
+```
+
+Without `--task`, `settle` also closes plain tasks whose exact stage evaluation
+already passes. With `--task`, it acts on exactly the named tasks. Released nodes
+carry the source task's appended guidance and inbox references into their new
+units, together with a pointer to the source objective. Every settlement is
+recorded on the task with the retained and released nodes, their failures and the
+released files; a re-audit of the settling session's interval keeps the scope that
+session actually held.
+
 ## Evidence and failure handling
 
 Keep actual author and reviewer identities, source locations, complete coverage,

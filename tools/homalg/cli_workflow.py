@@ -141,6 +141,45 @@ def register_commands(cli: click.Group) -> None:
             report("workflow review-snapshot-cohorts", [], data, machine=machine, strict=strict)
         )
 
+    @group.command("settle")
+    @common_options
+    @click.argument("key")
+    @click.option(
+        "--task",
+        "task_ids",
+        multiple=True,
+        help="Act on exactly these tasks, including ones whose objective was extended.",
+    )
+    @click.option("--apply", is_flag=True, help="Write the changes; requires an idle engine.")
+    @click.option(
+        "--refresh-export",
+        is_flag=True,
+        help="Refresh the compiled export through the shared build lock first.",
+    )
+    def settle(
+        ctx: click.Context,
+        repo: Path,
+        machine: bool,
+        strict: bool,
+        key: str,
+        task_ids: tuple[str, ...],
+        apply: bool,
+        refresh_export: bool,
+    ) -> None:
+        """Close tasks already satisfied by evidence and settle partial statement units.
+
+        Dry run unless --apply. Settlement narrows a statement unit to its primaries
+        that pass the exact stage evaluation and releases the others to their own
+        units; the narrowed unit must pass the same evaluation on its own. Without
+        --task only tasks whose objective is still the generated one are considered.
+        """
+        from homalg.settlement import settle_document
+
+        data = settle_document(
+            repo, key, task_ids=task_ids, apply=apply, refresh_export=refresh_export
+        )
+        ctx.exit(report("workflow settle", [], data, machine=machine, strict=strict))
+
     @group.command("next")
     @common_options
     @click.argument("key")

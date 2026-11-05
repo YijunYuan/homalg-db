@@ -16,6 +16,7 @@ import stat
 import subprocess
 import tarfile
 import tempfile
+import time
 from collections.abc import Callable, Iterator
 from contextlib import ExitStack, contextmanager
 from datetime import UTC, datetime
@@ -170,15 +171,20 @@ def _content(value: dict[str, Any] | None) -> dict[str, Any] | None:
 
 
 @contextmanager
-def _lock(path: Path) -> Iterator[Callable[[], None]]:
+def _lock(path: Path, *, wait: float = 0.0) -> Iterator[Callable[[], None]]:
     path.parent.mkdir(parents=True, exist_ok=True)
     if path.is_symlink():
         raise ValueError(f"Lock must not be a symlink: {path}")
     with path.open("a") as stream:
-        try:
-            fcntl.flock(stream, fcntl.LOCK_EX | fcntl.LOCK_NB)
-        except BlockingIOError as exc:
-            raise ValueError(f"Workspace is busy: {path.name}") from exc
+        deadline = time.monotonic() + wait
+        while True:
+            try:
+                fcntl.flock(stream, fcntl.LOCK_EX | fcntl.LOCK_NB)
+                break
+            except BlockingIOError as exc:
+                if time.monotonic() >= deadline:
+                    raise ValueError(f"Workspace is busy: {path.name}") from exc
+                time.sleep(0.5)
         identity = _identity(os.fstat(stream.fileno()))
 
         def verify() -> None:
@@ -187,6 +193,33 @@ def _lock(path: Path) -> Iterator[Callable[[], None]]:
 
         verify()
         yield verify
+
+
+#: Concurrent lanes share build and landing locks; wait for them instead of failing.
+LANE_LOCK_WAIT_SECONDS = 900.0
+
+
+def _control_root(repo: Path) -> tuple[Path, bool]:
+    """The canonical control-plane root, and whether ``repo`` is an isolated session.
+
+    An engine isolated session runs in ``<root>/.archon-horizon/session-worktrees/<id>``
+    with ``HOMALG_SESSION_MAIN_ROOT`` naming ``<root>``. Its own checkout is the
+    lead's canonical source tree; run records and shared locks live in ``<root>``.
+    """
+    main = os.environ.get("HOMALG_SESSION_MAIN_ROOT")
+    repo = repo.resolve()
+    if not main:
+        return repo, False
+    control = Path(main).resolve()
+    sessions = control / ".archon-horizon" / "session-worktrees"
+    if repo.parent != sessions or not re.fullmatch(r"[0-9a-f]{32}", repo.name):
+        raise ValueError("An isolated native session must run in its engine session checkout")
+    return control, True
+
+
+def _ledger_mode(control: Path) -> bool:
+    config = load_yaml((control / "config.yaml").read_text())
+    return bool(config.get("workspace", {}).get("session_ledger"))
 
 
 def _native_owner(repo: Path, task_id: str | None = None) -> dict[str, Any]:
@@ -206,14 +239,22 @@ def _native_owner(repo: Path, task_id: str | None = None) -> dict[str, Any]:
         or not re.fullmatch(r"[A-Za-z0-9_.-]+", session)
         or not task_id
         or task_id != os.environ.get("ARCHON_HORIZON_TASK")
-        or os.environ.get("HOMALG_SESSION_MAIN_ROOT")
     ):
         raise ValueError("Native workers require their actual parent Horizon task/session")
-    config = load_yaml((repo / "config.yaml").read_text())
-    if config.get("workspace", {}).get("session_ledger"):
-        raise ValueError("Native draft collection requires a single canonical Horizon run")
-    run_dir = _path(repo, f".archon-horizon/runs/{run}")
-    session_dir = _path(repo, f".archon-horizon/runs/{run}/sessions/{session}")
+    control, isolated = _control_root(repo)
+    if _ledger_mode(control):
+        if not isolated:
+            # Lanes run a canonical-workspace session only when every other lane is
+            # idle; the claim records that exclusivity on the task itself.
+            from homalg.engine import task as task_record
+
+            lane = task_record(control, task_id).get("metadata", {}).get("lane") or {}
+            if not lane.get("exclusive"):
+                raise ValueError("Native draft collection requires a single canonical Horizon run")
+    elif isolated:
+        raise ValueError("Isolated native sessions require workspace.session_ledger")
+    run_dir = _path(control, f".archon-horizon/runs/{run}")
+    session_dir = _path(control, f".archon-horizon/runs/{run}/sessions/{session}")
     if os.environ.get("ARCHON_HORIZON_SESSION_DIR") != str(session_dir):
         raise ValueError("Native session directory does not match its parent run")
     marker = json.loads((run_dir / "process.json").read_text())
@@ -239,7 +280,7 @@ def _native_owner(repo: Path, task_id: str | None = None) -> dict[str, Any]:
         raise ValueError("Native worker parent is not this live Horizon session")
     # The parent must already own the run lease. Never bypass an idle-workspace guard
     # just because somebody supplied native environment variables.
-    lock_path = _path(repo, ".archon-horizon/locks/run-policy.lock")
+    lock_path = _path(control, ".archon-horizon/locks/run-policy.lock")
     with lock_path.open("a+") as stream:
         try:
             fcntl.flock(stream, fcntl.LOCK_EX | fcntl.LOCK_NB)
@@ -263,18 +304,23 @@ def _integration_lock(
     """Exclude unrelated runs/builds; a verified native parent keeps its run lease."""
     with ExitStack() as stack:
         guards = []
-        locks = (
-            ".archon-horizon/locks/session-boundary.lock",
-            ".archon-horizon/cache/checks/workspace.lock",
-            STATE + "/registry.lock",
-        )
+        control, isolated = _control_root(repo) if native_owner is not None else (repo, False)
+        wait = LANE_LOCK_WAIT_SECONDS if native_owner is not None and _ledger_mode(control) else 0.0
+        locks = []
         if native_owner is None:
-            locks = (".archon-horizon/locks/run-policy.lock", *locks)
-        for relative in locks:
-            guards.append(stack.enter_context(_lock(repo / relative)))
+            locks.append(control / ".archon-horizon/locks/run-policy.lock")
+        if not isolated:
+            # An isolated lead integrates into its own checkout: other lanes land
+            # into the canonical tree under the boundary lock and build only their
+            # own trees under the shared build lock, so neither guards this staging.
+            locks.append(control / ".archon-horizon/locks/session-boundary.lock")
+            locks.append(control / ".archon-horizon/cache/checks/workspace.lock")
+        locks.append(repo / STATE / "registry.lock")
+        for path in locks:
+            guards.append(stack.enter_context(_lock(path, wait=wait)))
         executable = _horizon_executable()
         process = subprocess.run(
-            [executable, "--root", str(repo), "ps", "--json"],
+            [executable, "--root", str(control), "ps", "--json"],
             cwd=repo,
             env=_env(),
             capture_output=True,
@@ -291,10 +337,11 @@ def _integration_lock(
             raise ValueError("A Horizon run is active; defer draft integration until it is idle")
         if native_owner is not None:
             rows = json.loads(process.stdout).get("processes", [])
+            # Lanes of one supervisor share its process; any other process is foreign.
             if (
-                len(rows) != 1
-                or rows[0].get("run") != native_owner["run"]
-                or rows[0].get("pid") != native_owner["pid"]
+                not rows
+                or any(row.get("pid") != native_owner["pid"] for row in rows)
+                or native_owner["run"] not in {row.get("run") for row in rows}
             ):
                 raise ValueError("Native worker requires exactly its own active Horizon run")
 

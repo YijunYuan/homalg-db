@@ -399,13 +399,61 @@ when its real acceptance condition is checked and its documentation matches.
 
 | Priority | Improvement | Acceptance condition |
 | --- | --- | --- |
-| First | Track blockers and ready work at page/node/definition-group granularity | One unanswered local source question leaves unrelated valid work dispatchable; no dependent result is falsely marked ready. |
+| Done 2026-11-05 | Track blockers and ready work at page/node/definition-group granularity | One unanswered local source question leaves unrelated valid work dispatchable; no dependent result is falsely marked ready. |
 | First | Make the formal-code frontier visible | Status separates planned headers, compiled definitions, full theorem statements and approved nodes. |
 | First | Test the isolated-draft path against the actual live source-ledger layout | Reproduce the root runtime-config refusal in isolation and demonstrate safe creation without changing user Git, copying runtime/private state or weakening guards. |
 | Next | Split preparation around stable mathematical interfaces and source sections | Independent workers produce usable checked code; a coarse stage's final gate remains intact. |
 | Next | Normalize review interchange at handoff boundaries | Unsupported report fields are caught before canonical execution, while actual verdicts, qualifications and history are retained. |
 | Next | Capture process, phase timing and exit receipts durably | Interrupted observation can resume the same live operation without restarting it or reconstructing missing evidence. |
 | Later | Optimize remaining measured orchestration overhead | Equivalent-input measurements show improvement and unchanged prerequisite/validation coverage; unrelated ready mathematics continues. |
+
+## Throughput audit and lane rollout (2026-11-05)
+
+Between 2026-11-04 03:00 and 2026-11-05 00:53 UTC the engine ran one session at a
+time. Of 21.6 wall-clock hours, native sessions ran 9.8 h, outer hooks 2.1 h and
+the workspace sat idle 9.7 h, mostly two long gaps after interruptions and one
+optimization pause, plus 5–16 minute gaps whenever a one-round run ended and the
+coordinator relaunched. The one long run (`0018`, `--rounds 20`) was the most
+productive period. Long runs are the default; one-round launches waste the gaps.
+
+Within a typical four-node statement batch, writers finished in about five
+minutes; preparation retries, reviewer start-up, four separate registrations and
+the final checks filled the remaining 30 minutes, and the outer hook added 2.5–6
+minutes, of which planning took 74–100 s and the fresh export 33–103 s. The hook's
+export is deliberately not reused from in-session output: it is the outer check
+that does not trust the session's own artefacts.
+
+Blocking was coarser than the work. Three proof-only disputes (I.3.2, I.6.1,
+II.4.5) held twelve nodes in three batches whose other nodes were already locked,
+and the whole-chapter `SprintIII` task could never pass its stage check in one
+session while overlapping every Chapter III unit. Responses now implemented:
+
+- Node-level settlement narrows a failing unit to its passing primaries and
+  releases the rest to the frontier; planning keeps disputed nodes out of
+  batches. Tasks whose objectives were extended (for example the satellite
+  prerequisite's certificate obligations) settle only when named explicitly.
+- Concurrent lanes run several isolated sessions over one queue. Disputed units
+  and private transcription run alone in the canonical workspace.
+- Planning reuses parsed task files and the review policy while their file
+  identity is unchanged.
+
+The first end-to-end lane trial on a disposable copy of this workspace found two
+defects that unit tests with absolute paths had hidden: the engine passed a
+relative canonical root to sessions, and a relative `core.excludesFile` let the
+shared mounts leak into session commits so every landing was refused. Later trials found two more:
+concurrent sessions each rewrote the generated `nodes.json` and root import files,
+so the second landing conflicted on them, and the hgraph parser's forked process
+pool deadlocked inside the multithreaded lane process. Generated paths are now
+declared in `workspace.session_generated` and never land from a session, and the
+pool uses `spawn`. All four are fixed with regression tests. The final trial ran three real
+statement units over two lanes with a scripted lead driving the actual native
+worker, collection, `horizon check`, export, stage-check and ledger tooling: two
+sessions ran concurrently, each landed and passed the real outer hook, and a
+freed lane immediately claimed the third unit, which also landed, with no
+conflicts. The scripted lead does no mathematics, so these trials validate
+scheduling, isolation and landing, not authoring quality or Codex rate limits. Native draft workers needed explicit support for
+isolated leads (control-plane paths in the canonical root, waiting for shared
+locks, all lanes sharing one supervisor process).
 
 ## Evidence locations
 
