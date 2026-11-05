@@ -103,6 +103,27 @@ def register_commands(cli: click.Group) -> None:
     @click.option("--session")
     @click.option("--author-session")
     @click.option("--no-claim", is_flag=True)
+    @click.option(
+        "--proofs",
+        type=click.Choice(["deferred", "included"]),
+        help="Persist whether future planning creates proof tasks; existing tasks are unchanged.",
+    )
+    @click.option(
+        "--statement-frontier/--no-statement-frontier",
+        default=None,
+        help="Persist native node statement units alongside unchanged chapter acceptance gates.",
+    )
+    @click.option(
+        "--statement-node",
+        "statement_nodes",
+        multiple=True,
+        help="Restrict the persisted statement frontier to explicit primary node IDs.",
+    )
+    @click.option(
+        "--statement-batch-size",
+        type=click.IntRange(1, 16),
+        help="Persist maximum independent node groups per native statement task (default: 4).",
+    )
     def plan(
         ctx: click.Context,
         repo: Path,

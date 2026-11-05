@@ -53,6 +53,11 @@ See [site development](docs/SITE.md), [local serving](docs/LOCAL_DEPLOY.md), and
 by `make setup`; individual installations can select `--extra ingest`,
 `--extra serve` or `--extra evolution`.
 
+The [parallel workflow guide](docs/PARALLEL_WORKFLOW.md) describes isolated draft
+ownership, frozen review inputs and coordinated acceptance. Its implementation
+status and measurements distinguish new workflow work from historical pilot
+acceptance. Batching does not reduce independent source review or final checks.
+
 ## Contributing
 
 Read [AGENTS.md](AGENTS.md), [architecture](docs/ARCHITECTURE.md),

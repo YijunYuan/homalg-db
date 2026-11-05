@@ -1,18 +1,21 @@
 """Create only newly unlocked stage tasks with explicit, immutable file scopes."""
 
+import hashlib
 import json
 import re
 from datetime import UTC, datetime
+from functools import partial
 from pathlib import Path
 from typing import Any
 
-from homalg.blueprint import source_order
+from homalg.blueprint import source_order, source_rank
 from homalg.claims import claim_view, load_status_history
 from homalg.documents import dump_metadata, parse_metadata, read_document, write_metadata
 from homalg.engine import horizon, settings, tasks
-from homalg.headers import parse_header
+from homalg.headers import imports_of, parse_header
 from homalg.human import record_human_change, require_human
 from homalg.io import atomic_write, json_text
+from homalg.planning_facts import PlanningFacts, StalePlanningInputs
 from homalg.repository import node_paths
 from homalg.review_policy import (
     agent_review_record,
@@ -21,8 +24,10 @@ from homalg.review_policy import (
     foundation_confirmed,
     valid_agent_review,
 )
+from homalg.runtime_state import document_state
 from homalg.schemas import SchemaStore, load_yaml
 from homalg.stages import DEFINITION_KINDS, evaluate
+from homalg.statement_frontier import StatementFrontier, unit_blockers
 from homalg.transcription import status as transcription_status
 
 STAGES = ("T", "INV", "DAG", "CITED", "STMT", "PROOF")
@@ -77,34 +82,47 @@ def chapter_ranges(document: dict[str, Any], selected: tuple[str, ...]) -> list[
     return chapters
 
 
+class AuthoredNodeIndex:
+    """One planning call's authored nodes and inventory order, with no persistent cache."""
+
+    def __init__(self, repo: Path, key: str):
+        self.repo, self.key = repo, key
+        self.nodes = [parse_header(path.read_text()).metadata for path in node_paths(repo, [key])]
+        self.rank = source_rank(repo, key)
+
+    def select(self, chapter: str | None, kind_group: str | None) -> list[dict[str, Any]]:
+        """Keep the original primary/immediate-auxiliary selection and stable ordering."""
+        primary = [
+            node
+            for node in self.nodes
+            if "aux" not in node
+            and (chapter is None or node["source"].get("chapter") == chapter)
+            and (kind_group == "cited") == ("cited" in node)
+        ]
+        if kind_group in {"definitions", "theorems"}:
+            primary = [
+                node
+                for node in primary
+                if (node["kind"] in DEFINITION_KINDS) == (kind_group == "definitions")
+            ]
+        selected = {node["id"] for node in primary}
+        return source_order(
+            self.repo,
+            self.key,
+            [
+                node
+                for node in self.nodes
+                if node["id"] in selected or node.get("aux", {}).get("parent") in selected
+            ],
+            rank=self.rank,
+        )
+
+
 def scope_nodes(
     repo: Path, key: str, chapter: str | None, kind_group: str | None = None
 ) -> list[dict[str, Any]]:
-    """Select source items and their existing auxiliaries in document order."""
-    nodes = [parse_header(path.read_text()).metadata for path in node_paths(repo, [key])]
-    primary = [
-        node
-        for node in nodes
-        if "aux" not in node
-        and (chapter is None or node["source"].get("chapter") == chapter)
-        and (kind_group == "cited") == ("cited" in node)
-    ]
-    if kind_group in {"definitions", "theorems"}:
-        primary = [
-            node
-            for node in primary
-            if (node["kind"] in DEFINITION_KINDS) == (kind_group == "definitions")
-        ]
-    selected = {node["id"] for node in primary}
-    return source_order(
-        repo,
-        key,
-        [
-            node
-            for node in nodes
-            if node["id"] in selected or node.get("aux", {}).get("parent") in selected
-        ],
-    )
+    """Select current source items and auxiliaries; independent callers always reread inputs."""
+    return AuthoredNodeIndex(repo, key).select(chapter, kind_group)
 
 
 def proposed_task(
@@ -117,6 +135,7 @@ def proposed_task(
     section: str | None = None,
     pages: list[int] | None = None,
     kind_group: str | None = None,
+    node_index: AuthoredNodeIndex | None = None,
 ) -> dict[str, Any]:
     """Construct explicit scopes before handing the task to the engine."""
     task_id = f"{key}.{stage}.{number}"
@@ -131,7 +150,13 @@ def proposed_task(
         info["section"] = section
     if kind_group:
         info["kind_group"] = kind_group
-    nodes = scope_nodes(repo, key, chapter, kind_group)
+    if node_index is not None and (node_index.repo != repo or node_index.key != key):
+        raise ValueError("Authored node index belongs to another repository/document")
+    nodes = (
+        node_index.select(chapter, kind_group)
+        if node_index is not None
+        else scope_nodes(repo, key, chapter, kind_group)
+    )
     if stage == "T":
         files = [f"references/{key}/tex/page-{page:04}.tex" for page in pages or []]
         files.append(f"references/{key}/transcription.yaml")
@@ -153,22 +178,42 @@ def proposed_task(
 
 
 def unlocked_tasks(
-    repo: Path, key: str, chapters: list[dict[str, Any]]
+    repo: Path,
+    key: str,
+    chapters: list[dict[str, Any]],
+    *,
+    persist_transcription: bool = True,
+    statement_frontier: bool = False,
+    statement_nodes: tuple[str, ...] = (),
+    statement_batch_size: int = 4,
 ) -> tuple[list[dict[str, Any]], bool]:
     """Evaluate stage prerequisites from current evidence, preserving existing task statuses."""
+    # Finish allowed reconciliation, then read every planning input inside the guard.
+    if read_document(repo, key)["type"] != "synthetic":
+        transcription_status(repo, key, persist=persist_transcription)
+    facts = PlanningFacts(repo)
     document = read_document(repo, key)
+    if chapter_ranges(document, tuple(chapter["chapter"] for chapter in chapters)) != chapters:
+        raise StalePlanningInputs("Selected chapter ranges changed; restart the complete sweep")
     synthetic = document["type"] == "synthetic"
     offset = document.get("pdf", {}).get("page_offset", 0)
-    reviewed = {} if synthetic else transcription_status(repo, key)["pages"]
+    reviewed = {} if synthetic else transcription_status(repo, key, persist=False)["pages"]
     proposals: list[dict[str, Any]] = []
     existing = {record["id"]: record for record in tasks(repo, key)}
+    propose = partial(proposed_task, repo, key, node_index=AuthoredNodeIndex(repo, key))
 
     def complete(candidate: dict[str, Any]) -> bool:
         record = existing.get(candidate["id"])
         if record is None:
             return False
         try:
-            return evaluate(repo, record, refresh_exports=False)["complete"]
+            return evaluate(
+                repo,
+                record,
+                refresh_exports=False,
+                persist_transcription=False,
+                facts=facts,
+            )["complete"]
         except (OSError, ValueError):
             return False
 
@@ -195,7 +240,7 @@ def unlocked_tasks(
             chunks[-1].append(page)
         for number, chunk in enumerate(chunks, 1):
             if selected_pages.intersection(chunk):
-                proposals.append(proposed_task(repo, key, "T", number, pages=chunk))
+                proposals.append(propose("T", number, pages=chunk))
     inventory_number = 0
     dag_ready: dict[str, bool] = {}
     dag_candidates = []
@@ -214,9 +259,7 @@ def unlocked_tasks(
             pages = list(
                 range(section["pages"]["first"] + offset, section["pages"]["last"] + offset + 1)
             )
-            candidate = proposed_task(
-                repo,
-                key,
+            candidate = propose(
                 "INV",
                 inventory_number,
                 chapter=chapter["chapter"],
@@ -228,17 +271,15 @@ def unlocked_tasks(
                 reviewed.get(f"{page:04}", {}).get("status") == "reviewed" for page in pages
             ):
                 proposals.append(candidate)
-        dag = proposed_task(repo, key, "DAG", number, chapter=chapter["chapter"])
+        dag = propose("DAG", number, chapter=chapter["chapter"])
         dag_candidates.append(dag)
         if all(complete(candidate) for candidate in inventory):
             proposals.append(dag)
         dag_ready[chapter["chapter"]] = complete(dag)
         definitions.append(
-            proposed_task(
-                repo, key, "STMT", number, chapter=chapter["chapter"], kind_group="definitions"
-            )
+            propose("STMT", number, chapter=chapter["chapter"], kind_group="definitions")
         )
-    cited = proposed_task(repo, key, "CITED", 1, kind_group="cited")
+    cited = propose("CITED", 1, kind_group="cited")
     if all(dag_ready.values()):
         proposals.append(cited)
     blocked_foundations = early_review_valid(document.get("early_review"), repo) and any(
@@ -248,9 +289,7 @@ def unlocked_tasks(
         number = chapter_numbers[chapter["chapter"]]
         if dag_ready[chapter["chapter"]] and not blocked_foundations:
             proposals.append(definition)
-        theorems = proposed_task(
-            repo,
-            key,
+        theorems = propose(
             "STMT",
             len(document["structure"]) + number,
             chapter=chapter["chapter"],
@@ -264,18 +303,184 @@ def unlocked_tasks(
         ):
             proposals.append(theorems)
         if complete(definition) and complete(theorems) and not blocked_foundations:
-            proposals.append(proposed_task(repo, key, "PROOF", number, chapter=chapter["chapter"]))
+            proposals.append(propose("PROOF", number, chapter=chapter["chapter"]))
     first_definitions = complete(
-        proposed_task(
-            repo,
-            key,
+        propose(
             "STMT",
             1,
             chapter=document["structure"][0]["chapter"],
             kind_group="definitions",
         )
     )
+    if statement_frontier or statement_nodes:
+        proposals.extend(
+            candidate
+            for candidate in statement_units(
+                repo,
+                key,
+                chapters,
+                statement_nodes,
+                batch_size=statement_batch_size,
+                frontier=StatementFrontier(
+                    repo, key, state_loader=lambda root, doc: facts.state(doc, document_state)
+                ),
+            )
+            if not candidate["blockers"]
+        )
+    facts.assert_current()
     return proposals, first_definitions
+
+
+def statement_units(
+    repo: Path,
+    key: str,
+    chapters: list[dict[str, Any]],
+    explicit: tuple[str, ...] = (),
+    *,
+    frontier: StatementFrontier | None = None,
+    batch_size: int = 1,
+) -> list[dict[str, Any]]:
+    """Discover independent execution units without completing a chapter stage."""
+    frontier = frontier or StatementFrontier(repo, key)
+    candidates = []
+    for identifier in frontier.node_ids({chapter["chapter"] for chapter in chapters}, explicit):
+        node = frontier.headers[identifier].metadata
+        identifiers = frontier.group(identifier)
+        local = identifier.split(".", 1)[1]
+        files = [f"HomAlg/{value.replace('.', '/', 1)}.lean" for value in identifiers]
+        files += [f"literature/{key}/reviews/{value.split('.', 1)[1]}.md" for value in identifiers]
+        candidates.append(
+            {
+                "id": f"{key}.STMT.Unit_{local}",
+                "metadata": {
+                    "roadmap_status_sync": False,
+                    "homalg": {
+                        "doc": key,
+                        "stage": "STMT",
+                        "chapter": node["source"]["chapter"],
+                        "section": node["source"].get("section"),
+                        "attempts": 0,
+                        "pages": node["source"]["pages"],
+                        "granularity": "node",
+                        "kind_group": "definitions"
+                        if node["kind"] in DEFINITION_KINDS
+                        else "theorems",
+                        "node_ids": identifiers,
+                    },
+                },
+                "write_set": {"files": sorted(files)},
+                "node_ids": identifiers,
+                "roadmap_refs": [f"{key}.STMT"],
+                "blockers": frontier.blockers(identifiers),
+            }
+        )
+    if batch_size < 1:
+        raise ValueError("Statement batch size must be positive")
+    # Registered scopes never grow or get duplicated by a later frontier sweep.
+    # Preserve held/cancelled units too: batching cannot bypass an operator hold.
+    by_primary = {candidate["node_ids"][0]: candidate for candidate in candidates}
+    reserved = set()
+    preserved = []
+    for record in tasks(repo, key):
+        info = record.get("metadata", {}).get("homalg", {})
+        if info.get("granularity") != "node":
+            continue
+        primary = info.get("primary_nodes") or [
+            identifier
+            for identifier in info.get("node_ids", [])
+            if identifier in frontier.headers and "aux" not in frontier.headers[identifier].metadata
+        ]
+        reserved.update(primary)
+        if primary and all(identifier in by_primary for identifier in primary):
+            preserved.append(
+                {
+                    **record,
+                    "node_ids": info["node_ids"],
+                    "roadmap_refs": [f"{key}.STMT"],
+                    "blockers": unit_blockers(repo, record, frontier=frontier),
+                }
+            )
+    fresh = [
+        candidate
+        for candidate in candidates
+        if candidate["node_ids"][0] not in reserved
+        and not all(frontier.settled_statement(identifier) for identifier in candidate["node_ids"])
+    ]
+    held = [candidate for candidate in fresh if candidate["blockers"]]
+    ready = [candidate for candidate in fresh if not candidate["blockers"]]
+
+    def dependencies(candidate: dict[str, Any]) -> set[str]:
+        result = set()
+        for identifier in candidate["node_ids"]:
+            node = frontier.headers[identifier].metadata
+            result.update(node["deps"]["statement"])
+            result.update(
+                module.removeprefix("HomAlg.")
+                for module in imports_of(frontier.sources[identifier])
+                if module.startswith("HomAlg.")
+                and module.removeprefix("HomAlg.") not in node["deps"]["proof"]
+            )
+        return result
+
+    batches = []
+    while ready:
+        selected = [ready.pop(0)]
+        for candidate in list(ready):
+            if len(selected) >= batch_size:
+                break
+            if (
+                candidate["metadata"]["homalg"]["chapter"]
+                != selected[0]["metadata"]["homalg"]["chapter"]
+            ):
+                continue
+            if all(
+                not (dependencies(candidate) & set(other["node_ids"]))
+                and not (dependencies(other) & set(candidate["node_ids"]))
+                for other in selected
+            ):
+                selected.append(candidate)
+                ready.remove(candidate)
+        if len(selected) == 1:
+            batches.extend(selected)
+            continue
+        primary = [candidate["node_ids"][0] for candidate in selected]
+        digest = hashlib.sha256("\0".join(sorted(primary)).encode()).hexdigest()[:12]
+        identifiers = [identifier for candidate in selected for identifier in candidate["node_ids"]]
+        info = dict(selected[0]["metadata"]["homalg"])
+        info.update(
+            primary_nodes=primary,
+            node_ids=identifiers,
+            author_groups=[
+                {"primary": candidate["node_ids"][0], "node_ids": candidate["node_ids"]}
+                for candidate in selected
+            ],
+        )
+        info["pages"] = sorted(
+            {page for candidate in selected for page in candidate["metadata"]["homalg"]["pages"]}
+        )
+        info["kind_group"] = (
+            "definitions"
+            if all(
+                candidate["metadata"]["homalg"]["kind_group"] == "definitions"
+                for candidate in selected
+            )
+            else "items"
+        )
+        batches.append(
+            {
+                "id": f"{key}.STMT.UnitBatch_{digest}",
+                "metadata": {"homalg": info, "roadmap_status_sync": False},
+                "node_ids": identifiers,
+                "roadmap_refs": [f"{key}.STMT"],
+                "blockers": [],
+                "write_set": {
+                    "files": sorted(
+                        {path for candidate in selected for path in candidate["write_set"]["files"]}
+                    )
+                },
+            }
+        )
+    return [*preserved, *batches, *held]
 
 
 def create_task(
@@ -298,6 +503,16 @@ def create_task(
         "transcriber_model": settings(repo).get("transcriber_model", "a vision-capable model"),
     }
     objective = template.format_map(fields)
+    if info.get("author_groups"):
+        objective += "\nNative parallel author groups (each group has one actual author):\n"
+        objective += "\n".join(
+            f"- {group['primary']}: {', '.join(group['node_ids'])}"
+            for group in info["author_groups"]
+        )
+        objective += (
+            "\nDispatch these independent groups concurrently in isolated native-owned workers. "
+            "Keep independent review and canonical acceptance coordinated.\n"
+        )
     args = [
         "task",
         "add",
@@ -316,10 +531,14 @@ def create_task(
     ]
     for file in record["write_set"]["files"]:
         args.extend(("--file", file))
+    if info.get("granularity") == "node":
+        args.extend(("--priority", "high"))
     horizon(repo, *args)
     path = repo / ".archon-horizon/tasks/items" / f"{record['id']}.yaml"
     saved = parse_metadata(path.read_text())
     saved.setdefault("metadata", {})["homalg"] = info
+    if record.get("metadata", {}).get("roadmap_status_sync") is False:
+        saved["metadata"]["roadmap_status_sync"] = False
     atomic_write(path, dump_metadata(saved))
 
 
@@ -334,11 +553,41 @@ def plan(
     session: str | None = None,
     author_session: str | None = None,
     no_claim: bool = False,
+    proofs: str | None = None,
+    statement_frontier: bool | None = None,
+    statement_nodes: tuple[str, ...] = (),
+    statement_batch_size: int | None = None,
 ) -> dict[str, Any]:
     """Plan eligible work using explicit human or enabled independent-agent review evidence."""
     document = read_document(repo, key)
     overlay = repo / ".archon-horizon/overlay" / f"plan-{key}.json"
     prior = json.loads(overlay.read_text()) if overlay.exists() else {}
+    proofs = proofs or prior.get("proofs", "included")
+    explicitly_disabled = statement_frontier is False
+    statement_frontier = (
+        prior.get("statement_frontier", False) if statement_frontier is None else statement_frontier
+    )
+    statement_nodes = statement_nodes or (
+        () if explicitly_disabled else tuple(prior.get("statement_nodes", []))
+    )
+    statement_batch_size = (
+        prior.get("statement_batch_size", 4)
+        if statement_batch_size is None
+        else statement_batch_size
+    )
+    if not 1 <= statement_batch_size <= 16:
+        raise ValueError("Statement batch size must be between 1 and 16")
+    unit_options = (
+        {
+            "statement_frontier": statement_frontier,
+            "statement_nodes": statement_nodes,
+            "statement_batch_size": statement_batch_size,
+        }
+        if statement_frontier or statement_nodes
+        else {}
+    )
+    if proofs not in {"deferred", "included"}:
+        raise ValueError("Proof mode must be deferred or included")
     if advance and not chapters:
         chapters = tuple(prior.get("chapters", []))
         no_claim = prior.get("no_claim", no_claim)
@@ -375,7 +624,7 @@ def plan(
         raise ValueError(
             "Existing task scopes are immutable; finish this chapter plan before changing scope"
         )
-    proposals, first_complete = unlocked_tasks(repo, key, selected)
+    proposals, first_complete = unlocked_tasks(repo, key, selected, **unit_options)
     if early_review_ok:
         if (
             not by
@@ -415,7 +664,7 @@ def plan(
         write_metadata(path, document, "document.schema.json", SchemaStore(repo / "schema"))
         if not session:
             record_human_change(repo, f"plan {key} --early-review-ok", [path])
-        proposals, first_complete = unlocked_tasks(repo, key, selected)
+        proposals, first_complete = unlocked_tasks(repo, key, selected, **unit_options)
     for stage in (None, *STAGES):
         item_id = key if stage is None else f"{key}.{stage}"
         path = repo / ".archon-horizon/roadmap/items" / f"{item_id}.yaml"
@@ -451,9 +700,20 @@ def plan(
     existing = {record["id"] for record in tasks(repo, key)}
     created = []
     for record in proposals:
+        if proofs == "deferred" and record["metadata"]["homalg"]["stage"] == "PROOF":
+            continue
         if record["id"] not in existing:
             create_task(repo, record, login=login, document=document)
             created.append(record["id"])
+    if unit_options or prior.get("statement_frontier") or prior.get("statement_nodes"):
+        reconcile_frontier_holds(
+            repo,
+            key,
+            selected,
+            bool(unit_options),
+            statement_nodes,
+            batch_size=statement_batch_size,
+        )
     pending = (
         first_complete
         and not early_review_valid(document.get("early_review"), repo)
@@ -487,6 +747,10 @@ def plan(
         "doc_key": key,
         "chapters": selected_ids,
         "no_claim": no_claim,
+        "proofs": proofs,
+        "statement_frontier": statement_frontier,
+        "statement_nodes": list(statement_nodes),
+        "statement_batch_size": statement_batch_size,
         "early_review": "accepted"
         if early_review_valid(document.get("early_review"), repo)
         else "pending"
@@ -496,3 +760,74 @@ def plan(
     }
     atomic_write(overlay, json_text(state))
     return {**state, "created_tasks": created}
+
+
+def reconcile_frontier_holds(
+    repo: Path,
+    key: str,
+    chapters: list[dict[str, Any]],
+    enabled: bool,
+    explicit: tuple[str, ...] = (),
+    *,
+    batch_size: int = 4,
+) -> None:
+    """Update only our dispatch holds, retaining task scope/status and human holds."""
+    facts = PlanningFacts(repo)
+    frontier = (
+        StatementFrontier(
+            repo, key, state_loader=lambda root, doc: facts.state(doc, document_state)
+        )
+        if enabled
+        else None
+    )
+    units = (
+        {
+            record["id"]: record
+            for record in statement_units(
+                repo, key, chapters, explicit, frontier=frontier, batch_size=batch_size
+            )
+        }
+        if enabled
+        else {}
+    )
+    updates = []
+    for record in tasks(repo, key):
+        if record.get("status") in {"done", "cancelled", "running"}:
+            continue
+        metadata = record.get("metadata", {})
+        info = metadata.get("homalg", {})
+        if info.get("stage") != "STMT":
+            continue
+        if metadata.get("dispatch_hold") and not info.get("frontier_dispatch_hold"):
+            continue
+        reason = None
+        if info.get("granularity") == "node":
+            candidate = units.get(record["id"])
+            if not enabled or candidate is None:
+                reason = "Statement unit is outside the enabled frontier"
+            else:
+                # The ordinary scope contract permits newly authored descendants;
+                # their appearance must not rewrite the registered parent scope.
+                failures = unit_blockers(repo, record, frontier=frontier)
+                if failures:
+                    reason = "; ".join(failures)
+        elif enabled:
+            try:
+                complete = evaluate(
+                    repo, record, refresh_exports=False, persist_transcription=False, facts=facts
+                )["complete"]
+            except (OSError, ValueError):
+                complete = False
+            if not complete:
+                reason = "Statement units own authoring; chapter task awaits aggregate acceptance"
+        if reason:
+            metadata["dispatch_hold"] = reason
+            info["frontier_dispatch_hold"] = True
+        else:
+            metadata.pop("dispatch_hold", None)
+            info.pop("frontier_dispatch_hold", None)
+        path = repo / ".archon-horizon/tasks/items" / f"{record['id']}.yaml"
+        updates.append((path, dump_metadata(record)))
+    facts.assert_current()
+    for path, text in updates:
+        atomic_write(path, text)

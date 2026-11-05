@@ -2,6 +2,7 @@
 
 import re
 from collections.abc import Callable, Iterable
+from pathlib import Path
 from typing import Any
 
 from homalg.headers import parse_header
@@ -72,6 +73,12 @@ def approval_reasons(
     review_policy: dict[str, Any] | None = None,
 ) -> list[str]:
     """Find every sensitive change, including deletions and dispute history additions."""
+    from homalg.owner_decisions import (
+        KIND,
+        authorized_transition,
+        protected_path,
+        replay_history_error,
+    )
     from homalg.review_policy import agent_reviews_allowed, foundation_confirmation_valid
 
     reasons = []
@@ -81,6 +88,13 @@ def approval_reasons(
         reasons.append("multi-doc")
     for path in sorted(paths):
         before, after = base(path), head(path)
+        if re.fullmatch(r"literature/[^/]+/reviews/[^/]+\.md", path):
+            from homalg.agent_errata import RECEIPT, blocks
+
+            if blocks(before or "", RECEIPT) != blocks(after or "", RECEIPT):
+                reasons.append(f"agent-erratum-receipt:{path}")
+        if protected_path(path) and before != after:
+            reasons.append(f"owner-decision-authority:{path}")
         if re.fullmatch(r"literature/[^/]+/document\.yaml", path):
             old = load_yaml(before) if before is not None else {}
             new = load_yaml(after) if after is not None else {}
@@ -112,6 +126,47 @@ def approval_reasons(
         if re.fullmatch(r"HomAlg/[^/]+/[^/]+\.lean", path) and after is not None:
             old_header = parse_header(before).metadata if before is not None else {}
             new_header = parse_header(after).metadata
+            from homalg import agent_errata
+            from homalg.schemas import SchemaStore
+
+            if agent_errata.history_error(old_header, new_header):
+                reasons.append(f"untrusted-agent-erratum-history:{path}")
+            if new_header.get("dispute", {}).get("resolution", {}).get(
+                "kind"
+            ) == agent_errata.KIND and old_header.get("dispute") != new_header.get("dispute"):
+                try:
+                    valid = before is not None and agent_errata.authorized_transition(
+                        before,
+                        after,
+                        trusted=base,
+                        current=head,
+                        schemas=SchemaStore(Path(__file__).resolve().parents[2] / "schema"),
+                    )
+                except (ValueError, TypeError, KeyError, OSError):
+                    valid = False
+                if not valid:
+                    reasons.append(f"untrusted-agent-erratum:{path}")
+            if replay_history_error(old_header, new_header):
+                reasons.append(f"untrusted-owner-decision-history:{path}")
+            resolution = new_header.get("dispute", {}).get("resolution", {})
+            if resolution.get("kind") == KIND and old_header.get("dispute") != new_header.get(
+                "dispute"
+            ):
+                try:
+                    document = load_yaml(
+                        head(f"literature/{new_header['doc']}/document.yaml") or "{}"
+                    )
+                    valid_replay = before is not None and authorized_transition(
+                        before,
+                        after,
+                        document,
+                        trusted=base,
+                        current=head,
+                    )
+                except (ValueError, TypeError, KeyError, OSError):
+                    valid_replay = False
+                if not valid_replay:
+                    reasons.append(f"untrusted-owner-decision-replay:{path}")
             old_disputes = [old_header.get("dispute", {}), *old_header.get("dispute_history", [])]
             new_disputes = [new_header.get("dispute", {}), *new_header.get("dispute_history", [])]
             if any(

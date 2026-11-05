@@ -14,7 +14,7 @@ from pathlib import Path
 import networkx as nx
 
 from homalg.checks.context import Context, Finding
-from homalg.claims import effective_expiry, instant, load_status_history
+from homalg.claims import effective_expiry, instant
 from homalg.headers import code_only, imports_of
 from homalg.leantext import DECL_KINDS
 from homalg.relations import merged_ids
@@ -527,12 +527,16 @@ def nodes_json_stale(ctx: Context) -> list[Finding]:
         config = tomllib.loads((ctx.repo / "lakefile.toml").read_text())
         revision = next(item["rev"] for item in config["require"] if item["name"] == "mathlib")
     for key in ctx.docs:
+        if ctx.metadata_only_document(key):
+            continue
         records = ctx.nodes_files.get(key)
         stale = records is None or records.get("lean") != {
             "toolchain": toolchain,
             "mathlib_rev": revision,
         }
         nodes = {node["id"]: node for node in records.get("nodes", [])} if records else {}
+        current_ids = {node_id for node_id in ctx.existing_nodes if node_id.startswith(key + ".")}
+        stale |= set(nodes) != current_ids
         for path, header in ctx.valid_headers.items():
             if header.metadata["doc"] != key:
                 continue
@@ -644,6 +648,7 @@ def no_pdf(ctx: Context) -> list[Finding]:
 def out_of_scope(ctx: Context) -> list[Finding]:
     """Warn on newly added source items outside a contributor's declared chapter/section scope."""
     result = []
+    histories = {}
     for path, header in ctx.valid_headers.items():
         metadata = header.metadata
         key = metadata["doc"]
@@ -653,10 +658,12 @@ def out_of_scope(ctx: Context) -> list[Finding]:
         if not claims:
             continue
         current = instant(ctx.now or datetime.now(UTC))
-        try:
-            history = load_status_history(ctx.repo, key, schemas=ctx.schemas)
-        except ValueError:
-            history = []
+        if key not in histories:
+            try:
+                histories[key] = ctx.status_history(key)
+            except ValueError:
+                histories[key] = []
+        history = histories[key]
         expiry = effective_expiry(
             claims[0],
             history,

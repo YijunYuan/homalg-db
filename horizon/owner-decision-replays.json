@@ -1,0 +1,95 @@
+{
+  "decisions": [
+    {
+      "binding_sha256": "f1c931cff97d895bcc5069678a065c4a29edec69ef39e1e8011d1dea472049c3",
+      "evidence": [
+        {
+          "id": "I-0022",
+          "sha256": "995b0274959a99d842a6b738621ac3373201621d21898eea75f42b3002b5c4a0"
+        },
+        {
+          "id": "I-0023",
+          "sha256": "44e99e3698af001bc7e8fab9a57b28282bad0224488e3b0276a25323e9e10c27"
+        },
+        {
+          "id": "I-0024",
+          "sha256": "cb9372b07d84ce98bf8258afcf641c07476c70d4545891b0902520d61205966f"
+        }
+      ],
+      "id": "ce1956-i-p4",
+      "instruction": "Replay the previously adopted p. 4 quotient-target correction: use A double prime as the quotient target.",
+      "node_id": "CartanEilenberg1956.Con_I_short_exact_sequence_normalization",
+      "owner": "YijunYuan"
+    },
+    {
+      "binding_sha256": "2208fc7bc942da6ebaafb41fa523e00c2e4d13cc72d37d6b4faac47824f36f16",
+      "evidence": [
+        {
+          "id": "I-0022",
+          "sha256": "995b0274959a99d842a6b738621ac3373201621d21898eea75f42b3002b5c4a0"
+        },
+        {
+          "id": "I-0023",
+          "sha256": "44e99e3698af001bc7e8fab9a57b28282bad0224488e3b0276a25323e9e10c27"
+        },
+        {
+          "id": "I-0024",
+          "sha256": "cb9372b07d84ce98bf8258afcf641c07476c70d4545891b0902520d61205966f"
+        }
+      ],
+      "id": "ce1956-i-p13",
+      "instruction": "Replay the previously adopted p. 13 principal ideal domain correction: nonzero ideals are isomorphic to the ring, and the zero ideal has an empty basis.",
+      "node_id": "CartanEilenberg1956.Rem_I_principal_ideal_submodules_free",
+      "owner": "YijunYuan"
+    },
+    {
+      "binding_sha256": "c837978774206fcf32625a85fbb31e2f567605b2cf3965e85d1660529ab57aa1",
+      "evidence": [
+        {
+          "id": "I-0022",
+          "sha256": "995b0274959a99d842a6b738621ac3373201621d21898eea75f42b3002b5c4a0"
+        },
+        {
+          "id": "I-0023",
+          "sha256": "44e99e3698af001bc7e8fab9a57b28282bad0224488e3b0276a25323e9e10c27"
+        },
+        {
+          "id": "I-0024",
+          "sha256": "cb9372b07d84ce98bf8258afcf641c07476c70d4545891b0902520d61205966f"
+        }
+      ],
+      "id": "ce1956-i-exercise6",
+      "instruction": "Replay the previously adopted Exercise I.6 correction: n is greater than 1; retain conditions (a), (b), and (c).",
+      "node_id": "CartanEilenberg1956.Exer_I_6",
+      "owner": "YijunYuan"
+    },
+    {
+      "artifacts": [
+        {
+          "path": "build/ce1956/errata/III_p50_partial_satellite_proof/decision.json",
+          "sha256": "c3cf7c06a74ac748fbc27abe915496507bcf73cfc7a4459f78326fddc7bb07b0"
+        },
+        {
+          "path": "literature/.private/CartanEilenberg1956/tex/page-0071.tex",
+          "sha256": "58b747ae9a043906ad6031bd0b1edff636527c4958205a7bdf6ec3a894fc496b"
+        },
+        {
+          "path": "literature/.private/CartanEilenberg1956/tex/page-0072.tex",
+          "sha256": "538f8b696f73c60aa351a58dd04a65558203edf83d45d182ecbd2f7748bf2090"
+        }
+      ],
+      "binding_sha256": "d7b69049dfc9e7e5655eda7a9433c2b18295976b3996ff0343238aad4b10e219",
+      "evidence": [
+        {
+          "id": "I-0034",
+          "sha256": "732b55f076f7da2418cf42b4449264c511eb11c5cabc146e316241f00493b415"
+        }
+      ],
+      "id": "ce1956-iii-p50-proof-formulas",
+      "instruction": "Replay the previously adopted printed p.50 proof-formula typo: change only the second summand T(Q',N) to T(N,Q') in equations (6a) and (7a). Preserve the statement, literal proof and partial-satellite definition. Formal theorem proofs remain deferred; this does not approve a proof-route substitution.",
+      "node_id": "CartanEilenberg1956.Thm_III_7_1",
+      "owner": "YijunYuan"
+    }
+  ],
+  "schema_version": 1
+}

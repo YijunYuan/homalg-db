@@ -358,3 +358,26 @@ def test_registration_publishes_only_two_metadata_files(repository: Path) -> Non
         register_document(
             repository, "New2000", files | {"source.pdf": "not allowed"}, client=FakeGh(repository)
         )
+
+
+def test_owner_receipt_submission_is_in_scope_but_requires_owner(repository: Path) -> None:
+    """A prior receipt can enter PR base without granting native sessions minting authority."""
+    set_claim(repository)
+    path = repository / "literature/Example2000/owner-decisions/fictional-decision.json"
+    path.parent.mkdir()
+    path.write_text('{"fictional": true}\n')
+    git(repository, "add", str(path))
+    git(repository, "commit", "-m", "Fictional administrative receipt")
+    client = FakeGh(repository)
+    findings = pr_findings(repository, base="origin/main", author="alice", now=NOW, client=client)
+    assert not any(item.rule == "touch-scope" for item in findings)
+    findings = pr_findings(
+        repository,
+        base="origin/main",
+        author="alice",
+        now=NOW,
+        owner="fixture-owner",
+        owner_only=True,
+        client=client,
+    )
+    assert any(item.rule == "owner-approval" for item in findings)

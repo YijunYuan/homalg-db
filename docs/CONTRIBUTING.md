@@ -49,6 +49,11 @@ tasks. Record unresolved source errors and questions in the local inbox. Human
 foundation confirmations, fidelity reviews and dispute resolutions must use their
 guarded commands. Never manufacture those fields in an agent session.
 
+For parallel preparation, use the explicit ownership, frozen handoff and guarded
+integration rules in [PARALLEL_WORKFLOW.md](PARALLEL_WORKFLOW.md). Independent
+draft work does not grant a second claim or authority to modify a running
+canonical task. A successful draft check is not a review or a completed stage.
+
 ```sh
 homalg submit Example2000
 homalg submit Example2000 --release-claim

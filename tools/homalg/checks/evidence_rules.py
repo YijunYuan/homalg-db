@@ -62,6 +62,26 @@ def dispute_valid(ctx: Context) -> list[Finding]:
     by_node = ctx.node_headers()
     for path, header in ctx.valid_headers.items():
         metadata = header.metadata
+        from homalg.owner_decisions import validate_resolution
+
+        try:
+            validate_resolution(
+                ctx.repo,
+                ctx.sources[path],
+                anchor=ctx.pr_base_commit,
+                ledger=ctx.pr_base_commit is None,
+                document=ctx.all_docs.get(metadata["doc"]),
+            )
+            from homalg.agent_errata import validate_resolution as validate_agent_erratum
+
+            validate_agent_erratum(
+                ctx.repo,
+                ctx.sources[path],
+                anchor=ctx.pr_base_commit,
+                ledger=ctx.pr_base_commit is None,
+            )
+        except (OSError, ValueError, KeyError, TypeError) as exc:
+            result.append(finding("dispute-valid", path, str(exc)))
         deviations = {item["kind"] for item in metadata["fidelity"].get("deviations", [])}
         records = [*metadata.get("dispute_history", [])]
         if "dispute" in metadata:
@@ -102,6 +122,16 @@ def dispute_valid(ctx: Context) -> list[Finding]:
             except HeaderError:
                 continue
             new = ctx.all_headers[path].metadata if path in ctx.all_headers else {}
+            from homalg.owner_decisions import replay_history_error
+
+            if replay_history_error(old, new):
+                result.append(
+                    finding("dispute-valid", path, "Untrusted owner-decision replay history")
+                )
+            from homalg.agent_errata import history_error
+
+            if history_error(old, new):
+                result.append(finding("dispute-valid", path, "Untrusted agent erratum history"))
             history = old.get("dispute_history", [])
             if new.get("dispute_history", [])[: len(history)] != history:
                 result.append(finding("dispute-valid", path, "Dispute history is append-only"))

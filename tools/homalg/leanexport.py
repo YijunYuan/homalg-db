@@ -3,8 +3,11 @@
 import fcntl
 import hashlib
 import json
+import os
 import re
+import shutil
 import subprocess
+import threading
 from collections.abc import Iterator
 from contextlib import contextmanager
 from pathlib import Path
@@ -15,6 +18,28 @@ from homalg.headers import code_only, imports_of, parse_header
 from homalg.io import atomic_write, json_text
 from homalg.repository import documents, node_paths
 from homalg.schemas import SchemaStore, load_yaml
+
+_workspace_locks = threading.local()
+
+
+def assert_workspace_lock(repo: Path) -> None:
+    """Fail closed if the held cooperative lock or its directory was replaced."""
+    path = repo.resolve() / ".archon-horizon/cache/checks/workspace.lock"
+    record = getattr(_workspace_locks, "held", {}).get((os.getpid(), path))
+    if record is None:
+        raise ValueError("The workspace lock must be held for this operation")
+    try:
+        current, parent = path.stat(), path.parent.stat()
+        valid = (
+            not path.is_symlink()
+            and not path.parent.is_symlink()
+            and (current.st_dev, current.st_ino) == record[0]
+            and (parent.st_dev, parent.st_ino) == record[1]
+        )
+    except OSError:
+        valid = False
+    if not valid:
+        raise ValueError("Workspace lock identity changed; stop concurrent work and retry")
 
 
 class ExternalToolError(RuntimeError):
@@ -30,15 +55,122 @@ class ExternalToolError(RuntimeError):
 
 @contextmanager
 def workspace_lock(repo: Path) -> Iterator[None]:
-    """Serialize builds and exports with Horizon's own workspace check lock."""
-    path = repo / ".archon-horizon/cache/checks/workspace.lock"
+    """Serialize builds and exports; nesting in the same process/thread is safe.
+
+    A reviewer can hold the lock through export and header registration. Other
+    threads/processes still acquire a separate flock and wait for the whole transaction.
+    Include the pid so a fork cannot accidentally inherit the reentrancy exemption.
+    """
+    path = repo.resolve() / ".archon-horizon/cache/checks/workspace.lock"
+    held = getattr(_workspace_locks, "held", {})
+    key = (os.getpid(), path)
+    if key in held:
+        assert_workspace_lock(repo)
+        yield
+        assert_workspace_lock(repo)
+        return
     path.parent.mkdir(parents=True, exist_ok=True)
     with path.open("a", encoding="utf-8") as stream:
         fcntl.flock(stream, fcntl.LOCK_EX)
+        _workspace_locks.held = held
+        identity, parent = os.fstat(stream.fileno()), path.parent.stat()
+        held[key] = ((identity.st_dev, identity.st_ino), (parent.st_dev, parent.st_ino))
         try:
+            assert_workspace_lock(repo)
             yield
+            assert_workspace_lock(repo)
         finally:
+            del held[key]
             fcntl.flock(stream, fcntl.LOCK_UN)
+
+
+def file_fingerprint(path: Path) -> dict[str, Any]:
+    """Bind bytes and identity, detecting an edit even when the old bytes are restored."""
+    before = path.stat()
+    with path.open("rb") as stream:
+        digest = hashlib.file_digest(stream, "sha256").hexdigest()
+    after = path.stat()
+    fields = ("st_dev", "st_ino", "st_size", "st_mtime_ns", "st_ctime_ns")
+    if any(getattr(before, key) != getattr(after, key) for key in fields):
+        raise ValueError(f"Input changed while reading: {path}")
+    return {"sha256": digest, **{key: getattr(after, key) for key in fields}}
+
+
+def compilation_inputs(repo: Path) -> dict[str, Any]:
+    """Fingerprint build inputs, including local dependency sources and tool selection.
+
+    Generated build artifacts are excluded. This is an input guard, never an export
+    cache: every caller still performs a fresh Lake build/export. Package sources,
+    local path dependencies and explicit LEAN_PATH roots are scanned conservatively.
+    """
+    repo = repo.resolve()
+    paths = set(repo.glob("*.lean"))
+    fixed = ("lean-toolchain", "lakefile.toml", "lake-manifest.json", "tools/uv.lock")
+    paths.update(repo / name for name in fixed if (repo / name).is_file())
+    roots = [repo / name for name in ("HomAlg", "HomAlgExport", "schema", "tools/homalg")]
+    manifest = repo / "lake-manifest.json"
+    if manifest.exists():
+        data = json.loads(manifest.read_text())
+        packages = repo / data.get("packagesDir", ".lake/packages")
+        for package in data.get("packages", []):
+            roots.append(
+                repo / package["dir"]
+                if package.get("type") == "path"
+                else packages / package["name"]
+            )
+    else:
+        roots.append(repo / ".lake/packages")
+    for name in ("LEAN_PATH", "LEAN_SRC_PATH"):
+        roots.extend(repo / item for item in os.environ.get(name, "").split(os.pathsep) if item)
+    visited = set()
+    for root in roots:
+        for directory, children, files in os.walk(root, followlinks=True):
+            resolved = Path(directory).resolve()
+            if resolved in visited:
+                children.clear()
+                continue
+            visited.add(resolved)
+            children[:] = [
+                name for name in children if name not in {".git", ".lake", "__pycache__"}
+            ]
+            for name in files:
+                if name.endswith((".lean", ".json", ".toml", ".py")) or name == "lean-toolchain":
+                    paths.add(Path(directory) / name)
+    paths.update((repo / "literature").glob("*/document.yaml"))
+    policy = repo / "horizon/review-policy.yaml"
+    if policy.exists():
+        paths.add(policy)
+    environment = {
+        key: os.environ.get(key)
+        for key in (
+            "PATH",
+            "ELAN_TOOLCHAIN",
+            "ELAN_HOME",
+            "LEAN_PATH",
+            "LEAN_SRC_PATH",
+            "LAKE_HOME",
+        )
+    }
+    executables = {}
+    search_path = os.pathsep.join(str(repo / item) for item in os.get_exec_path())
+    for name in ("lake", "lean"):
+        found = shutil.which(name, path=search_path)
+        executables[name] = str(Path(found).resolve()) if found else None
+        if found:
+            paths.add(Path(found).resolve())
+    pin = repo / "lean-toolchain"
+    selected = os.environ.get("ELAN_TOOLCHAIN") or (pin.read_text().strip() if pin.exists() else "")
+    elan = Path(os.environ.get("ELAN_HOME", str(Path.home() / ".elan")))
+    toolchain = elan / "toolchains" / selected.replace("/", "--").replace(":", "---")
+    for name in ("lake", "lean"):
+        binary = toolchain / "bin" / name
+        if binary.is_file():
+            paths.add(binary)
+    return {
+        "files": {str(path.resolve()): file_fingerprint(path) for path in sorted(paths)},
+        "environment": environment,
+        "executables": executables,
+    }
 
 
 def run_tool(repo: Path, command: list[str]) -> str:
@@ -238,13 +370,14 @@ def export_lean(
     ``merge=False`` leaves committed node files untouched for validation/freshness checks.
     """
     repo = repo.resolve()
-    keys = documents(repo, (doc,) if doc else ())
-    schemas = SchemaStore(repo / "schema")
     suffix = f"-{doc}" if doc else ""
     target = out or Path(f"build/lean-export{suffix}.json")
     if not target.is_absolute():
         target = repo / target
     with workspace_lock(repo):
+        before = compilation_inputs(repo)
+        keys = documents(repo, (doc,) if doc else ())
+        schemas = SchemaStore(repo / "schema")
         modules_file = repo / f"build/modules{suffix}.txt"
         modules = module_list(repo, keys)
         constants_file = repo / f"build/check-constants{suffix}.txt"
@@ -254,7 +387,6 @@ def export_lean(
         atomic_write(modules_file, "".join(f"{module}\n" for module in modules))
         # An editor can write despite the cooperative build lock. Refuse to label an
         # export with source hashes that differ from the sources its build consumed.
-        before = {path: path.read_bytes() for path in node_paths(repo, documents(repo))}
         run_tool(repo, ["lake", "build", "homalg-export", *modules])
         output = run_tool(
             repo,
@@ -277,10 +409,8 @@ def export_lean(
         errors = schemas.validate(raw, "lean-export.schema.json")
         if errors:
             raise ValueError(f"Invalid Lean export: {errors[0].message}")
-        if set(before) != set(node_paths(repo, documents(repo))) or any(
-            not path.exists() or path.read_bytes() != content for path, content in before.items()
-        ):
-            raise ValueError("Lean sources changed while exporting; retry after edits have stopped")
+        if compilation_inputs(repo) != before:
+            raise ValueError("Lean sources changed or build inputs changed while exporting; retry")
         declarations = declaration_map(raw)
         missing = set(modules) - declarations.keys()
         if missing:
@@ -290,6 +420,9 @@ def export_lean(
             if merge
             else []
         )
+        if compilation_inputs(repo) != before:
+            raise ValueError("Lean sources changed or build inputs changed while merging; retry")
+        assert_workspace_lock(repo)
         atomic_write(target, json_text(raw))
         for key, data in merged:
             atomic_write(repo / "literature" / key / "nodes.json", json_text(data))

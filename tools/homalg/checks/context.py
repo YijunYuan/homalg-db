@@ -49,6 +49,7 @@ class Context:
     raw: dict[str, Any] = field(default_factory=dict)
     changed_paths: set[str] = field(default_factory=set)
     base_sources: dict[str, str] = field(default_factory=dict)
+    pr_base_commit: str | None = None
     pr: dict[str, Any] = field(default_factory=dict)
     preloaded: list[Finding] = field(default_factory=list)
     pr_findings: list[Finding] = field(default_factory=list)
@@ -58,10 +59,35 @@ class Context:
     health: dict[str, Any] = field(default_factory=dict)
     now: str | None = None
     file_mode: bool = False
+    status_histories: dict[str, tuple[str | None, list[dict[str, Any]]]] = field(
+        default_factory=dict
+    )
+
+    def status_history(self, key: str) -> list[dict[str, Any]]:
+        """Pin status history per document for this context; never cache claim decisions."""
+        from homalg.claims import load_status_history, status_history_commit
+
+        if key not in self.status_histories:
+            commit = status_history_commit(self.repo, key)
+            records = (
+                load_status_history(self.repo, key, schemas=self.schemas, commit=commit)
+                if commit is not None
+                else []
+            )
+            self.status_histories[key] = (commit, records)
+        return self.status_histories[key][1]
 
     def node_headers(self) -> dict[str, Header]:
         """Index all valid authored headers by stable node id."""
         return {header.metadata["id"]: header for header in self.all_headers.values()}
+
+    def metadata_only_document(self, key: str) -> bool:
+        """Registration publishes document/claim metadata before any node cache exists."""
+        return (
+            key not in self.nodes_files
+            and not (self.repo / "literature" / key / "nodes.json").exists()
+            and not any(path.startswith(f"HomAlg/{key}/") for path in self.all_sources)
+        )
 
     def main_declarations(self, header: Header) -> list[dict[str, Any]]:
         """Select exactly the main declarations owned by this node's module."""

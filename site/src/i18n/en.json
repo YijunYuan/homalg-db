@@ -372,5 +372,6 @@
   "doc.focusView": "Focus view",
   "doc.exitFocus": "Exit focus",
   "doc.export": "Export",
-  "doc.help": "Help"
+  "doc.help": "Help",
+  "node.agentProofErratum": "Local proof typo adjudicated by independent agents. No human confirmation or proof approval; ordinary fidelity review is separate."
 }

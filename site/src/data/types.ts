@@ -156,6 +156,7 @@ export interface HomalgSchemaTypes {
   NodesFileDepsPair?: DepsPair;
   NodesFileLocalDerived?: LocalDerived;
   NodesFileNode?: Node;
+  OwnerDecision?: OwnerDecision;
   Policy?: Policy;
   RelationReviews?: RelationReviews;
   Relations?: Relations;
@@ -221,6 +222,13 @@ export interface Dispute {
     note?: string;
     on: string;
     via: "erratum" | "proof-route" | "withdrawn";
+    kind?: "owner-decision-replay" | "agent-routine-proof-erratum";
+    decision_id?: string;
+    receipt?: string;
+    receipt_sha256?: string;
+    session?: string;
+    adjudication_id?: string;
+    policy_sha256?: string;
   };
   status: "open" | "resolved";
 }
@@ -1059,6 +1067,43 @@ export interface Node {
   derived: null | LocalDerived;
   id: string;
 }
+export interface OwnerDecision {
+  schema_version: 1;
+  kind: "recorded-owner-instruction-attestation";
+  decision_id: string;
+  node_id: string;
+  owner: string;
+  attested_by: string;
+  attestation_session: string;
+  recorded_at: string;
+  profile_sha256: string;
+  binding_sha256: string;
+  original_dispute: Dispute & {
+    status?: "open";
+    kind?: "statement" | "proof";
+    [k: string]: unknown;
+  };
+  original_history: Dispute[];
+  /**
+   * @minItems 1
+   */
+  evidence: [
+    {
+      id: string;
+      sha256: string;
+    },
+    ...{
+      id: string;
+      sha256: string;
+    }[]
+  ];
+  instruction: string;
+  authority: "operator-attestation-of-preexisting-owner-direction";
+  artifacts: {
+    path: string;
+    sha256: string;
+  }[];
+}
 export interface Policy {
   claim_activity_grace_days: number;
   claim_pr_max_age_days: number;
@@ -1095,6 +1140,18 @@ export interface Retired1 {
 export interface ReviewPolicy {
   schema_version: 1;
   allow_independent_agent_reviews: boolean;
+  routine_proof_errata?: {
+    enabled: boolean;
+    /**
+     * @minItems 1
+     */
+    categories: [
+      "proof-membership-target-typo" | "proof-map-label-typo",
+      ...("proof-membership-target-typo" | "proof-map-label-typo")[]
+    ];
+    map_label_profile_sha256?: string;
+    excluded_nodes: string[];
+  };
 }
 export interface FidelityCounts {
   deviates: number;

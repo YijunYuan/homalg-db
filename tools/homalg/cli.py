@@ -294,6 +294,8 @@ from homalg.cli_lifecycle import register_commands as register_lifecycle  # noqa
 from homalg.cli_literature import register_commands as register_literature  # noqa: E402
 from homalg.cli_pipeline import register_commands as register_pipeline  # noqa: E402
 from homalg.cli_serve import register_commands as register_serve  # noqa: E402
+from homalg.cli_workflow import register_commands as register_workflow  # noqa: E402
+from homalg.cli_workspaces import register_commands as register_workspaces  # noqa: E402
 
 register_pipeline(cli)
 register_collaboration(cli)
@@ -303,3 +305,5 @@ register_engine(cli)
 register_evolution(cli)
 register_lifecycle(cli)
 register_serve(cli)
+register_workflow(cli)
+register_workspaces(cli)

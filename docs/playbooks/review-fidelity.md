@@ -6,6 +6,13 @@ Lean type, successful build or existing lock does not establish source fidelity.
 Inspect all definitions used by the statement until the document's approved
 `foundations` boundary. Check the proof route separately from the statement.
 
+For a parallel batch, first verify the author's frozen handoff and your actual
+independence from every node you will review. Read the exact supplied source and
+candidate inputs, including recursive dependencies. The author's preparation
+check is neither your verdict nor permission to reuse a report after edits.
+Keep a separate substantive report for each node; split work when actual author
+or reviewer provenance differs. See [PARALLEL_WORKFLOW.md](../PARALLEL_WORKFLOW.md).
+
 Append a block to `literature/<DocKey>/reviews/<LocalId>.md`:
 
 ```markdown
@@ -41,18 +48,32 @@ unverified claim. Check that a theorem has not merely been stored as a field of
 its assumptions. If an honesty review exists, its latest verdict must also be
 satisfactory before locking.
 
-After a satisfactory review of a faithful node:
+After actual satisfactory reports for the stable authored nodes, freeze the final
+inputs and register one batch for each real author/reviewer pair:
 
 ```sh
-homalg review-fidelity Hochschild1945.Thm_4_1 --by reviewer \
-  --session "$ARCHON_HORIZON_SESSION" --author-session actual-author-session
+homalg workflow review-snapshot build/author-delivery-001.json \
+  --node ACTUAL_NODE_ID --out build/review-inputs-001.json
+homalg review-fidelity-batch ACTUAL_NODE_ID --by ACTUAL_REVIEWER \
+  --session ACTUAL_REVIEW_SESSION --author-session ACTUAL_AUTHOR_SESSION \
+  --snapshot build/review-inputs-001.json
 ```
 
-The command builds fresh exports and records source/type/meaning hashes. It
-refuses planned nodes and missing or unsatisfactory evidence. Record the actual
-review and author session identities in every new source-fidelity and honesty
-block. The reviewer must be independent of the author; same-session reviews are
-rejected.
+Repeat `--node` and the ordered positional list for several nodes. The final
+snapshot must include the completed reports; the earlier author handoff does not
+bind reports that had not yet been written. Registration shares one fresh
+build/export for that operation while retaining each node's source/type/meaning
+hashes, report and lock. It refuses planned nodes, unsatisfactory or missing
+evidence, self-review, stale inputs and protected human changes. Required honesty
+blocks must carry the same genuine provenance. It has no batch human override.
+
+The standalone `review-fidelity-snapshot NODE_ID... --out build/NEW.json` is
+available when no author-handoff linkage is needed. The existing single-node
+`review-fidelity` command remains compatible. A snapshot or successful build
+cannot replace your actual source comparison. Stop after a failed registration,
+retain its journal, and preserve old reports with an explicit explanation of any
+correction or withdrawn finding. Read the exact input and recovery contract in
+[PARALLEL_WORKFLOW.md](../PARALLEL_WORKFLOW.md).
 
 The user override dated 2026-10-28 permits independent agent reviews of foundations,
 first-chapter fidelity and explained deviations when

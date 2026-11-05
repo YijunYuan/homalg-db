@@ -32,6 +32,15 @@ Session names are an audit trail, not cryptographic proof of independent executi
 The orchestrator must actually delegate review; inventing a reviewer identity or
 copying an author's own verdict is not compliant.
 
+Parallel authorship and batch registration do not change this requirement. Every
+node needs complete current source-fidelity evidence and any required honesty
+review. A coordinating operator preserves the identities of the actual author
+and reviewer; the operator's execution is not a substitute review. Freeze and
+recheck the reviewed source, node and dependency inputs at the integration
+boundary. Changed inputs must be assessed and reviewed again where required.
+Compilation and hash validation can be shared operational work, but neither
+supplies an independent verdict. See [PARALLEL_WORKFLOW.md](PARALLEL_WORKFLOW.md).
+
 Evolution summaries may also carry explicit independent-agent provenance under
 this policy, after checking their current source bundle and claims. This does not
 replace protected-path GitHub ownership or taxonomy-maintenance approval rules.
@@ -47,6 +56,13 @@ homalg foundations review KEY 1 --by REVIEWER --session REVIEW_SESSION --author-
 homalg review-fidelity KEY.LocalId --by REVIEWER --session REVIEW_SESSION --author-session AUTHOR_SESSION
 ```
 
+`review-fidelity-snapshot` and `review-fidelity-batch` support coordinated
+registration of multiple independently reviewed nodes in one document with the
+same actual provenance. They retain per-node evidence and do not permit human
+impersonation or replace substantive review. The snapshot command grants no
+approval; the batch command always builds fresh compiled facts. See
+[the batch and recovery contract](PARALLEL_WORKFLOW.md#registering-reviewed-nodes-together).
+
 After the usual claim and stage prerequisites are satisfied:
 
 ```sh
@@ -57,3 +73,13 @@ Source fidelity, assumptions and proof-route requirements are unchanged. Record
 unresolved contradictions, source ambiguities and genuine source-error disputes
 for the owner instead of manufacturing satisfactory verdicts. This policy does
 not authorize automatic human dispute resolution or arbitrary external messages.
+
+Previously adopted, exactly bound owner directions can be registered using the
+separate [owner-decision replay protocol](OWNER_DECISION_REPLAY.md). Its typed agent
+relay is not a human confirmation and does not satisfy independent review gates.
+
+A separately typed, prospectively enabled route may adjudicate a uniquely local
+proof-membership typo after two actual independent source/data-impact reviews.
+See [Routine agent proof errata](AGENT_PROOF_ERRATA.md). This grants no human or
+owner attribution, ordinary fidelity lock, task acceptance or proof completion.
+Substantive argument changes and ambiguous corrections remain outside that route.

@@ -190,7 +190,11 @@ def test_review_lock_requires_fresh_export_and_locks_all_main_declarations(
     )
     calls = []
     monkeypatch.setattr(
-        "homalg.leanexport.export_lean", lambda *args, **kwargs: calls.append(kwargs)
+        "homalg.leanexport.export_lean",
+        lambda *args, **kwargs: (
+            calls.append(kwargs)
+            or json.loads((Path(__file__).parent / "golden/fixture-export.json").read_text())
+        ),
     )
     path = repo / "HomAlg/Fixture2000/Thm_1.lean"
     before = parse_header(path.read_text())

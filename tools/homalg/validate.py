@@ -52,6 +52,7 @@ def load_context(
     if changed or pr_base:
         merge_base = _git(repo, "merge-base", pr_base or "origin/main", pr_head or "HEAD")
         merge_base = (merge_base or "").strip()
+        ctx.pr_base_commit = merge_base
         diff_args = ["diff", "--name-only", "--diff-filter=ACDMRTUXB", merge_base]
         if pr_head:
             diff_args.append(pr_head)
@@ -411,6 +412,12 @@ def validate_repo(
                 header.metadata["doc"] == key for header in ctx.all_headers.values()
             ):
                 skipped.add(f"mathlib-decls-exist:{key}:no-node-modules")
+    for key in ctx.docs:
+        if ctx.metadata_only_document(key):
+            skipped.update(
+                f"{name}:{key}:no-node-modules"
+                for name in active & {"nodes-json-fresh", "nodes-json-stale"}
+            )
     # A loader and a rule may report the same schema issue; emit it once.
     findings = list(dict.fromkeys(findings))
     findings.sort(key=lambda item: (item.file, item.line or 0, item.rule, item.message))

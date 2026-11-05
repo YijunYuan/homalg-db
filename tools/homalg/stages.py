@@ -8,9 +8,11 @@ from typing import Any
 from homalg.documents import read_document
 from homalg.engine import task
 from homalg.headers import parse_header
+from homalg.planning_facts import PlanningFacts
 from homalg.review import review_blocks
 from homalg.runtime_state import document_state, refresh
 from homalg.schemas import load_yaml
+from homalg.statement_frontier import StatementFrontier, unit_blockers
 from homalg.transcription import status as transcription_status
 from homalg.validate import validate_repo
 
@@ -76,14 +78,32 @@ def task_nodes(state: dict[str, Any], record: dict[str, Any]) -> list[dict[str, 
     ]
 
 
-def evaluate(repo: Path, record: dict[str, Any], *, refresh_exports: bool = True) -> dict[str, Any]:
+def evaluate(
+    repo: Path,
+    record: dict[str, Any],
+    *,
+    refresh_exports: bool = True,
+    persist_transcription: bool = True,
+    facts: PlanningFacts | None = None,
+) -> dict[str, Any]:
     """Evaluate a task from source and compiled evidence without changing its task status."""
+    if facts is not None:
+        if refresh_exports or persist_transcription:
+            raise ValueError("Planning facts require read-only stage evaluation")
+        facts.require_repo(repo)
     info = record["metadata"]["homalg"]
     key, stage = info["doc"], info["stage"]
     document = read_document(repo, key)
-    failures: list[str] = []
+    frontier = (
+        StatementFrontier(
+            repo, key, state_loader=lambda root, doc: facts.state(doc, document_state)
+        )
+        if facts is not None and info.get("granularity") == "node"
+        else None
+    )
+    failures: list[str] = unit_blockers(repo, record, frontier=frontier)
     if stage == "T":
-        states = transcription_status(repo, key)["pages"]
+        states = transcription_status(repo, key, persist=persist_transcription)["pages"]
         failures.extend(
             f"Page {page:04} is not reviewed"
             for page in info["pages"]
@@ -98,7 +118,11 @@ def evaluate(repo: Path, record: dict[str, Any], *, refresh_exports: bool = True
                 failures.append(f"Page {page:04} is not completely inventoried")
         if any(entry["status"] == "draft" for entry in document["foundations"]):
             failures.append("Foundation suggestions remain draft")
-        findings, _, _ = validate_repo(repo, (key,), fast=True)
+        findings, _, _ = (
+            facts.validation(key, validate_repo, fast=True)
+            if facts is not None
+            else validate_repo(repo, (key,), fast=True)
+        )
         failures.extend(
             f"{finding.rule}: {finding.message}"
             for finding in findings
@@ -107,7 +131,7 @@ def evaluate(repo: Path, record: dict[str, Any], *, refresh_exports: bool = True
     else:
         if refresh_exports:
             refresh(repo, key)
-        state = document_state(repo, key)
+        state = facts.state(key, document_state) if facts is not None else document_state(repo, key)
         nodes = task_nodes(state, record)
         for node in nodes:
             authored, derived = node["authored"], node["derived"]
@@ -189,8 +213,10 @@ def evaluate(repo: Path, record: dict[str, Any], *, refresh_exports: bool = True
         if stage in {"CITED", "STMT", "PROOF"}:
             export = repo / "build" / f"lean-export-{key}.json"
             if export.exists():
-                findings, _, _ = validate_repo(
-                    repo, (key,), fast=False, no_build=True, export=export
+                findings, _, _ = (
+                    facts.validation(key, validate_repo, fast=False, export=export)
+                    if facts is not None
+                    else validate_repo(repo, (key,), fast=False, no_build=True, export=export)
                 )
                 failures.extend(
                     f"{finding.rule}: {finding.message}"
@@ -199,6 +225,8 @@ def evaluate(repo: Path, record: dict[str, Any], *, refresh_exports: bool = True
                 )
             else:
                 failures.append("No current compiled document export is available")
+    if facts is not None:
+        facts.assert_current()
     return {
         "task": record["id"],
         "doc_key": key,

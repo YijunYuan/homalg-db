@@ -11,4 +11,22 @@ metadata and used_at pages; never smuggle such a result into the foundation boun
 Never edit generated blueprint/ or hgraph/config.yaml. Report unclear source
 pages through the local inbox and suspected false statements through homalg dispute open.
 
-Done when homalg stage-check {task_id} exits 0. Then set this task to done.
+Use the mathematical-task validation profile in AGENTS.md: current scoped
+checks, required fresh export and independent review, then this task's exact
+stage check and the engine-owned outer hook. Do not repeat unchanged tooling/site
+regression suites or synthetic Lean smoke tests. Full source Statement/Proof prose,
+DAG annotations, metadata, generated-data freshness and blueprint synchronization
+remain required. Dispatch all independent ready units before joining results;
+keep an unresolved issue or housekeeping task local to its actual dependents.
+
+When homalg stage-check {task_id} exits 0, set this task to done as prescribed.
+Preserve the evidence, report the in-session result and return control to Horizon.
+This does not complete outer-session acceptance. Do not manually invoke homalg
+after-session or add an extra homalg plan --advance in this native session.
+Horizon runs the configured outer hook after the lead returns; that hook evaluates
+the session and advances eligible planning. The outer coordinator then verifies
+its actual private/scope, validation, evaluation and resulting task-state records
+before reporting final acceptance.
+
+Freeze dependency handoffs for downstream workers; a later DAG change requires
+reassessing affected drafts.

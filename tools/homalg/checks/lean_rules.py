@@ -405,5 +405,6 @@ def nodes_json_fresh(ctx: Context) -> list[Finding]:
             fix=f"homalg extract --doc {key} && homalg export-lean --doc {key}",
         )
         for key, expected in ctx.expected_nodes.items()
-        if key not in ctx.nodes_files or stable(ctx.nodes_files[key]) != stable(expected)
+        if not ctx.metadata_only_document(key)
+        and (key not in ctx.nodes_files or stable(ctx.nodes_files[key]) != stable(expected))
     ]
