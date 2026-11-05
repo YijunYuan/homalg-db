@@ -18,17 +18,17 @@
     "disputed": 2,
     "headline": {
       "error": 0,
-      "in_progress": 108,
+      "in_progress": 118,
       "proof_complete": 59,
       "statement_complete": 87
     },
     "informal": 0,
-    "items_total": 255,
+    "items_total": 265,
     "locked": 147,
-    "pages_reviewed": 60,
+    "pages_reviewed": 70,
     "pages_total": 421,
-    "planned": 89,
-    "proved": 65,
+    "planned": 98,
+    "proved": 66,
     "proved_modulo_citations": 0,
     "proved_pending_deps": 0,
     "proved_with_axioms": 0,
@@ -36,10 +36,10 @@
     "stated": 99
   },
   "doc_key": "CartanEilenberg1956",
-  "generated_at": "2026-11-05T17:38:24Z",
+  "generated_at": "2026-11-05T18:40:17Z",
   "holder": "YijunYuan",
   "last_check": {
-    "at": "2026-11-05T17:37:09Z",
+    "at": "2026-11-05T18:38:49Z",
     "result": "red"
   },
   "open_for_human": 11,
@@ -56,7 +56,7 @@
     },
     "INV": {
       "done": 23,
-      "total": 28
+      "total": 32
     },
     "STMT": {
       "done": 23,
