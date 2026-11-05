@@ -25,7 +25,7 @@
     "informal": 0,
     "items_total": 301,
     "locked": 147,
-    "pages_reviewed": 90,
+    "pages_reviewed": 109,
     "pages_total": 421,
     "planned": 133,
     "proved": 66,
@@ -36,13 +36,13 @@
     "stated": 99
   },
   "doc_key": "CartanEilenberg1956",
-  "generated_at": "2026-11-05T20:55:56Z",
+  "generated_at": "2026-11-05T22:04:47Z",
   "holder": "YijunYuan",
   "last_check": {
-    "at": "2026-11-05T20:54:29Z",
+    "at": "2026-11-05T22:03:18Z",
     "result": "red"
   },
-  "open_for_human": 12,
+  "open_for_human": 17,
   "schema_version": 1,
   "scope_chapters": [],
   "stages": {
