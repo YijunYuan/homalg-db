@@ -15,7 +15,7 @@
       "statement_complete": 0
     },
     "cited_total": 7,
-    "disputed": 4,
+    "disputed": 2,
     "headline": {
       "error": 0,
       "in_progress": 44,
@@ -27,19 +27,19 @@
     "locked": 147,
     "pages_reviewed": 60,
     "pages_total": 421,
-    "planned": 29,
+    "planned": 30,
     "proved": 62,
     "proved_modulo_citations": 0,
     "proved_pending_deps": 0,
     "proved_with_axioms": 0,
     "pruned": 0,
-    "stated": 96
+    "stated": 97
   },
   "doc_key": "CartanEilenberg1956",
-  "generated_at": "2026-11-05T14:26:10Z",
+  "generated_at": "2026-11-05T15:30:47Z",
   "holder": "YijunYuan",
   "last_check": {
-    "at": "2026-11-05T14:24:43Z",
+    "at": "2026-11-05T15:29:38Z",
     "result": "red"
   },
   "open_for_human": 10,
