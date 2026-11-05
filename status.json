@@ -10,8 +10,8 @@
     "aux_total": 0,
     "cited_headline": {
       "error": 0,
-      "in_progress": 7,
-      "proof_complete": 0,
+      "in_progress": 6,
+      "proof_complete": 1,
       "statement_complete": 0
     },
     "cited_total": 7,
@@ -36,10 +36,10 @@
     "stated": 85
   },
   "doc_key": "CartanEilenberg1956",
-  "generated_at": "2026-11-05T00:19:08Z",
+  "generated_at": "2026-11-05T06:00:59Z",
   "holder": "YijunYuan",
   "last_check": {
-    "at": "2026-11-05T00:16:58Z",
+    "at": "2026-11-05T05:59:18Z",
     "result": "green"
   },
   "open_for_human": 9,
@@ -47,7 +47,7 @@
   "scope_chapters": [],
   "stages": {
     "CITED": {
-      "done": 0,
+      "done": 1,
       "total": 1
     },
     "DAG": {
