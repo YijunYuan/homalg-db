@@ -10,12 +10,12 @@
     "aux_total": 0,
     "cited_headline": {
       "error": 0,
-      "in_progress": 6,
+      "in_progress": 11,
       "proof_complete": 1,
       "statement_complete": 0
     },
-    "cited_total": 7,
-    "disputed": 3,
+    "cited_total": 12,
+    "disputed": 10,
     "headline": {
       "error": 0,
       "in_progress": 255,
@@ -27,7 +27,7 @@
     "locked": 147,
     "pages_reviewed": 133,
     "pages_total": 421,
-    "planned": 230,
+    "planned": 223,
     "proved": 67,
     "proved_modulo_citations": 0,
     "proved_pending_deps": 0,
@@ -36,13 +36,13 @@
     "stated": 102
   },
   "doc_key": "CartanEilenberg1956",
-  "generated_at": "2026-11-06T00:07:30Z",
+  "generated_at": "2026-11-06T01:13:47Z",
   "holder": "YijunYuan",
   "last_check": {
-    "at": "2026-11-06T00:04:02Z",
+    "at": "2026-11-06T01:11:46Z",
     "result": "red"
   },
-  "open_for_human": 18,
+  "open_for_human": 25,
   "schema_version": 1,
   "scope_chapters": [],
   "stages": {
