@@ -25,7 +25,7 @@
     "informal": 0,
     "items_total": 609,
     "locked": 147,
-    "pages_reviewed": 173,
+    "pages_reviewed": 183,
     "pages_total": 421,
     "planned": 416,
     "proved": 72,
@@ -36,10 +36,10 @@
     "stated": 105
   },
   "doc_key": "CartanEilenberg1956",
-  "generated_at": "2026-11-06T08:16:18Z",
+  "generated_at": "2026-11-06T09:38:33Z",
   "holder": "YijunYuan",
   "last_check": {
-    "at": "2026-11-06T08:10:58Z",
+    "at": "2026-11-06T09:35:46Z",
     "result": "red"
   },
   "open_for_human": 31,
