@@ -27,8 +27,8 @@
     "locked": 147,
     "pages_reviewed": 173,
     "pages_total": 421,
-    "planned": 417,
-    "proved": 71,
+    "planned": 416,
+    "proved": 72,
     "proved_modulo_citations": 0,
     "proved_pending_deps": 0,
     "proved_with_axioms": 0,
@@ -36,10 +36,10 @@
     "stated": 105
   },
   "doc_key": "CartanEilenberg1956",
-  "generated_at": "2026-11-06T07:01:41Z",
+  "generated_at": "2026-11-06T08:16:18Z",
   "holder": "YijunYuan",
   "last_check": {
-    "at": "2026-11-06T06:57:12Z",
+    "at": "2026-11-06T08:10:58Z",
     "result": "red"
   },
   "open_for_human": 31,
