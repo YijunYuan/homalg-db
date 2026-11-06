@@ -10,24 +10,24 @@
     "aux_total": 0,
     "cited_headline": {
       "error": 0,
-      "in_progress": 14,
+      "in_progress": 15,
       "proof_complete": 1,
       "statement_complete": 0
     },
-    "cited_total": 15,
-    "disputed": 14,
+    "cited_total": 16,
+    "disputed": 15,
     "headline": {
       "error": 0,
-      "in_progress": 352,
+      "in_progress": 462,
       "proof_complete": 59,
       "statement_complete": 87
     },
     "informal": 0,
-    "items_total": 499,
+    "items_total": 609,
     "locked": 147,
-    "pages_reviewed": 153,
+    "pages_reviewed": 173,
     "pages_total": 421,
-    "planned": 309,
+    "planned": 418,
     "proved": 71,
     "proved_modulo_citations": 0,
     "proved_pending_deps": 0,
@@ -36,13 +36,13 @@
     "stated": 105
   },
   "doc_key": "CartanEilenberg1956",
-  "generated_at": "2026-11-06T04:34:58Z",
+  "generated_at": "2026-11-06T06:00:57Z",
   "holder": "YijunYuan",
   "last_check": {
-    "at": "2026-11-06T04:32:31Z",
+    "at": "2026-11-06T05:57:38Z",
     "result": "red"
   },
-  "open_for_human": 29,
+  "open_for_human": 30,
   "schema_version": 1,
   "scope_chapters": [],
   "stages": {
@@ -56,7 +56,7 @@
     },
     "INV": {
       "done": 23,
-      "total": 50
+      "total": 59
     },
     "STMT": {
       "done": 23,
